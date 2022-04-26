@@ -5,5 +5,5 @@ An R package for data extraction of AFSC fishery data
 
 Installation:  
 ```r
-remotes::install_github("pbs-assess/gfdata")
+remotes::install_github("afsc-assessments/afscdata")
 ```
