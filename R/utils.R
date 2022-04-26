@@ -6,9 +6,9 @@
 #' @export sql_read
 #'
 #' @examples 
-
+#' \dontrun{
 #' .d = sql_read("fsh_catch.sql")
-#' 
+#' }
 sql_read <- function(x) {
   if(file.exists(system.file("sql", x, package = "afscdata"))) {
     readLines(system.file("sql", x, package = "afscdata"))
@@ -28,8 +28,9 @@ sql_read <- function(x) {
 #' @export sql_filter
 #'
 #' @examples
+#' \dontrun{
 #' .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
-#' 
+#' }
 sql_filter <- function(sql_precode = "=", x, sql_code, flag = "-- insert species") {
   
   i = suppressWarnings(grep(flag, sql_code))
@@ -49,6 +50,7 @@ sql_filter <- function(sql_precode = "=", x, sql_code, flag = "-- insert species
 #' @export sql_run
 #'
 #' @examples
+#' \dontrun{
 #' .d = sql_read("fsh_catch.sql")
 #' .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
 #' .d = sql_filter(x = area, sql_code = .d, flag = "-- insert region")
@@ -59,7 +61,7 @@ sql_filter <- function(sql_precode = "=", x, sql_code, flag = "-- insert species
 #' sql_run(afsc, query) %>%
 #'          vroom::vroom_write(here::here(year, 'data', 'raw', 'fsh_catch_data.csv'))
 #' DBI::dbDisconnect(afsc)
-#' 
+#' }
 sql_run <- function(database, query) {
   query = paste(query, collapse = "\n")
   DBI::dbGetQuery(database, query, as.is=TRUE, believeNRows=FALSE)
