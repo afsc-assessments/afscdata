@@ -16,6 +16,7 @@ sql_read(x)
 read sql file
 }
 \examples{
+\dontrun{
 .d = sql_read("fsh_catch.sql")
-
+}
 }

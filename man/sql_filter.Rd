@@ -22,6 +22,7 @@ sql_filter(sql_precode = "=", x, sql_code, flag = "-- insert species")
 filter sql files
 }
 \examples{
+\dontrun{
 .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
-
+}
 }
