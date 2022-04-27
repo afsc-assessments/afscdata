@@ -2,6 +2,8 @@
 
 export("%>%")
 export(collapse_filters)
+export(q_date)
+export(setup_folders)
 export(sql_filter)
 export(sql_read)
 export(sql_run)
