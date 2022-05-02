@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{q_date}
 \alias{q_date}
-\title{date of data query}
+\title{utility function for date of data query}
 \usage{
 q_date(year)
 }
@@ -13,5 +13,5 @@ q_date(year)
 a query date file saved as \code{year/data/raw/data_called.txt}
 }
 \description{
-date of data query
+utility function for date of data query
 }

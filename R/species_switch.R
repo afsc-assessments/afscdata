@@ -7,7 +7,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' species_switch("DUSK", "GOA")
+#' }
 
 species_switch <- function(species, area){
   

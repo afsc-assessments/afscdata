@@ -1,4 +1,4 @@
-#' read sql file
+#' utility function to read sql file
 #'
 #' @param x the sql code to read, pulled from the top directory
 #'
@@ -17,7 +17,7 @@ sql_read <- function(x) {
   }
 }
 
-#' filter sql files
+#' utility function to filter sql files
 #'
 #' @param sql_precode change input e.g., ("", "=", ")
 #' @param x the variable to change (e.g., year)
@@ -41,7 +41,7 @@ sql_filter <- function(sql_precode = "=", x, sql_code, flag = "-- insert species
   sql_code
 }
 
-#' run sql query
+#' utility function to run sql query
 #'
 #' @param database which database to connect to 'akfin' or 'afsc'
 #' @param query the sql query code
@@ -77,7 +77,7 @@ collapse_filters <- function(x) {
   sprintf("'%s'", paste(x, collapse = "','"))
 }
 
-#' date of data query
+#' utility function for date of data query
 #'
 #' @param year assessment year
 #'

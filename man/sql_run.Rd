@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{sql_run}
 \alias{sql_run}
-\title{run sql query}
+\title{utility function to run sql query}
 \usage{
 sql_run(database, query)
 }
@@ -15,7 +15,7 @@ sql_run(database, query)
 
 }
 \description{
-run sql query
+utility function to run sql query
 }
 \examples{
 \dontrun{

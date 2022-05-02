@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{sql_read}
 \alias{sql_read}
-\title{read sql file}
+\title{utility function to read sql file}
 \usage{
 sql_read(x)
 }
@@ -13,7 +13,7 @@ sql_read(x)
 
 }
 \description{
-read sql file
+utility function to read sql file
 }
 \examples{
 \dontrun{

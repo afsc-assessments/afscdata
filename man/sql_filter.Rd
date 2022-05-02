@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{sql_filter}
 \alias{sql_filter}
-\title{filter sql files}
+\title{utility function to filter sql files}
 \usage{
 sql_filter(sql_precode = "=", x, sql_code, flag = "-- insert species")
 }
@@ -19,7 +19,7 @@ sql_filter(sql_precode = "=", x, sql_code, flag = "-- insert species")
 
 }
 \description{
-filter sql files
+utility function to filter sql files
 }
 \examples{
 \dontrun{

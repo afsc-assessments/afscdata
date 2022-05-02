@@ -18,5 +18,7 @@ species_switch(species, area)
 assign species codes
 }
 \examples{
+\dontrun{
 species_switch("DUSK", "GOA")
+}
 }
