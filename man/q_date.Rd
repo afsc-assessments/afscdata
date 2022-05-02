@@ -10,7 +10,7 @@ q_date(year)
 \item{year}{assessment year}
 }
 \value{
-
+a query date file saved as \code{year/data/raw/data_called.txt}
 }
 \description{
 date of data query

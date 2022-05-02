@@ -7,6 +7,9 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/contributing.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
   </url>
   <url>
@@ -25,6 +28,18 @@
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>/reference/q_catch.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_date.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setup_folders.html</loc>
+  </url>
+  <url>
+    <loc>/reference/species_switch.html</loc>
+  </url>
+  <url>
     <loc>/reference/sql_filter.html</loc>
   </url>
   <url>
@@ -32,5 +47,8 @@
   </url>
   <url>
     <loc>/reference/sql_run.html</loc>
+  </url>
+  <url>
+    <loc>/TODO.html</loc>
   </url>
 </urlset>

@@ -9,19 +9,19 @@ Authors@R:
       person(given = "Pete", 
              family = "Hulson",
              email = "pete.hulson@noaa.gov", 
-             role = "aut"),
+             role = "ctb"),
       person(given = "Meaghan", 
              family = "Bryan" ,
              email = "meaghan.bryan@noaa.gov", 
-             role = "aut"),
+             role = "ctb"),
       person(given = "Steve", 
              family = "Barbeaux",
              email = "steve.barbeaux@noaa.gov", 
-             role = "aut"),
+             role = "ctb"),
       person(given = "Jim", 
              family = "Ianelli",
              email = "jim.ianelli@noaa.gov", 
-             role = "aut"))
+             role = "ctb"))
 Maintainer: The package maintainer <ben.williams@noaa.gov>    
 Description: This package provides a folder structure and SQL queries for accessing the AKFIN and AFSC databases in support of fishery stock assessments. 
     Additionally, archived data are held/provided to maintain consistency across assessments/assessment authors.

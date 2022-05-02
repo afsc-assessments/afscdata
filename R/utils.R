@@ -81,7 +81,7 @@ collapse_filters <- function(x) {
 #'
 #' @param year assessment year
 #'
-#' @return
+#' @return a query date file saved as `year/data/raw/data_called.txt`
 #' @export
 #'
 #' @examples
