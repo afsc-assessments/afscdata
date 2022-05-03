@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to `afscdata`! 
   
-  We welcome simple documentation and bug fixes as well as more substantive code contributions, such as new features. Our current ideas for improving `afscdata` are on the [to do list](https://github.com/afsc-assessments/afscdata/todo.md). 
+  We welcome simple documentation and bug fixes as well as more substantive code contributions, such as new features. Our current ideas for improving `afscdata` are on the [to do list](https://github.com/afsc-assessments/afscdata/blob/main/TODO.md). 
   If you would like to tackle something larger than a bug fix, please file an [Issue](https://github.com/afsc-assessments/afscdata/issues) to discuss and make sure we are not working on it already.
 
 We reserve the **main** branch for *stable, tagged [releases](https://github.com/afsc-assessments/afscdata/releases)*. 
