@@ -16,15 +16,16 @@ q_catch <- function(year, species, area, akfin, save = TRUE) {
   
   species_switch(species, area)
   
-  if(length(species) > 1){
-    pre_species = "IN"
+  sql = sql_read("fsh_catch.sql")
+  sql = sql_filter(sql_precode = "<=", year, sql_code = sql, flag = "-- insert year")
+  sql = sql_filter(sql_precode = "IN", area, sql_code = sql, flag = "-- insert region")
+  sql = sql_filter(sql_precode = "IN", species, sql_code = sql, flag = "-- insert year")
+  
+  if(isTRUE(save)){
+    sql_run(akfin, sql) %>%
+      vroom::vroom(here::here(year, "data", "raw", "fish_catch_data.csv"), delim = ",")
+  } else {
+    sql_run(akfin, sql)
   }
-  
-  if(length(area) > 1){
-    pre_area = "IN"
-  }
-  
-  sql_read("fsh_catch.sql")
-  
   
 }
