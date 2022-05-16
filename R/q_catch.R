@@ -19,7 +19,7 @@ q_catch <- function(year, species, area, akfin, save = TRUE) {
   sql = sql_read("fsh_catch.sql")
   sql = sql_filter(sql_precode = "<=", year, sql_code = sql, flag = "-- insert year")
   sql = sql_filter(sql_precode = "IN", area, sql_code = sql, flag = "-- insert region")
-  sql = sql_filter(sql_precode = "IN", species, sql_code = sql, flag = "-- insert year")
+  sql = sql_filter(sql_precode = "IN", species, sql_code = sql, flag = "-- insert species")
   
   if(isTRUE(save)){
     sql_run(akfin, sql) %>%
