@@ -15,9 +15,6 @@ sql_filter(sql_precode = "=", x, sql_code, flag = "-- insert species")
 
 \item{flag}{a flag in the sql code to place the precode and x in the appropriate location}
 }
-\value{
-
-}
 \description{
 utility function to filter sql files
 }

@@ -11,9 +11,6 @@ sql_run(database, query)
 
 \item{query}{the sql query code}
 }
-\value{
-
-}
 \description{
 utility function to run sql query
 }

@@ -2,7 +2,6 @@
 #'
 #' @param x the sql code to read, pulled from the top directory
 #'
-#' @return
 #' @export sql_read
 #'
 #' @examples 
@@ -24,7 +23,6 @@ sql_read <- function(x) {
 #' @param sql_code the sql query code...
 #' @param flag a flag in the sql code to place the precode and x in the appropriate location
 #'
-#' @return
 #' @export sql_filter
 #'
 #' @examples
@@ -46,7 +44,6 @@ sql_filter <- function(sql_precode = "=", x, sql_code, flag = "-- insert species
 #' @param database which database to connect to 'akfin' or 'afsc'
 #' @param query the sql query code
 #'
-#' @return
 #' @export sql_run
 #'
 #' @examples
@@ -82,9 +79,7 @@ collapse_filters <- function(x) {
 #' @param year assessment year
 #'
 #' @return a query date file saved as `year/data/raw/data_called.txt`
-#' @export
 #'
-#' @examples
 q_date <- function(year){
   txt = "Data were downloaded on:"
   dt = format(Sys.time(), "%Y-%m-%d")

@@ -4,7 +4,7 @@
 #'
 #' @param year assessment year
 #' @param tier assessment tier to change the folders used - not currently implemented
-#' @return
+#' @return creates a designated/named folder structure 
 #' @export setup_folders
 #'
 #' @examples

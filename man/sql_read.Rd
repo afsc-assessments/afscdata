@@ -9,9 +9,6 @@ sql_read(x)
 \arguments{
 \item{x}{the sql code to read, pulled from the top directory}
 }
-\value{
-
-}
 \description{
 utility function to read sql file
 }

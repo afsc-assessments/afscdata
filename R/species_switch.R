@@ -2,9 +2,8 @@
 #'
 #' @param species species group name e.g., "DUSK"
 #' @param area area of interest ("GOA", "BS" or "AI")
-#'
-#' @return
-#' @export
+#' @return the correct afsc and norpac species codes 
+#' @export species_switch
 #'
 #' @examples
 #' \dontrun{

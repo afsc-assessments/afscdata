@@ -12,7 +12,7 @@ species_switch(species, area)
 \item{area}{area of interest ("GOA", "BS" or "AI")}
 }
 \value{
-
+the correct afsc and norpac species codes
 }
 \description{
 assign species codes

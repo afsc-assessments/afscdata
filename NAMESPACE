@@ -3,7 +3,7 @@
 export("%>%")
 export(collapse_filters)
 export(q_catch)
-export(q_date)
+export(q_fish_obs)
 export(setup_folders)
 export(species_switch)
 export(sql_filter)

@@ -4,7 +4,7 @@
 \alias{q_catch}
 \title{query fishery catch data}
 \usage{
-q_catch(year, species, area, akfin, save = TRUE)
+q_catch(year, species, area, db, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
@@ -13,13 +13,13 @@ q_catch(year, species, area, akfin, save = TRUE)
 
 \item{area}{sample area "GOA", "AI" or "BS" (or combos)}
 
-\item{akfin}{data server to connect to}
+\item{db}{data server to connect to}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
-\value{
-
-}
 \description{
 query fishery catch data
+}
+\examples{
+q_catch(year = 2022, species = 'NORK', area = 'GOA', db = akfin, save = TRUE)
 }

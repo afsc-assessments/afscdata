@@ -12,7 +12,7 @@ setup_folders(year, tier = NULL)
 \item{tier}{assessment tier to change the folders used - not currently implemented}
 }
 \value{
-
+creates a designated/named folder structure
 }
 \description{
 Creates a common folder structure for assessment data
