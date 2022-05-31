@@ -9,7 +9,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' q_catch(year = 2022, species = 'NORK', area = 'GOA', db = akfin, save = TRUE)
+#' }
 q_catch <- function(year, species, area, db, save = TRUE) {
   
   area = toupper(area)

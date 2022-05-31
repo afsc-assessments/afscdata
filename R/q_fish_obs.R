@@ -10,7 +10,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' q_fish_obs(2022, norpac_species = 303, area = 'GOA', db = akfin, save = TRUE)
+#' }
 #'
 q_fish_obs <- function(year, fishery = "fsh", norpac_species, area, db, save = TRUE){
   
