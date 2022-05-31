@@ -23,6 +23,8 @@ q_fish_obs(year, fishery = "fsh", norpac_species, area, db, save = TRUE)
 fishery observer data query
 }
 \examples{
+\dontrun{
 q_fish_obs(2022, norpac_species = 303, area = 'GOA', db = akfin, save = TRUE)
+}
 
 }

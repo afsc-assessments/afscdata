@@ -21,5 +21,7 @@ q_catch(year, species, area, db, save = TRUE)
 query fishery catch data
 }
 \examples{
+\dontrun{
 q_catch(year = 2022, species = 'NORK', area = 'GOA', db = akfin, save = TRUE)
+}
 }

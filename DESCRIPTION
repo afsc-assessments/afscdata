@@ -1,5 +1,5 @@
 Package: afscdata
-Title: An R package for data extraction of AFSC fishery data  
+Title: An R Package for Extraction of AFSC Fishery Data  
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Benjamin", 
