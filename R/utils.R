@@ -29,7 +29,7 @@ sql_read <- function(x) {
 #' \dontrun{
 #' .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
 #' }
-sql_filter <- function(sql_precode = "=", x, sql_code, flag = "-- insert species") {
+sql_filter <- function(sql_precode = "IN", x, sql_code, flag = "-- insert species") {
   
   i = suppressWarnings(grep(flag, sql_code))
   sql_code[i] <- paste0(
