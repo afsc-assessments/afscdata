@@ -16,10 +16,7 @@
 #'
 q_fish_obs <- function(year, fishery = "fsh", norpac_species, area, db, save = TRUE){
   
-  file <- grep("_obs",
-               list.files(system.file("sql", package = "afscdata")), value=TRUE)
-  
-  .obs = sql_read(file)
+  .obs = sql_read("fsh_obs.sql")
   .obs = sql_filter(sql_precode = "", x = year-3, sql_code = .obs, flag = "-- insert year")
   .obs = sql_filter(sql_precode = "", x = year-1, sql_code = .obs, flag = "-- year2")
   
