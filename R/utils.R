@@ -1,3 +1,37 @@
+
+
+#' utility function to connect to server
+#' @param db the database schema ("akfin" or "afsc")
+#' @param user the database username
+#' @param pwd the database password
+#' @export connect
+connect <- function(db = "akfin") {
+
+  if(!(db %in% keyring::key_list()[,1])) {
+      
+  user <- getPass::getPass("Enter username: ")
+  pwd <- getPass::getPass("Enter password: ")
+  
+   DBI::dbConnect ( odbc::odbc(),
+                              driver = db,
+                              uid = user,
+                              pwd = pwd )
+  } else {
+    DBI::dbConnect ( odbc::odbc(),
+                              db,
+                              uid = keyring::key_list(db)$username,
+                              pwd = keyring::key_get(db, keyring::key_list(db)$username))
+  }
+  
+  
+}
+
+#' utility function to disconnect from server
+#' @export disconnect
+disconnect <- function(x) {
+  DBI::dbDisconnect(x)
+}
+
 #' utility function to read sql file
 #'
 #' @param x the sql code to read, pulled from the top directory
@@ -77,15 +111,20 @@ collapse_filters <- function(x) {
 #' utility function for date of data query
 #'
 #' @param year assessment year
-#'
+#' @param loc location to save file if different from default
+#' 
 #' @return a query date file saved as `year/data/raw/data_called.txt`
 #'
-q_date <- function(year){
+q_date <- function(year, loc = NULL){
   txt = "Data were downloaded on:"
   dt = format(Sys.time(), "%Y-%m-%d")
   
-  
-  write.table(c(txt, dt), file = here::here(year, "data", "raw", "data_called.txt"),
-              sep = "\t", col.names = F, row.names = F)
+  if(is.null(loc)) {
+    write.table(c(txt, dt), file = here::here(year, "data", "raw", "data_called.txt"),
+                sep = "\t", col.names = F, row.names = F)
+  } else {
+    write.table(c(txt, dt), file = paste0(loc, "/data_called.txt"),
+                sep = "\t", col.names = F, row.names = F)
+  }
 }
 

@@ -13,9 +13,8 @@ SELECT
   weight_posted as tons
 FROM council.comprehensive_blend_ca
 WHERE fmp_area
-  -- insert area
-AND year 
-  -- insert year
-AND species_group_code 
-  -- insert species
-  
+-- insert area
+AND year
+-- insert year
+AND species_group_code
+-- insert species
