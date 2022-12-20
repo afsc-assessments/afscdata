@@ -4,10 +4,12 @@
 \alias{q_date}
 \title{utility function for date of data query}
 \usage{
-q_date(year)
+q_date(year, loc = NULL)
 }
 \arguments{
 \item{year}{assessment year}
+
+\item{loc}{location to save file if different from default}
 }
 \value{
 a query date file saved as \code{year/data/raw/data_called.txt}

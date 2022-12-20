@@ -4,7 +4,7 @@
 \alias{sql_filter}
 \title{utility function to filter sql files}
 \usage{
-sql_filter(sql_precode = "=", x, sql_code, flag = "-- insert species")
+sql_filter(sql_precode = "IN", x, sql_code, flag = "-- insert species")
 }
 \arguments{
 \item{sql_precode}{change input e.g., ("", "=", ")}

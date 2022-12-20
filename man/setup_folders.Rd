@@ -4,10 +4,16 @@
 \alias{setup_folders}
 \title{Setup folder structure}
 \usage{
-setup_folders(year, tier = NULL)
+setup_folders(
+  year,
+  dirs = c("raw", "user_input", "output", "sara"),
+  tier = NULL
+)
 }
 \arguments{
 \item{year}{assessment year}
+
+\item{dirs}{directories to write}
 
 \item{tier}{assessment tier to change the folders used - not currently implemented}
 }
