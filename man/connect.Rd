@@ -8,10 +8,6 @@ connect(db = "akfin")
 }
 \arguments{
 \item{db}{the database schema ("akfin" or "afsc")}
-
-\item{user}{the database username}
-
-\item{pwd}{the database password}
 }
 \description{
 utility function to connect to server
