@@ -2,6 +2,8 @@
 
 export("%>%")
 export(collapse_filters)
+export(connect)
+export(disconnect)
 export(q_catch)
 export(q_fish_obs)
 export(setup_folders)

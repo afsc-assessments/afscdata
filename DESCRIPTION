@@ -33,6 +33,7 @@ URL: https://afsc-assessments.github.io/afscdata
 Imports: 
     DBI,
     dplyr,
+    getPass,
     here,
     keyring,
     magrittr,
