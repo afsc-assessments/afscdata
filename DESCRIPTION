@@ -38,6 +38,7 @@ Imports:
     keyring,
     magrittr,
     odbc,
+    utils,
     vroom
 Suggests: 
     knitr,

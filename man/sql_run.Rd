@@ -19,7 +19,8 @@ utility function to run sql query
 .d = sql_read("fsh_catch.sql")
 .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
 .d = sql_filter(x = area, sql_code = .d, flag = "-- insert region")
-.d = sql_filter(sql_precode = "IN", x = c("PEL7", "PELS"), sql_code = .d, flag = "-- insert species")
+.d = sql_filter(sql_precode = "IN", x = c("PEL7", "PELS"), 
+                   sql_code = .d, flag = "-- insert species")
 
 afsc = DBI::dbConnect(odbc::odbc(), "afsc", UID = "afsc_user", PWD = "afsc_pwd") 
  

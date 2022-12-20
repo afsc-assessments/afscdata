@@ -2,8 +2,6 @@
 
 #' utility function to connect to server
 #' @param db the database schema ("akfin" or "afsc")
-#' @param user the database username
-#' @param pwd the database password
 #' @export connect
 connect <- function(db = "akfin") {
 
@@ -28,8 +26,9 @@ connect <- function(db = "akfin") {
 
 #' utility function to disconnect from server
 #' @export disconnect
-disconnect <- function(x) {
-  DBI::dbDisconnect(x)
+#' @param db the database schema (e.g., akfin or afsc)
+disconnect <- function(db) {
+  DBI::dbDisconnect(db)
 }
 
 #' utility function to read sql file
@@ -85,7 +84,8 @@ sql_filter <- function(sql_precode = "IN", x, sql_code, flag = "-- insert specie
 #' .d = sql_read("fsh_catch.sql")
 #' .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
 #' .d = sql_filter(x = area, sql_code = .d, flag = "-- insert region")
-#' .d = sql_filter(sql_precode = "IN", x = c("PEL7", "PELS"), sql_code = .d, flag = "-- insert species")
+#' .d = sql_filter(sql_precode = "IN", x = c("PEL7", "PELS"), 
+#'                    sql_code = .d, flag = "-- insert species")
 #' 
 #' afsc = DBI::dbConnect(odbc::odbc(), "afsc", UID = "afsc_user", PWD = "afsc_pwd") 
 #'  
@@ -120,10 +120,10 @@ q_date <- function(year, loc = NULL){
   dt = format(Sys.time(), "%Y-%m-%d")
   
   if(is.null(loc)) {
-    write.table(c(txt, dt), file = here::here(year, "data", "raw", "data_called.txt"),
+    utils::write.table(c(txt, dt), file = here::here(year, "data", "raw", "data_called.txt"),
                 sep = "\t", col.names = F, row.names = F)
   } else {
-    write.table(c(txt, dt), file = paste0(loc, "/data_called.txt"),
+    utils::write.table(c(txt, dt), file = paste0(loc, "/data_called.txt"),
                 sep = "\t", col.names = F, row.names = F)
   }
 }

@@ -4,7 +4,10 @@
 \alias{disconnect}
 \title{utility function to disconnect from server}
 \usage{
-disconnect(x)
+disconnect(db)
+}
+\arguments{
+\item{db}{the database schema (e.g., akfin or afsc)}
 }
 \description{
 utility function to disconnect from server

@@ -36,8 +36,8 @@ q_fish_obs <- function(year, fishery = "fsh", norpac_species, area, db, save = T
   
   if(isTRUE(save)){
     sql_run(db, .obs) %>%
-      write.csv(here::here(year, "data", "raw", paste0(fishery, "_obs_data.csv")),
-                row.names = FALSE)
+      vroom::vroom(here::here(year, "data", "raw", paste0(fishery, "_obs_data.csv")), 
+                   delim = ",")
   } else {
     sql_run(db, .obs)
   }

@@ -25,7 +25,8 @@ q_catch <- function(year, species, area, db, save = TRUE) {
   
   if(isTRUE(save)){
     sql_run(db, sql) %>%
-      vroom::vroom(here::here(year, "data", "raw", "fish_catch_data.csv"), delim = ",")
+      vroom::vroom(here::here(year, "data", "raw", "fish_catch_data.csv"), 
+                   delim = ",")
   } else {
     sql_run(db, sql)
   }
