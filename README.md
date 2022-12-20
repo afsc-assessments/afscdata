@@ -1,6 +1,4 @@
 # afscdata
-<!-- badges: start -->
-[![R-CMD-check](https://github.com/afsc-assessments/afscdata/workflows/R-CMD-check/badge.svg)](https://github.com/afsc-assessments/afscdata/actions)
 
 [![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
 [![R-CMD-check](https://github.com/afsc-assessments/afscdata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/afsc-assessments/afscdata/actions/workflows/R-CMD-check.yaml)
