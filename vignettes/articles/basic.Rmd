@@ -1,0 +1,64 @@
+---
+title: "Basic structure"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, 
+  comment = "#>"
+)
+```
+
+`afscdata` is a suite of utility functions for importing fishery assessment data in a consistent fashion. 
+There are three functions at the core of the package  
+
+ - `sql_read` reads 'built-in' sql queries, though user defined queries can be used instead,
+ - `sql_filter` adds species, year, and location filters to the built-in sql queries, and 
+ - `sql_run` runs the sql code.
+
+```{r setup, eval = FALSE}
+# load ----
+library(afscdata)
+
+# globals ----
+species = 'DUSK'
+year = 2022
+area = 'GOA'
+akfin_user = 'your akfin username'
+akfin_pwd = 'your akfin pwd'
+```
+
+Open an Oracle connection.  
+
+```{r oracle, eval = FALSE}
+akfin <- connect()
+
+```
+
+Get the SQL query. 
+
+```{r, eval = FALSE}
+catch <- sql_read('fsh_catch.sql')
+catch
+```
+
+Filter the SQL query.
+
+```{r, eval = FALSE}
+catch <- sql_filter(x = species, sql_code = catch, flag = "-- insert species")
+catch <- sql_filter(x = year, sql_code = catch, flag = "-- insert year")
+catch <- sql_filter(x = area, sql_code = catch, flag = "-- insert area")
+catch
+```
+
+Run the SQL query.
+
+```{r, eval = FALSE}
+sql_run(akfin, catch)
+```
+
+Close the connection.
+
+```{r, eval = FALSE}
+disconnect(akfin)
+```

@@ -5,23 +5,19 @@
 #' @export connect
 connect <- function(db = "akfin") {
 
+    # check if database name is stored in keyring, if not request user/pwd
   if(!(db %in% keyring::key_list()[,1])) {
-      
-  user <- getPass::getPass("Enter username: ")
-  pwd <- getPass::getPass("Enter password: ")
-  
-   DBI::dbConnect ( odbc::odbc(),
-                              driver = db,
-                              uid = user,
-                              pwd = pwd )
+    user <- getPass::getPass(paste("Enter", db, "username: "))
+    pwd <- getPass::getPass(paste("Enter", db, "password: "))
   } else {
-    DBI::dbConnect ( odbc::odbc(),
-                              db,
-                              uid = keyring::key_list(db)$username,
-                              pwd = keyring::key_get(db, keyring::key_list(db)$username))
+    user <- keyring::key_list(db)$username
+    pwd <-  keyring::key_get(db, keyring::key_list(db)$username)
   }
   
-  
+    DBI::dbConnect ( odbc::odbc(),
+                     driver = db,
+                     uid = user,
+                     pwd = pwd )
 }
 
 #' utility function to disconnect from server
