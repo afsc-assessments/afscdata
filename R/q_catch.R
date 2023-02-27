@@ -18,17 +18,17 @@ q_catch <- function(year, species, area, db, save = TRUE) {
   
   # species_switch(species, area)
   
-  sql = sql_read("fsh_catch.sql")
-  sql = sql_filter(sql_precode = "<=", year, sql_code = sql, flag = "-- insert year")
-  sql = sql_filter(x = area, sql_code = sql, flag = "-- insert area")
-  sql = sql_filter(x = species, sql_code = sql, flag = "-- insert species")
+  catch = sql_read("fsh_catch.sql")
+  catch = sql_filter(sql_precode = "<=", year, sql_code = catch, flag = "-- insert year")
+  catch = sql_filter(x = area, sql_code = catch, flag = "-- insert area")
+  catch = sql_filter(x = species, sql_code = catch, flag = "-- insert species")
   
   if(isTRUE(save)){
-    sql_run(db, sql) %>%
+    sql_run(db, catch) %>%
       vroom::vroom(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
                    delim = ",")
   } else {
-    sql_run(db, sql)
+    sql_run(db, catch)
   }
   
 }
