@@ -3,6 +3,7 @@
 #' utility function to connect to server
 #' @param db the database schema ("akfin" or "afsc")
 #' @export connect
+#' 
 connect <- function(db = "akfin") {
 
     # check if database name is stored in keyring, if not request user/pwd
@@ -21,18 +22,16 @@ connect <- function(db = "akfin") {
 }
 
 #' utility function to disconnect from server
-#' @export disconnect
 #' @param db the database schema (e.g., akfin or afsc)
+#' @export disconnect
+#' 
 disconnect <- function(db) {
   DBI::dbDisconnect(db)
 }
 
 #' utility function to read sql file
-#'
 #' @param x the sql code to read, pulled from the top directory
-#'
 #' @export sql_read
-#'
 #' @examples 
 #' \dontrun{
 #' .d = sql_read("fsh_catch.sql")
@@ -47,13 +46,11 @@ sql_read <- function(x) {
 
 #' utility function to filter sql files
 #'
-#' @param sql_precode change input e.g., ("", "=", ")
+#' @param sql_precode change input e.g., ("=")
 #' @param x the variable to change (e.g., year)
 #' @param sql_code the sql query code...
 #' @param flag a flag in the sql code to place the precode and x in the appropriate location
-#'
 #' @export sql_filter
-#'
 #' @examples
 #' \dontrun{
 #' .d = sql_filter(sql_precode = "<=", 2011, sql_code = .d, flag = "-- insert year")
