@@ -16,8 +16,8 @@ pkgdown::build_site(examples = FALSE)
 
 
 library(keyring)
-keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "pwd1")
-key_set_with_value(service="akfin", username="bwilliams", password = "pwd2")
+# keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "pswd1")
+# key_set_with_value(service="akfin", username="bwilliams", password = "pswd2")
 rstudioapi::askForSecret("Test")
 keyring::key_get("afsc", "WILLIAMSB")
 
