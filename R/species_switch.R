@@ -13,17 +13,23 @@
 species_switch <- function(species, area){
   
   # goa ----
-  if(species == 'ARTH' & area == 'GOA'){
-    afsc_species = 10110
-    norpac_species = 141
+  if(area=="GOA") {
+    if(species == 'DUSK'){
+      species = c("DUSK", "PEL7", "PELS")
+      afsc_species1 = 30150
+      afsc_species2 = 30152
+      norpac_species = 330
+    }
+    
+    if(species == 'ARTH' & area == 'GOA'){
+      afsc_species = 10110
+      norpac_species = 141
+    }
+    
   }
   
-  if(species == 'DUSK' & area == 'GOA'){
-    species = c("DUSK", "PEL7", "PELS")
-    afsc_species1 = 30150
-    afsc_species2 = 30152
-    norpac_species = 330
-  }
+  
+  
   
   if(species == 'NORK' & area == 'GOA'){
     afsc_species = 30420

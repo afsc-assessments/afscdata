@@ -1,0 +1,453 @@
+---
+title: "Development"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Development}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Primary goals
+
+1. Be able to reproduce a full, accepted assessment from querying raw data to the executive summary, without guidance from the original author,
+2. Provide a 'paper trail' of the review process,
+3. Provide a stable, read-only archive of our assessments over time.
+
+## Collaboration 
+
+Large projects = many people = diverse skills. Poses some risks, but also opportunities. 
+Version control is essential for complex programming projects with multiple inter-dependencies. 
+
+Necessary items:
+
+1. Consistent framework
+2. Consistent code style
+3. Accurate, up to date comments
+4. Active version control w/informative commit messages
+5. Elicit feedback from colleagues
+
+## Coding style 
+
+Good coding style will make you more efficient even if you are the only person who reads it.
+When your code is read by multiple readers or you are developing code with co-workers, having a consistent style is even more important. 
+
+Generally: 
+
+* modular code
+* commented code
+* automate any task that can save time by automating
+* DRY - don't repeat yourself (aka build functions)
+* concise, clear, consistent
+
+# Suggested norms - General
+
+First we'll separate the workflow (personal taste and habits e.g., IDE) from the product (logic and output). 
+The product in our case being raw and cleaned data should not be influenced by workflow-related operations. 
+
+## Organization 
+
+### Projects 
+
+**Use them!**
+
+Do not save your work environment - you should rerun your code each time to make sure you haven’t broken anything. 
+If the analyses are lengthy or complex then save the output - which can then be sourced. 
+In Rstudio you can go to `Tools > Global Options> Save workspace to .Rdata on exit` change it to `Never` and your workspace will not be saved.
+
+* File system discipline: put all the files related to a single project in a designated folder.
+  * This applies to data, code, figures, notes, etc.
+  * Depending on project complexity, you might enforce further organization into subfolders.
+*Working directory intentionality: when working on project A, make sure working directory is set to project A’s folder.
+  * Ideally, this is achieved via the development workflow and tooling, not by baking absolute paths into the code.
+* File path discipline: all paths are relative and, by default, relative to the project’s folder.
+
+These habits are synergistic: you’ll get the biggest payoff if you practice all of them together.
+
+***Bad methods*** 
+
+```{r, eval = F}
+rm(list = ls()) # doesn't do what you think
+setwd("path/that/only/works/on/my/machine")
+```
+
+***Meh methods***
+Helpful package imports (aren't always helpful...), the method below is a halfway step to an R package but may lead to unintended conflicts.
+
+```{r, eval = F}
+libs <- c("tidyverse", "RODBC", "lubridate")
+if(length(libs[which(libs %in% rownames(installed.packages()) == FALSE )]) > 0) {
+  install.packages(libs[which(libs %in% rownames(installed.packages()) == FALSE)])}
+lapply(libs, library, character.only = TRUE)
+```
+
+***Good methods***  
+Use an appropriate IDE organized into self-contained projects. 
+RStudio is extremely well setup for a project-oriented workflow.
+Using `here::here()` is another option.
+
+Using `here()`: **Do not use absolute paths!!**
+
+```{r, eval = F}
+library(here)
+
+here::here()
+[1] "C:/Users/Ben.Williams/Work"
+
+here::set_here("C:/Users/Ben.Williams/Work/some_project")
+
+```
+
+There is a bit more to using `here` which can be found at:  
+https://here.r-lib.org/index.html  
+and  
+https://github.com/jennybc/here_here
+
+
+If you are using the R GUI - well, just stop, there are much better tools (RStudio, VSCode, Emacs) that all support projects.
+
+#### Example folder structure
+
+```{}
+species_folder
+|-- year 
+  |--data
+    |--raw
+       |--catch_data.csv
+        |--age_data.csv
+    |--output    
+        |--catch.csv # cleaned catch data
+        |--fsh_age_comp.csv # fishery age comp data    
+  |--R
+    |--01-query_catch.R
+    |--01-query_fsh_age_comp.R
+    |--02-clean_catch.R
+    |--02-clean_fsh_age_comp.R
+    |--03-plot_catch.R
+  |--figs
+     |--catch.png  
+  |--tables   
+  |--text   
+    |--safe.qmd
+```
+
+## Scripts
+
+The general structure of a script should have:
+
+* A decription of what it does
+* Who made it and their contact e-mail
+* Further notes on data access, units, etc.
+* List all libraries used in the analysis - have libraries you no longer use? **delete them** it will reduce conflicts.
+* fold your code!
+Use `# load ----` and `# data ----` to create breaks and make it easy to navigate within your scripts and make lengthy analyses much easier to follow.
+
+For example:
+
+```{r, eval = F}
+# notes ----
+# This is a demonstration of how scripts should be setup 
+# Author: Ben Williams
+# contact: ben.williams@noaa.gov
+# Last edited: 2022-04
+
+# load ----  
+library(tidyverse)  
+library(scico)
+theme_set(theme_bw())
+
+# data ----  
+# typically this would be read_csv("data/iris.csv")  
+# but the iris dataset is built in  
+
+# change names
+iris %>% 
+  rename_all(tolower) -> iris
+
+# eda ----
+iris %>% 
+  ggplot(aes(sepal.length, sepal.width, color=species)) + 
+  geom_point() +
+  ylab('Sepal Width') + 
+  xlab('Sepal Length') +
+  scale_color_scico_d(palette = 'roma')
+
+# analysis ----
+
+```
+
+Consistent scripts are handy however, we are building an R package so will want to follow some package development protocols. 
+
+## Structure guide
+
+## Style guide
+### Naming conventions  
+Do use:  
+`lower_case_and_underscore.R`  
+`lower_case_and-dashes.R` for different search strings
+
+If you are changing files or versions often then adding a date can be beneficial.  
+`data_2017_01_20.csv`  
+or add a version  
+`data_2017_01_20_v2.csv`  
+
+Do not use:  
+`DontUseMixedCases.R`  
+`periods.are.meh.but.ok.csv`  
+`dont_use.periods_and.underscore.R`  
+`ALL_CAPS.R` no yelling
+
+
+Definitely don’t use a name that only you can understand  
+`X10_20.16_T_AND_Y410.csv`
+
+Be consistent within and across projects. 
+For example, all data file names contain the same information:  
+`datasource_briefdescription_firstyear_lastyear.csv`  
+Examples:
+`survey_bio_1988_2016.csv`  
+`fishery_cpue_1998_2016.csv`
+
+However, this will be challenging when developing functions to work for multiple years in which case it may be easier to use simpler names (e.g., `survey_bio.csv`) *then your folder structure becomes very important*.
+
+### Object names 
+
+Rename all columns on import of a dataset. 
+Do this at the beginning of a script (or function) to make sure that files can be joined without naming conflicts.
+
+Keep names short, but descriptive.
+
+Use:  
+`year` or `Year`  
+`cpue` or `std.cpue` (update: I’ve moved away from using `.` and now use `_` e.g., `std_cpue`)
+
+`No spaces`  
+`No_Upper_And_lower_Case`  
+`NO_ALL_CAPS`
+
+`catch` works better than `c` and you can search for and change `catch` (plus `c()` is a function command…)
+
+Know your data types, if an object is a character or factor use a capital letter, if it is numeric (double, or integer) use a lower case name. *Define data types at the beginning of a script*.
+
+For example you have the integer `year` in your data but you create figures based on the factor. 
+If you keep the two separate you have the ability to easily plot and run various analyses without getting errors plus:
+
+`Year <- factor(year)`  
+`lm(catch~year)` is quite a bit different than `lm(catch~Year)`
+
+Instead of writing `catch_kg` make a note at the beginning of the script that `catch` is in kg unless otherwise stated then use `catch.` 
+Making notes in your code files is just good practice in general.
+
+### Dates
+
+Believe it or not there is an international date/time standard (ISO 8601) the format is:
+`yyyy-mm-dd`
+
+*Use it*! Dates regularly have confounding errors - clean them at the beginning of a script and make all formats consistent (because what people send you will not be).
+
+### Spacing
+
+Place spaces around all binary operators (`=`, `+`, `-`, `<-`, etc.). 
+Do not place a space before a comma, but always place one after. 
+Place a space before left parenthesis, except in a function call. 
+There should be a hard return after each pipe `%>%`.
+
+What does all that mean?
+
+Do this
+
+```{r, eval = F}
+
+mtcars %>% 
+  tibble::rownames_to_column('car') %>% 
+  mutate(ratio = mpg / hp,
+         Cyl = factor(cyl)) %>% 
+  ggplot(aes(qsec, ratio, color = Cyl)) + 
+  geom_point() +
+  scale_color_scico_d(palette = 'roma')
+
+```
+
+Not this
+
+```{r, eval = F}
+
+dat<-mtcars%>%tibble::rownames_to_column('car')%>%mutate(ratio=mpg/hp,Cyl=factor(cyl)) 
+ggplot(dat,aes(qsec,ratio,color=Cyl))+geom_point()+scale_color_scico_d(palette='roma')
+
+```
+
+## Writing functions
+
+### Function components
+
+The `function()` call in R is itself a function, all R functions have three parts: the `formals()`, the `body()`, and the `environment()`. 
+Since we are creating an R package the majority of our functions with be in the package environment (as opposed to global).
+Since this function calls `return()` we will not use `return()` at the end of our functions.
+The function `formals()` are the variables, `TRUE/FALSE`, or NULL values. 
+
+If a variable must have a value then it should be named or named w/a value (e.g., `year` or `year=2017`). 
+If a variable will be `TRUE` or `FALSE` then set it at the most oft used status (e.g., `by_strata = FALSE`).
+If the function is dependent upon a variable that may or may not be included then use `NULL` (e.g., `alt_file = NULL`).
+
+What does this mean? 
+
+Do this
+```{r, eval = F}
+double <- function(x){
+  x * x
+}  
+```
+
+Not this
+```{r, eval = F}
+double <- function(x){
+  d <- x * x
+  return(d)
+} 
+```
+
+
+We will use roxygen2 documentation - a standard function will look something like: 
+
+```{r, eval = F}
+
+#' query fishery catch data
+#'
+#' @param year max year to retrieve data from 
+#' @param species species group code e.g., "DUSK"
+#' @param area sample area "GOA", "AI" or "BS" (or combos)
+#' @param db data server to connect to
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' q_catch(year = 2022, species = 'NORK', area = 'GOA', db = akfin, save = TRUE)
+#' }
+q_catch <- function(year, species, area, db, save = TRUE) {
+  # function code...
+}
+
+```
+
+We will use informative error messages throughout our functions - this can be done using the `stop()` function.
+
+```{r, eval = F}
+
+q_catch <- function(year, species, area, db, save = TRUE) {
+    area = toupper(area)
+    if(!(area %in% c("GOA", "AI", "BS"))) {
+      stop("the area name is incorrect it must be 'GOA', 'BS', 'AI', or a combo e.g., ('BS', 'AI')")
+    }
+}
+```
+
+When building an R package that uses functions from other packages they must be called explicitly:
+
+```{r}
+
+fsc_table <- function(year, folder){
+
+  option(scipen = 999)
+  fsc = vroom::vroom(here::here(year, "data", "output", "fish_size_comp.csv"))
+
+  fsc %>%
+    tidytable::select(n_s, n_h) %>%
+    t(.) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("name") -> samps
+
+  fsc %>%
+    tidytable::select(-n_s, -n_h, -AA_Index) %>%
+    tidytable::pivot_longer(-year) %>%
+    tidytable::pivot_wider(names_from = year, values_from = value, names_prefix = "y") %>%
+    as.data.frame() %>%
+    tidytable::mutate(tidytable::across(tidytable::where(is.numeric), round, digits = 4)) %>%
+    tidytable::mutate(name = gsub("X", "", name),
+                      name = ifelse(tidytable::row_number() == tidytable::n(), 
+                                    paste0(name, "+"), name )) %>%
+    tidytable::rename_with(~stringr::str_replace(., "y", "")) -> comp
+
+  names(samps) <- base::names(comp)
+
+  tidytable::bind_rows(comp, samps) %>%
+    vroom::vroom_write(here::here(year, folder, "tables", "tbl_10_07.csv"), delim = ",")
+
+}
+```
+
+In order to run this function we need to have five packages loaded (`vroom, here, tidytable, tibble, stringr`), note that `base` is also called, but not technically necessary. 
+
+The packages can be added to the R package using the `usethis` package:
+
+`usethis::use_package("vroom")`
+
+This will add the packages to the `DESCRIPTION` file as `"Imports"`. 
+Once packages are added `devtools::document()` is run to update the package.
+
+We want to keep the number of dependencies to a minimum.
+
+# Suggested norms - Specific
+
+## Framework
+
+Establish assessments on annual basis.
+
+```{r, eval = F}
+species/group  
+  |-- raw_data              Rpackage-1 # specific to data query
+  |-- cleaned_data          Rpackage-2 # basic data cleaning
+  |-- eda                   Rpackage-2 # visualization of raw data
+  |-- assessment_functions  Rpackage-2 # comps, .dat builder, process output, etc.
+  |-- safe_figs             Rpackage-3 # consistent figures (both safe & presentation)
+    
+```
+
+### Code framework
+
+General idea is to have a consistent code base `Parent code` with variants to address specifics for similar groups. 
+These groups generally split out by region, then species clusters, w/a couple of species with highly specific needs.
+
+```{r, eval = F}
+Parent code
+    |--GOA/AI
+    |  |-- groundfish
+    |  |       |--flatfish
+    |  |       |--rockfish
+    |  |       |--pollock
+    |  |       |--pcod
+    |  |       |--sablefish
+    |  |       |--other
+    |  |-- crab
+    |
+    |--EBS
+        |-- groundfish
+        |     |--flatfish
+        |     |--rockfish
+        |     |--pollock
+        |     |--pcod
+        |     |--other
+        |-- crab
+
+```
+
+### Teams framework 
+
+An associated "teams" framework would be:
+
+* General code developers/maintainers
+  * Available to assist on any/multiple assessments
+* GOA/EBS - species/group specific
+  * groundfish teams
+  * crab teams
+  

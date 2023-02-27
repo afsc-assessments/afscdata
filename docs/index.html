@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>An R package for data extraction of AFSC fishery data   • afscdata</title>
+<title>An R Package for Extraction of AFSC Fishery Data   • afscdata</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="An R package for data extraction of AFSC fishery data  ">
+<script src="pkgdown.js"></script><meta property="og:title" content="An R Package for Extraction of AFSC Fishery Data  ">
 <meta property="og:description" content="This package provides a folder structure and SQL queries for accessing the AKFIN and AFSC databases in support of fishery stock assessments. 
     Additionally, archived data are held/provided to maintain consistency across assessments/assessment authors.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -43,6 +43,21 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/basic.html">Basic structure</a>
+    </li>
+    <li>
+      <a href="articles/development.html">Development</a>
+    </li>
+  </ul>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -59,12 +74,10 @@
 <div class="section level1">
 <div class="page-header"><h1 id="afscdata">afscdata<a class="anchor" aria-label="anchor" href="#afscdata"></a>
 </h1></div>
-<!-- badges: start -->
-
-<p><a href="http://github.com/badges/stability-badges" class="external-link"><img src="http://badges.github.io/stability-badges/dist/unstable.svg" alt="unstable"></a> <!-- badges: end --> An R package for data extraction of AFSC fishery data<br><em>Note that this package is only useful when you have access to the AFSC network and permissions to access the databases.</em></p>
+<p><a href="http://github.com/badges/stability-badges" class="external-link"><img src="http://badges.github.io/stability-badges/dist/unstable.svg" alt="unstable"></a> <a href="https://github.com/afsc-assessments/afscdata/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/afsc-assessments/afscdata/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <!-- badges: end --> An R package for data extraction of AFSC fishery data<br><em>Note that this package is only useful when you have access to the AFSC network and permissions to access the databases.</em></p>
 <p>Installation:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"afsc-assessments/afscdata"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"afsc-assessments/afscdata"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="noaa-readme">NOAA README<a class="anchor" aria-label="anchor" href="#noaa-readme"></a>
 </h3>
@@ -74,7 +87,7 @@
 <h3 id="noaa-license">NOAA License<a class="anchor" aria-label="anchor" href="#noaa-license"></a>
 </h3>
 <p>Software code created by U.S. Government employees is not subject to copyright in the United States (17 U.S.C. §105). The United States/Department of Commerce reserve all rights to seek and obtain copyright protection in countries other than the United States for Software authored in its entirety by the Department of Commerce. To this end, the Department of Commerce hereby grants to Recipient a royalty-free, nonexclusive license to use, copy, and create derivative works of the Software outside of the United States.</p>
-<p><img src="https://raw.githubusercontent.com/nmfs-general-modeling-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" width = "300" alt="NOAA Fisheries"></p>
+<p><img src="https://raw.githubusercontent.com/nmfs-general-modeling-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" height="75" alt="NOAA Fisheries"></p>
 <p><a href="https://www.commerce.gov/" class="external-link">U.S. Department of Commerce</a> | <a href="https://www.noaa.gov" class="external-link">National Oceanographic and Atmospheric Administration</a> | <a href="https://www.fisheries.noaa.gov/" class="external-link">NOAA Fisheries</a></p>
 </div>
 </div>
@@ -111,12 +124,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/afsc-assessments/afscdata/actions" class="external-link"><img src="https://github.com/afsc-assessments/afscdata/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
@@ -129,7 +137,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

@@ -1,5 +1,11 @@
 ---
 title: "Basic structure"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic structure}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -10,13 +16,29 @@ knitr::opts_chunk$set(
 ```
 
 `afscdata` is a suite of utility functions for importing fishery assessment data in a consistent fashion. 
-There are three functions at the core of the package  
+There are five functions at the core of the package  
 
- - `sql_read` reads 'built-in' sql queries, though user defined queries can be used instead,
- - `sql_filter` adds species, year, and location filters to the built-in sql queries, and 
- - `sql_run` runs the sql code.
+ - `sql_read()` reads 'built-in' sql queries, though user defined queries can be used instead,
+ - `sql_filter()` adds species, year, and location filters to the built-in sql queries, and 
+ - `sql_run()` runs the sql code.
+ - `connect()` connects to either the afsc or akfin server,
+ - `disconnect()` closes the connection.
 
-```{r setup, eval = FALSE}
+If you have not previously done so you can use the `keyring` package to store your username and password, this way they are not visible when code is made publicly accessible (e.g., GitHub).
+Alternatively, you will be asked your username and password when attempting to use the `connect()` function, these values will not be stored in the the code either.
+
+The `keyring` values can be set (or changed using the following code): 
+
+```{r, eval = FALSE}
+
+library(keyring)
+keyring::key_set_with_value(service="afsc", username="your user name", password = "your password")
+keyring::key_set_with_value(service="akfin", username="your user name", password = "your password")
+```
+
+With `keyring` in place a basic query looks like the following: 
+
+```{r setup, eval = TRUE}
 # load ----
 library(afscdata)
 
@@ -24,27 +46,26 @@ library(afscdata)
 species = 'DUSK'
 year = 2022
 area = 'GOA'
-akfin_user = 'your akfin username'
-akfin_pwd = 'your akfin pwd'
 ```
 
-Open an Oracle connection.  
+Open an Oracle connection (*have to be in the office or connected to VPN*).  
 
 ```{r oracle, eval = FALSE}
-akfin <- connect()
+akfin <- connect(db = "akfin")
 
 ```
 
-Get the SQL query. 
+Get the SQL query.
+Alternatively, a user supplied query could be used in place of files installed with this package.
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 catch <- sql_read('fsh_catch.sql')
 catch
 ```
 
 Filter the SQL query.
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 catch <- sql_filter(x = species, sql_code = catch, flag = "-- insert species")
 catch <- sql_filter(x = year, sql_code = catch, flag = "-- insert year")
 catch <- sql_filter(x = area, sql_code = catch, flag = "-- insert area")
