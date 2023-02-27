@@ -20,7 +20,7 @@ RoxygenNote: 7.2.3
 URL: https://afsc-assessments.github.io/afscdata
 Imports: 
     DBI,
-    dplyr,
+    tidytable,
     getPass,
     here,
     keyring,
