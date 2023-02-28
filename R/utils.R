@@ -15,7 +15,7 @@ connect <- function(db = "akfin") {
     pwd <-  keyring::key_get(db, keyring::key_list(db)$username)
   }
     # connect to server
-    DBI::dbConnect ( odbc::odbc(),
+    DBI::dbConnect ( odbc::odbc(), 
                      driver = db,
                      uid = user,
                      pwd = pwd )

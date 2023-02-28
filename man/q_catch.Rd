@@ -4,16 +4,19 @@
 \alias{q_catch}
 \title{query fishery catch data}
 \usage{
-q_catch(year, species, area, db, save = TRUE)
+q_catch(year, species, area, db, group_code = TRUE, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
 
-\item{species}{species group code e.g., "DUSK"}
+\item{species}{species group code e.g., "DUSK". If group_code is set to
+FALSE, input agency species code e.g., "145" = yelloweye rockfish}
 
-\item{area}{sample area "GOA", "AI" or "BS" (or combos)}
+\item{area}{FMP sample area "GOA" or "BSAI" (or both c("GOA", "BSAI"))}
 
 \item{db}{data server to connect to}
+
+\item{group_code}{defaults to TRUE}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
