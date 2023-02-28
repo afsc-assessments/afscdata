@@ -7,7 +7,7 @@
 sql_filter(sql_precode = "IN", x, sql_code, flag = "-- insert species")
 }
 \arguments{
-\item{sql_precode}{change input e.g., ("", "=", ")}
+\item{sql_precode}{change input e.g., ("=")}
 
 \item{x}{the variable to change (e.g., year)}
 

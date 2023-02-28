@@ -17,11 +17,15 @@ q_catch(year, species, area, db, save = TRUE)
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
+\value{
+a .csv of catch data
+}
 \description{
-query fishery catch data
+Note that this function will produce results that are confidential. They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
 }
 \examples{
 \dontrun{
+# query northern rockfish in the goa and save the results in default location
 q_catch(year = 2022, species = 'NORK', area = 'GOA', db = akfin, save = TRUE)
 }
 }
