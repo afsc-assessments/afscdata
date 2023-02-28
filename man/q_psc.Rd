@@ -13,9 +13,9 @@ q_psc(year, trip_target, area, server, save = TRUE)
 
 \item{area}{goa or bsai}
 
-\item{save}{save the file in designated folder (default = T) or the global environment}
+\item{server}{the database to query (akfin)}
 
-\item{akfin}{the database to query}
+\item{save}{save the file in designated folder (default = T) or the global environment}
 }
 \value{
 a csv of prohibited species catch by trip target group, saved in the data/output folder

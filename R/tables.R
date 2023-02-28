@@ -3,7 +3,7 @@
 #' @param year assessment year
 #' @param trip_target 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut
 #' @param area goa or bsai
-#' @param server the database to query (akfin)
+#' @param db data server to connect to (akfin)
 #' @param save save the file in designated folder (default = T) or the global environment
 #'
 #' @return a csv of prohibited species catch by trip target group, saved in the data/output folder
@@ -12,11 +12,11 @@
 #' @examples
 #' \dontrun{
 #' akfin = connect()
-#' q_psc(year=2022, trip_target="k", area="goa", afkin, save=FALSE)
+#' q_psc(year=2022, trip_target="k", area="goa", db, save=FALSE)
 #' disconnect(akfin)
 #' }
 #'
-q_psc <- function(year, trip_target, area, server, save = TRUE) {
+q_psc <- function(year, trip_target, area, db, save = TRUE) {
   area = toupper(area)
   trip_target = toupper(trip_target)
   

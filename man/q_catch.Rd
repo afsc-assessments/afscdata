@@ -18,7 +18,7 @@ q_catch(year, species, area, db, save = TRUE)
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
 \value{
-a .csv of catch data
+a fsh_catch_data.csv file to the data/raw folder
 }
 \description{
 Note that this function will produce results that are confidential. They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
