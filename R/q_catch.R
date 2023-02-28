@@ -20,7 +20,7 @@ q_catch <- function(year, species, area, db, group_code = TRUE, save = TRUE) {
   
   # species_switch(species, area)
   
-  if(group_code == TRUE) {
+  if(isTRUE(group_code)) {
     catch = sql_read("fsh_catch.sql")
   } else {
     catch = sql_read("fsh_catch_species_code.sql")

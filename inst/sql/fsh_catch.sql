@@ -31,5 +31,5 @@ WHERE fmp_area
 -- insert area
 AND year
 -- insert year
-AND agency_species_code
+AND species_group_code
 -- insert species
