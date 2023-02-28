@@ -1,6 +1,10 @@
+# dev code for setting up r package
+# load ----
 library(devtools)
 library(pkgdown)
+library(keyring)
 
+# dev code
 # create_package()
 use_description()
 use_package("keyring")
@@ -10,12 +14,12 @@ use_mit_license()
 devtools::document()
 devtools::build()
 
-use_r("goa_rock")
-use_r("goa_flat")
+use_r("tables")
+
 pkgdown::build_site(examples = FALSE)
 
 
-library(keyring)
+# check/test keyring
 # keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "pswd1")
 # key_set_with_value(service="akfin", username="bwilliams", password = "pswd2")
 rstudioapi::askForSecret("Test")
