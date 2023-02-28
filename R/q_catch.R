@@ -8,7 +8,7 @@
 #' @param db data server to connect to
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #'
-#' @return a .csv of catch data 
+#' @return a fsh_catch_data.csv file to the data/raw folder
 #' @export
 #'
 #' @examples

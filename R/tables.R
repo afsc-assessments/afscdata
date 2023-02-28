@@ -41,7 +41,7 @@ q_psc <- function(year, trip_target, area, server, save = TRUE) {
     psc %>%
       write.csv(here::here(year, "data", "output", "psc_catch.csv"),
                 row.names = FALSE)
-    message("PSC table written to output folder.")
+    message("PSC table written to data/output folder.")
   } else {
     psc
   }
