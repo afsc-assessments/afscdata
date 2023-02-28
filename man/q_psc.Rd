@@ -4,7 +4,7 @@
 \alias{q_psc}
 \title{query prohibited species catch (psc) estimate}
 \usage{
-q_psc(year, trip_target, area, server, save = TRUE)
+q_psc(year, trip_target, area, db, save = TRUE)
 }
 \arguments{
 \item{year}{assessment year}
@@ -13,7 +13,7 @@ q_psc(year, trip_target, area, server, save = TRUE)
 
 \item{area}{goa or bsai}
 
-\item{server}{the database to query (akfin)}
+\item{db}{data server to connect to (akfin)}
 
 \item{save}{save the file in designated folder (default = T) or the global environment}
 }
@@ -26,7 +26,7 @@ prohibited species catch (PSC) estimates reported in tons for halibut and herrin
 \examples{
 \dontrun{
 akfin = connect()
-q_psc(year=2022, trip_target="k", area="goa", afkin, save=FALSE)
+q_psc(year=2022, trip_target="k", area="goa", db, save=FALSE)
 disconnect(akfin)
 }
 
