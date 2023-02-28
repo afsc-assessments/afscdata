@@ -12,7 +12,7 @@
 #' @examples
 #' \dontrun{
 #' akfin = connect()
-#' q_psc(year=2022, trip_target="k", area="goa", db, save=FALSE)
+#' q_psc(year=2022, trip_target="k", area="goa", db=akfin, save=FALSE)
 #' disconnect(akfin)
 #' }
 #'
@@ -33,7 +33,7 @@ q_psc <- function(year, trip_target, area, db, save = TRUE) {
   # species filter
   psc = sql_filter(x = trip_target, sql_code = psc, flag = "-- insert species")
   
-  sql_run(server, psc) %>%
+  sql_run(db, psc) %>%
     tidytable::rename_with(tolower) %>%
     tidytable::pivot_wider(names_from = year, values_from = psc) -> psc
   
