@@ -16,7 +16,7 @@ connect <- function(db = "akfin") {
   }
     # connect to server
     DBI::dbConnect ( odbc::odbc(),
-                     driver = db,
+                     db,
                      uid = user,
                      pwd = pwd )
 }
