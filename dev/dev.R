@@ -14,6 +14,7 @@ use_mit_license()
 devtools::document()
 devtools::build()
 
+use_r("queries")
 use_r("tables")
 
 pkgdown::build_site(examples = FALSE)
