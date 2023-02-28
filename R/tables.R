@@ -3,7 +3,7 @@
 #' @param year assessment year
 #' @param trip_target 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut
 #' @param area goa or bsai
-#' @param akfin the database to query
+#' @param server the database to query (akfin)
 #' @param save save the file in designated folder (default = T) or the global environment
 #'
 #' @return a csv of prohibited species catch by trip target group, saved in the data/output folder
