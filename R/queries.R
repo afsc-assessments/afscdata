@@ -55,7 +55,7 @@ q_catch <- function(year, species, area, db, use_afsc_code = FALSE, save = TRUE)
 #' @return
 #' @export
 #' @examples
-q_ts_biomass <- function (year, area = "goa", afsc_species, shelf_slope = "shelf", depth = NULL, stratum = NULL, akfin, save = TRUE){
+q_ts_biomass <- function (year, area = "goa", afsc_species, shelf_slope = "shelf", depth = NULL, stratum = NULL, db, save = TRUE){
   
   area = toupper(area)
   shelf_slope = toupper(shelf_slope)
@@ -110,10 +110,10 @@ q_ts_biomass <- function (year, area = "goa", afsc_species, shelf_slope = "shelf
   }
   
   if(isTRUE(save)){
-    sql_run(akfin, .bio) %>%
-      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, id1, "ts_biomass_data.csv")),
-                         delim = ",")
+    sql_run(db, .bio) %>%
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, id1, "bts_biomass_data.csv")), delim = ",")
+    message("bottom trawl survey biomass file written to data/raw folder")
   } else {
-    sql_run(akfin, .bio)
+    sql_run(db, .bio)
   }
 }
