@@ -4,7 +4,7 @@
 \alias{q_catch}
 \title{query fishery catch data}
 \usage{
-q_catch(year, species, area, db, save = TRUE)
+q_catch(year, species, area, db, use_afsc_code = FALSE, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
@@ -14,6 +14,8 @@ q_catch(year, species, area, db, save = TRUE)
 \item{area}{sample area "GOA", "AI" or "BS" (or combos)}
 
 \item{db}{data server to connect to}
+
+\item{use_afsc_code}{use 3 digit species code to filter instead of species group code (default: FALSE)}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }

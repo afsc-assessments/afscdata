@@ -26,7 +26,7 @@ prohibited species catch (PSC) estimates reported in tons for halibut and herrin
 \examples{
 \dontrun{
 akfin = connect()
-q_psc(year=2022, trip_target="k", area="goa", db, save=FALSE)
+q_psc(year=2022, trip_target="k", area="goa", db=akfin, save=FALSE)
 disconnect(akfin)
 }
 
