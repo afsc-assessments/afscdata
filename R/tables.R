@@ -39,8 +39,8 @@ q_psc <- function(year, trip_target, area, server, save = TRUE) {
   
   if(isTRUE(save)){
     psc %>%
-      write.csv(here::here(year, "data", "output", "psc_catch.csv"),
-                row.names = FALSE)
+      vroom::vroom_write(here::here(year, "data", "output", "psc_catch.csv"),
+                delim = ",")
     message("PSC table written to data/output folder.")
   } else {
     psc
