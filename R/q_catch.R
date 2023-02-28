@@ -6,6 +6,7 @@
 #' @param db data server to connect to
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #'
+#' @description Note that this function will produce results that are confidential. They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
 #' @export
 #'
 #' @examples
