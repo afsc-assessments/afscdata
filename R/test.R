@@ -1,5 +1,5 @@
 #' @param year max year to retrieve data from 
-#' @param species species group code e.g., "DUSK"
+#' @param species species group code e.g., "DUSK" or numeric agency values e.g. c(131, 132)
 #' @param area sample area "GOA", "AI" or "BS" (or combos)
 #' @param db data server to connect to
 #' @param area fmp_area or fmp_subarea (GOA, BSAI, BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
