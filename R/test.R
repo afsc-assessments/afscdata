@@ -6,7 +6,7 @@
 #' @param add_fields add other columns to the database (must currently exist on server)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
-q_test <- function(year, species, area, db, add_fields=NULL, save=TRUE) {
+q_catch <- function(year, species, area, db, add_fields=NULL, save=TRUE) {
   
   area = toupper(area)
   if(area=="GOA") area = c("WG", "CG", "WY", "EY", "SE")
@@ -61,3 +61,60 @@ q_test <- function(year, species, area, db, add_fields=NULL, save=TRUE) {
   
   
 }
+
+
+q_bts_length <- function(year, species, area, db, save=TRUE){
+  yr = year
+
+  dplyr::tbl(db, sql("racebase.cruise")) %>% 
+    rename_with(tolower) %>% 
+    dplyr::select(cruisejoin, region, survey_name, start_date) %>% 
+    left_join(
+      dplyr::tbl(db, sql("racebase.haul")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::select(cruisejoin, hauljoin, end_latitude, end_longitude, 
+                      bottom_depth, abundance_haul, stratum)
+        ) %>%
+    left_join(
+      dplyr::tbl(db, sql("racebase.length")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::select(hauljoin, species_code, sex, 
+                      length, frequency)
+        ) %>% 
+    dplyr::mutate(year = lubridate::year(start_date)) %>% 
+    dplyr::select(-start_date) %>% 
+    dplyr::filter(abundance_haul == "Y", 
+                  year <= yr, 
+                  region %in% area, 
+                  species_code == species) %>% 
+    dplyr::collect()
+}
+
+
+q_bts_specimen <- function(year, species, area, db, save=TRUE){
+  yr = year
+  
+  dplyr::tbl(db, sql("racebase.cruise")) %>% 
+    rename_with(tolower) %>% 
+    dplyr::select(cruisejoin, region, survey_name, start_date) %>% 
+    left_join(
+      dplyr::tbl(db, sql("racebase.haul")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::select(cruisejoin, hauljoin, end_latitude, end_longitude, 
+                      bottom_depth, abundance_haul, stratum)
+        ) %>%
+    left_join(
+      dplyr::tbl(db, sql("racebase.specimen")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::select(hauljoin, species_code, sex, 
+                      length, weight, age, maturity)
+        ) %>% 
+    dplyr::mutate(year = lubridate::year(start_date)) %>% 
+    dplyr::select(-start_date) %>% 
+    dplyr::filter(abundance_haul == "Y", 
+                  year <= yr, 
+                  region %in% area, 
+                  species_code == species) %>% 
+    dplyr::collect()
+}
+
