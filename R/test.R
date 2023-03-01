@@ -1,7 +1,7 @@
 #' @param year max year to retrieve data from 
 #' @param species species group code e.g., "DUSK" or numeric agency values e.g. c(131, 132)
 #' @param area sample area "GOA", "AI" or "BS" (or combos)
-#' @param db data server to connect to
+#' @param db data server to connect to (akfin)
 #' @param area fmp_area or fmp_subarea (GOA, BSAI, BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
 #' @param add_fields add other columns to the database (must currently exist on server)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
