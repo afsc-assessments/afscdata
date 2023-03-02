@@ -4,10 +4,10 @@
 #' @param db data server to connect to (akfin)
 #' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
 #' @param add_fields add other columns to the database (must currently exist on server)
-#' @param print_query outputs the sql query instead of calling the data
+#' @param print_sql outputs the sql query instead of calling the data
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
-q_catch <- function(year, species, area, db, add_fields=NULL, print_query=FALSE, save=TRUE) {
+q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, save=TRUE) {
   
   area = toupper(area)
   area = if(isTRUE(area == "GOA")){
@@ -65,7 +65,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_query=FALSE,
       vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
                          delim = ",")
     message("fishery catch data can be found in the data/raw folder")
-  } else if (isFALSE(save) & isFALSE(print_query)) {
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
     dplyr::collect(table)
   } else {
     dplyr::show_query(table)
@@ -76,7 +76,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_query=FALSE,
 }
 
 
-q_bts_length <- function(year, species, area, db, print_query=FALSE, save=TRUE){
+q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   # globals
   yr = year
@@ -111,7 +111,7 @@ q_bts_length <- function(year, species, area, db, print_query=FALSE, save=TRUE){
       vroom::vroom_write(here::here(year, "data", "raw", "bts_length_data.csv"), 
                          delim = ",")
     message("bottom trawl survey length data can be found in the data/raw folder")
-  } else if (isFALSE(save) & isFALSE(print_query)) {
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
     dplyr::collect(table)
   } else {
     dplyr::show_query(table)
@@ -121,7 +121,7 @@ q_bts_length <- function(year, species, area, db, print_query=FALSE, save=TRUE){
 }
 
 
-q_bts_specimen <- function(year, species, area, db, print_query=FALSE, save=TRUE){
+q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   # globals
   yr = year
@@ -157,7 +157,7 @@ q_bts_specimen <- function(year, species, area, db, print_query=FALSE, save=TRUE
       vroom::vroom_write(here::here(year, "data", "raw", "bts_specimen_data.csv"), 
                          delim = ",")
     message("bottom trawl survey specimen data can be found in the data/raw folder")
-  } else if (isFALSE(save) & isFALSE(print_query)) {
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
     dplyr::collect(table)
   } else {
     dplyr::show_query(table)
