@@ -1,8 +1,8 @@
 #' query prohibited species catch (psc) estimate
 #'
 #' @param year assessment year
-#' @param trip_target 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut
-#' @param area goa or bsai
+#' @param target targeted species: 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut
+#' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
 #' @param db data server to connect to (akfin)
 #' @param save save the file in designated folder (default = T) or the global environment
 #'
@@ -17,24 +17,32 @@
 #' }
 #'
 q_psc <- function(year, trip_target, area, db, save = TRUE) {
+  # globals 
   area = toupper(area)
-  trip_target = toupper(trip_target)
+  area = if(isTRUE(area == "GOA")){
+    area = c("WG", "CG", "WY", "EY", "SE")
+  } else if(isTRUE(area=="BSAI")){
+    area = c("BS", "AI")
+  } else {
+    area
+  }
   
-  # call sql
-  psc = sql_read("psc.sql")
+  target = toupper(target)
+  yr = year
   
-  # filter years 
-  psc = sql_filter(sql_precode = "", x = year-4, sql_code = psc, flag = "-- insert year")
-  psc = sql_filter(sql_precode = "", x = year, sql_code = psc, flag = "-- year2")
-  
-  # region filter
-  psc = sql_filter(x = area, sql_code = psc, flag = "-- insert region")
- 
-  # species filter
-  psc = sql_filter(x = trip_target, sql_code = psc, flag = "-- insert species")
-  
-  sql_run(db, psc) %>%
-    tidytable::rename_with(tolower) %>%
+  # call table
+  dplyr::tbl(db, dplyr::sql("council.comprehensive_psc")) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::select(year, 
+                  species = species_group_name, 
+                  psc = pscnq_estimate, 
+                  fmp_subarea, trip_target_code) %>% 
+    dplyr::filter(year >= yr-4, year<=yr, 
+                  fmp_subarea %in% area,
+                  trip_target_code %in% target) %>% 
+    dplyr::group_by(year, species) %>% 
+    dplyr::summarise(psc = round(sum(psc, na.rm = T),3)) %>% 
+    dplyr::collect() %>% 
     tidytable::pivot_wider(names_from = year, values_from = psc) -> psc
   
   if(isTRUE(save)){

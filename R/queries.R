@@ -4,9 +4,8 @@
 #'
 #' @param year max year to retrieve data from 
 #' @param species species group code e.g., "DUSK" or numeric agency values e.g. c("131", "132") - must be either all 4 digit or 3 digit codes
-#' @param area sample area "GOA", "AI" or "BS" (or combos)
-#' @param db data server to connect to (akfin)
 #' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
+#' @param db data server to connect to (akfin)
 #' @param add_fields add other columns to the database (must currently exist on server). "*" will return all table columns available
 #' @param print_sql outputs the sql query instead of calling the data
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
@@ -27,7 +26,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   
   # select columns to import
   if(add_fields == "*") {
-    table <- dplyr::tbl(db, sql("council.comprehensive_blend_ca")) %>% 
+    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::filter(year <= yr, fmp_subarea %in% area)
   } else {
@@ -61,7 +60,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
              tolower(add_fields))
     
   
-    table <- dplyr::tbl(db, sql("council.comprehensive_blend_ca")) %>% 
+    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::select(!!!cols) %>% 
       dplyr::filter(year <= yr, fmp_subarea %in% area)
@@ -115,7 +114,7 @@ q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   yr = year
   species=toupper(species)
   
-  dplyr::tbl(db, sql("pre1991.foreign_blend")) %>% 
+  dplyr::tbl(db, dplyr::sql("pre1991.foreign_blend")) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::select(species_name, 
                   tons = blend_tonnage,
@@ -167,13 +166,13 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   area = toupper(area)
   
   # pull data sources
-  dplyr::tbl(db, sql("racebase.cruise")) %>% 
+  dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
     rename_with(tolower) -> aa
   
-  dplyr::tbl(db, sql("racebase.haul")) %>% 
+  dplyr::tbl(db, dplyr::sql("racebase.haul")) %>% 
     dplyr::rename_with(tolower) -> bb
   
-  dplyr::tbl(db, sql("racebase.length")) %>% 
+  dplyr::tbl(db, dplyr::sql("racebase.length")) %>% 
     dplyr::rename_with(tolower) -> cc
   # join, filter and query
   dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
@@ -225,13 +224,13 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   area = toupper(area)
   
   # pull data sources
-  dplyr::tbl(db, sql("racebase.cruise")) %>% 
+  dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
     rename_with(tolower) -> aa
   
-  dplyr::tbl(db, sql("racebase.haul")) %>% 
+  dplyr::tbl(db, dplyr::sql("racebase.haul")) %>% 
     dplyr::rename_with(tolower) -> bb
   
-  dplyr::tbl(db, sql("racebase.specimen")) %>% 
+  dplyr::tbl(db, dplyr::sql("racebase.specimen")) %>% 
     dplyr::rename_with(tolower) -> cc
   
   # join, filter and query
@@ -305,25 +304,25 @@ q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, 
   # decide which tables to use 
   
   if(area=="BS") {
-    table = dplyr::tbl(db, sql("afsc.race_biomass_ebsshelf_standard"))
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_standard"))
   } else if(area=="BSNW") {
-    table = dplyr::tbl(db, sql("afsc.race_biomass_ebsshelf_plusnw"))
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_plusnw"))
   } else if(area=="BSSLOPE") {
-    table = dplyr::tbl(db, sql("afsc.race_biomass_ebsslope"))
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsslope"))
   } else if(area=="NBS") {
-    table = dplyr::tbl(db, sql("afsc.race_biomass_nbs"))
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_nbs"))
   } else if(area %in% c("GOA", "AI") & by=="depth"){
-    table = dplyr::tbl(db, sql("afsc.race_biomassdepthaigoa"))
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassdepthaigoa"))
   } else if(area %in% c("GOA", "AI") & by=="area"){
-    table = dplyr::tbl(db, sql("afsc.race_biomassareaaigoa"))    
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassareaaigoa"))    
   } else if(area %in% c("GOA", "AI") & by=="stratum"){
-    table = dplyr::tbl(db, sql("afsc.race_biomassstratumaigoa"))    
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassstratumaigoa"))    
   } else if(area %in% c("GOA", "AI") & by=="inpfc"){
-    table = dplyr::tbl(db, sql("afsc.race_biomassinpfcaigoa")) 
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcaigoa")) 
   } else if(area %in% c("GOA", "AI") & by=="inpfc_depth"){
-    table = dplyr::tbl(db, sql("afsc.race_biomassinpfcdepthaigoa")) 
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcdepthaigoa")) 
   } else {
-    table = dplyr::tbl(db, sql("afsc.race_biomasstotalaigoa"))     
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomasstotalaigoa"))     
   }
     
     

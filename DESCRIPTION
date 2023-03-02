@@ -27,7 +27,6 @@ Imports:
     odbc,
     utils,
     vroom,
-    stringr,
     stringi,
     dplyr,
     lubridate
