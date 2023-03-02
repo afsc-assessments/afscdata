@@ -217,4 +217,53 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
-
+#' query foreign catch data from the AFSC server
+#' 
+#' something about the species names and area codes?
+#'
+#' @param year  max year to retrieve data from 
+#' @param species common name (e.g., "sablefish" or "all flounders")
+#' @param area numeric area digit code
+#' @param db data server to connect to (afsc)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
+#'
+#' @return
+#' @export
+#'
+#' @examples
+q_foreign_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
+  yr = year
+  species=toupper(species)
+  
+  tbl(afsc, sql("norpac.foreign_blend")) %>% 
+    dplyr::rename_all(tolower) %>% 
+    dplyr::select(species_name, 
+                  tons = blend_tonnage,
+                  date = week_date,
+                  vessel_class,
+                  area_number,
+                  area_name) %>% 
+    dplyr::mutate(year = lubridate::year(date),
+                  month = lubridate::month(date),
+                  gear = dplyr::case_when(vessel_class %like% '%POT%' ~ "POT",
+                                          vessel_class %like% '%LONG%' ~ "HAL",
+                                          TRUE ~ "TRW")) %>% 
+    dplyr::group_by(species_name, year, month, area_number, gear, area_name) %>% 
+    dplyr::summarise(tons = sum(tons, na.rm = T)) %>% 
+    dplyr::filter(year<=yr, species_name %in% species, area_number %in% area) %>% 
+    dplyr::rename(species=species_name, area=area_number) %>% 
+    dplyr::arrange(species, year, month, area, gear) -> table
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "for_catch_data.csv"), 
+                         delim = ",")
+    message("foreign catch data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+}
