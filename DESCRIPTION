@@ -29,7 +29,8 @@ Imports:
     vroom,
     stringr,
     stringi,
-    dplyr
+    dplyr,
+    lubridate
 Suggests: 
     knitr,
     rmarkdown
