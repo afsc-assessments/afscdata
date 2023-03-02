@@ -2,15 +2,21 @@
 #' @param species species group code e.g., "DUSK" or numeric agency values e.g. c(131, 132)
 #' @param area sample area "GOA", "AI" or "BS" (or combos)
 #' @param db data server to connect to (akfin)
-#' @param area fmp_area or fmp_subarea (GOA, BSAI, BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
+#' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
 #' @param add_fields add other columns to the database (must currently exist on server)
+#' @param print_query outputs the sql query instead of calling the data
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
-q_catch <- function(year, species, area, db, add_fields=NULL, save=TRUE) {
+q_catch <- function(year, species, area, db, add_fields=NULL, print_query=FALSE, save=TRUE) {
   
   area = toupper(area)
-  if(area=="GOA") area = c("WG", "CG", "WY", "EY", "SE")
-  if(area=="BSAI") area = c("BS", "AI")
+  area = if(isTRUE(area == "GOA")){
+    area = c("WG", "CG", "WY", "EY", "SE")
+  } else if(isTRUE(area=="BSAI")){
+    area = c("BS", "AI")
+  } else {
+    area
+  }
   
   yr = year
   cols = c("year",                             
@@ -49,17 +55,24 @@ q_catch <- function(year, species, area, db, add_fields=NULL, save=TRUE) {
   
   
   if(is.numeric(species)){
-    table %>% 
-      filter(agency_species_code %in% species) %>% 
-      collect()
+      dplyr::filter(table, agency_species_code %in% species) -> table
   } else {
-    table %>% 
-      filter(species_group_code %in% species) %>% 
-      collect()
+      dplyr::filter(table, species_group_code %in% species) -> table
   }
 
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
+                         delim = ",")
+    message("fishery catch data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_query)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
   
-  
+
 }
 
 
@@ -78,8 +91,7 @@ q_bts_length <- function(year, species, area, db, save=TRUE){
   
   dplyr::tbl(db, sql("racebase.length")) %>% 
     dplyr::rename_with(tolower) -> cc
-  
-  # join and filter
+  # join, filter and query
   dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
     dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
                                    end_longitude, bottom_depth, abundance_haul, 
@@ -114,7 +126,7 @@ q_bts_specimen <- function(year, species, area, db, save=TRUE){
   dplyr::tbl(db, sql("racebase.specimen")) %>% 
     dplyr::rename_with(tolower) -> cc
   
-  # join and filter
+  # join, filter and query
   dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
     dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
                                    end_longitude, bottom_depth, abundance_haul, 
@@ -131,5 +143,5 @@ q_bts_specimen <- function(year, species, area, db, save=TRUE){
     dplyr::collect()
   
 }
-}
+
 
