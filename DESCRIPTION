@@ -28,7 +28,8 @@ Imports:
     odbc,
     utils,
     vroom,
-    stringr
+    stringr,
+    stringi
 Suggests: 
     knitr,
     rmarkdown
