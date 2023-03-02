@@ -116,7 +116,7 @@ q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   species=toupper(species)
   
   tbl(db, sql("pre1991.foreign_blend")) %>% 
-    dplyr::rename_all(tolower) %>% 
+    dplyr::rename_with(tolower) %>% 
     dplyr::select(species_name, 
                   tons = blend_tonnage,
                   date = week_date,
@@ -266,3 +266,102 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   
 }
+
+
+#' query bottom trawl survey biomass
+#' 
+#' probably need to beef up the documentation on the "by" switch
+#' 
+#' bs = bering sea + northwest 1987-present (includes nw stations) - recommended
+#' bsslope = bering sea slope 
+#' nbs = northern bering sea
+#' ai = aleutian islands 
+#' goa = gulf of alaska
+#' old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recommended 
+#' 
+#' @param year  max year to retrieve data from 
+#' @param area options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area
+#' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 10110)
+#' @param by "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") 
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, save=TRUE) {
+  
+  # adjust filters
+  yr = year
+  area = toupper(area)
+  by = tolower(by)
+  
+  # message center
+  if(by!="total") {
+    if(by %in% c("depth", "stratum", "area", "total", "inpfc", "inpfc_depth")==FALSE){ 
+      stop("appropriate args for by are: 'depth', 'stratum' 'area', or 'total'.\n 
+           these args will be ignored if area != 'goa' or 'ai'")
+    }
+  }
+  
+  # decide which tables to use 
+  
+  if(area=="BS") {
+    table = tbl(db, sql("afsc.race_biomass_ebsshelf_standard"))
+  } else if(area=="BSNW") {
+    table = tbl(db, sql("afsc.race_biomass_ebsshelf_plusnw"))
+  } else if(area=="BSSLOPE") {
+    table = tbl(db, sql("afsc.race_biomass_ebsslope"))
+  } else if(area=="NBS") {
+    table = tbl(db, sql("afsc.race_biomass_nbs"))
+  } else if(area %in% c("GOA", "AI") & by=="depth"){
+    table = tbl(db, sql("afsc.race_biomassdepthaigoa"))
+  } else if(area %in% c("GOA", "AI") & by=="area"){
+    table = tbl(db, sql("afsc.race_biomassareaaigoa"))    
+  } else if(area %in% c("GOA", "AI") & by=="stratum"){
+    table = tbl(db, sql("afsc.race_biomassstratumaigoa"))    
+  } else if(area %in% c("GOA", "AI") & by=="inpfc"){
+    table = tbl(db, sql("afsc.race_biomassinpfcaigoa")) 
+  } else if(area %in% c("GOA", "AI") & by=="inpfc_depth"){
+    table = tbl(db, sql("afsc.race_biomassinpfcdepthaigoa")) 
+  } else {
+    table = tbl(db, sql("afsc.race_biomasstotalaigoa"))     
+  }
+    
+    
+  table <- table %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(year <= yr, species_code %in% species)
+  
+  if(area %in% c("AI", "GOA")){
+    table <- dplyr::filter(table, survey == area)
+  } 
+
+  # prefix area and type (for goa/ai) to file name
+  area = tolower(area)
+  id = NULL
+  if(area %in% c("ai", "goa")) id = paste0(by, "_")
+  id = paste0(area, "_", id)
+  
+  if(isTRUE(save)){
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, "bts_biomass_data.csv")), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", paste0(id, "bts_biomass_sql.txt")))
+    
+    message("bottom trawl survey length data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
+
+  
+  
+  
+  
+  
+  
