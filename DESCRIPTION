@@ -28,6 +28,7 @@ Imports:
     utils,
     vroom,
     stringi,
+    tidytable,
     dplyr,
     lubridate
 Suggests: 
