@@ -1,5 +1,5 @@
 #' @param year max year to retrieve data from 
-#' @param species species group code e.g., "DUSK" or numeric agency values e.g. c(131, 132)
+#' @param species species group code e.g., "DUSK" or numeric agency values e.g. c("131", "132") - must be either all 4 digit or 3 digit codes
 #' @param area sample area "GOA", "AI" or "BS" (or combos)
 #' @param db data server to connect to (akfin)
 #' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
@@ -54,10 +54,10 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_query=FALSE,
               dplyr::filter(year <= yr, fmp_subarea %in% area)
   
   
-  if(is.numeric(species)){
-      dplyr::filter(table, agency_species_code %in% species) -> table
+  if(isTRUE(sum(stringi::stri_length(species) - 3) == 0)){
+    dplyr::filter(table, agency_species_code %in% species) -> table
   } else {
-      dplyr::filter(table, species_group_code %in% species) -> table
+    dplyr::filter(table, species_group_code %in% species) -> table
   }
 
   if(isTRUE(save)) {
@@ -84,7 +84,7 @@ q_bts_length <- function(year, species, area, db, print_query=FALSE, save=TRUE){
   
   # pull data sources
   dplyr::tbl(db, sql("racebase.cruise")) %>% 
-    rename_with(tolower)-> aa
+    rename_with(tolower) -> aa
   
   dplyr::tbl(db, sql("racebase.haul")) %>% 
     dplyr::rename_with(tolower) -> bb
@@ -129,7 +129,7 @@ q_bts_specimen <- function(year, species, area, db, print_query=FALSE, save=TRUE
   
   # pull data sources
   dplyr::tbl(db, sql("racebase.cruise")) %>% 
-    rename_with(tolower)-> aa
+    rename_with(tolower) -> aa
   
   dplyr::tbl(db, sql("racebase.haul")) %>% 
     dplyr::rename_with(tolower) -> bb
