@@ -76,7 +76,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_query=FALSE,
 }
 
 
-q_bts_length <- function(year, species, area, db, save=TRUE){
+q_bts_length <- function(year, species, area, db, print_query=FALSE, save=TRUE){
   
   # globals
   yr = year
@@ -104,13 +104,24 @@ q_bts_length <- function(year, species, area, db, save=TRUE){
                   year <= yr, 
                   region %in% area, 
                   species_code %in% species) %>% 
-    dplyr::arrange(year) %>% 
-    dplyr::collect()
+    dplyr::arrange(year) -> table
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "bts_length_data.csv"), 
+                         delim = ",")
+    message("bottom trawl survey length data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_query)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
   
 }
 
 
-q_bts_specimen <- function(year, species, area, db, save=TRUE){
+q_bts_specimen <- function(year, species, area, db, print_query=FALSE, save=TRUE){
   
   # globals
   yr = year
@@ -139,8 +150,20 @@ q_bts_specimen <- function(year, species, area, db, save=TRUE){
                   year <= yr, 
                   region %in% area, 
                   species_code %in% species) %>% 
-    dplyr::arrange(year) %>% 
-    dplyr::collect()
+    dplyr::arrange(year) -> table
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "bts_specimen_data.csv"), 
+                         delim = ",")
+    message("bottom trawl survey specimen data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_query)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
   
 }
 
