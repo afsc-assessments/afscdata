@@ -115,7 +115,7 @@ q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   yr = year
   species=toupper(species)
   
-  tbl(db, sql("pre1991.foreign_blend")) %>% 
+  dplyr::tbl(db, sql("pre1991.foreign_blend")) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::select(species_name, 
                   tons = blend_tonnage,
@@ -305,25 +305,25 @@ q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, 
   # decide which tables to use 
   
   if(area=="BS") {
-    table = tbl(db, sql("afsc.race_biomass_ebsshelf_standard"))
+    table = dplyr::tbl(db, sql("afsc.race_biomass_ebsshelf_standard"))
   } else if(area=="BSNW") {
-    table = tbl(db, sql("afsc.race_biomass_ebsshelf_plusnw"))
+    table = dplyr::tbl(db, sql("afsc.race_biomass_ebsshelf_plusnw"))
   } else if(area=="BSSLOPE") {
-    table = tbl(db, sql("afsc.race_biomass_ebsslope"))
+    table = dplyr::tbl(db, sql("afsc.race_biomass_ebsslope"))
   } else if(area=="NBS") {
-    table = tbl(db, sql("afsc.race_biomass_nbs"))
+    table = dplyr::tbl(db, sql("afsc.race_biomass_nbs"))
   } else if(area %in% c("GOA", "AI") & by=="depth"){
-    table = tbl(db, sql("afsc.race_biomassdepthaigoa"))
+    table = dplyr::tbl(db, sql("afsc.race_biomassdepthaigoa"))
   } else if(area %in% c("GOA", "AI") & by=="area"){
-    table = tbl(db, sql("afsc.race_biomassareaaigoa"))    
+    table = dplyr::tbl(db, sql("afsc.race_biomassareaaigoa"))    
   } else if(area %in% c("GOA", "AI") & by=="stratum"){
-    table = tbl(db, sql("afsc.race_biomassstratumaigoa"))    
+    table = dplyr::tbl(db, sql("afsc.race_biomassstratumaigoa"))    
   } else if(area %in% c("GOA", "AI") & by=="inpfc"){
-    table = tbl(db, sql("afsc.race_biomassinpfcaigoa")) 
+    table = dplyr::tbl(db, sql("afsc.race_biomassinpfcaigoa")) 
   } else if(area %in% c("GOA", "AI") & by=="inpfc_depth"){
-    table = tbl(db, sql("afsc.race_biomassinpfcdepthaigoa")) 
+    table = dplyr::tbl(db, sql("afsc.race_biomassinpfcdepthaigoa")) 
   } else {
-    table = tbl(db, sql("afsc.race_biomasstotalaigoa"))     
+    table = dplyr::tbl(db, sql("afsc.race_biomasstotalaigoa"))     
   }
     
     
