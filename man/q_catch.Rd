@@ -4,30 +4,31 @@
 \alias{q_catch}
 \title{query fishery catch data}
 \usage{
-q_catch(year, species, area, db, use_afsc_code = FALSE, save = TRUE)
+q_catch(
+  year,
+  species,
+  area,
+  db,
+  add_fields = NULL,
+  print_sql = FALSE,
+  save = TRUE
+)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
 
-\item{species}{species group code e.g., "DUSK"}
+\item{species}{species group code e.g., "DUSK" or numeric agency values e.g. c("131", "132") - must be either all 4 digit or 3 digit codes}
 
-\item{area}{sample area "GOA", "AI" or "BS" (or combos)}
+\item{area}{fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)}
 
-\item{db}{data server to connect to}
+\item{db}{data server to connect to (akfin)}
 
-\item{use_afsc_code}{use 3 digit species code to filter instead of species group code (default: FALSE)}
+\item{add_fields}{add other columns to the database (must currently exist on server). "*" will return all table columns available}
+
+\item{print_sql}{outputs the sql query instead of calling the data}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
-\value{
-a fsh_catch_data.csv file to the data/raw folder
-}
 \description{
 Note that this function will produce results that are confidential. They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
-}
-\examples{
-\dontrun{
-# query northern rockfish in the goa and save the results in default location
-q_catch(year = 2022, species = 'NORK', area = 'GOA', db = akfin, save = TRUE)
-}
 }
