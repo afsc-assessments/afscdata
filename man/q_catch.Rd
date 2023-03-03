@@ -2,7 +2,7 @@
 % Please edit documentation in R/queries.R
 \name{q_catch}
 \alias{q_catch}
-\title{query fishery catch data}
+\title{query fishery catch data from AKFIN server}
 \usage{
 q_catch(
   year,
@@ -19,7 +19,7 @@ q_catch(
 
 \item{species}{species group code e.g., "DUSK" or numeric agency values e.g. c("131", "132") - must be either all 4 digit or 3 digit codes}
 
-\item{area}{fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)}
+\item{area}{fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI), can use all fmp_areas or all fmp_subareas, but don't mix the two}
 
 \item{db}{data server to connect to (akfin)}
 
@@ -29,6 +29,10 @@ q_catch(
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
+\value{
+saves catch data as data/raw/fsh_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+}
 \description{
-Note that this function will produce results that are confidential. They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
+Note that this function produces results that may be confidential.
+They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
 }

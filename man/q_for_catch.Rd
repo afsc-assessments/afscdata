@@ -11,7 +11,7 @@ q_for_catch(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{species}{common name (e.g., "sablefish" or "all flounders") - can call multiple species}
 
-\item{area}{numeric area digit code}
+\item{area}{numeric area digit code - multiples is ok}
 
 \item{db}{data server to connect to (akfin)}
 
@@ -19,7 +19,16 @@ q_for_catch(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)}
 }
+\value{
+saves catch data as data/raw/for_catch_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+}
 \description{
-something about the species names and area codes?
-pulls data from akfin.pre1991.foreign_blend
+something about the species names and area codes, since they are so different from everything else?
+pulls data from AKFIN pre1991.foreign_blend table
+}
+\examples{
+\dontrun{
+db <- afscdata::connect()
+q_for_catch(year=2022, species="sablefish", area = 54:57, db = db)
+}
 }

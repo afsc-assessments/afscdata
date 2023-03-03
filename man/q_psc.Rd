@@ -9,13 +9,13 @@ q_psc(year, trip_target, area, db, save = TRUE)
 \arguments{
 \item{year}{assessment year}
 
-\item{trip_target}{'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut}
-
-\item{area}{goa or bsai}
+\item{area}{fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)}
 
 \item{db}{data server to connect to (akfin)}
 
 \item{save}{save the file in designated folder (default = T) or the global environment}
+
+\item{target}{targeted species: 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut}
 }
 \value{
 a csv of prohibited species catch by trip target group, saved in the data/output folder

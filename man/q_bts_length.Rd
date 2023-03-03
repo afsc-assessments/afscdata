@@ -11,7 +11,7 @@ q_bts_length(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{species}{5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)}
 
-\item{area}{bs, hwc, wc, hg, ai, goa, or hbs}
+\item{area}{bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")}
 
 \item{db}{data server to connect to (afsc)}
 
@@ -19,6 +19,15 @@ q_bts_length(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)}
 }
+\value{
+saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+}
 \description{
 query bottom trawl survey length data from the AFSC server
+}
+\examples{
+\dontrun{
+db <- afscdata::connect("afsc")
+q_bts_length(year=2022, species=10110, area = "goa", db = db)
+}
 }

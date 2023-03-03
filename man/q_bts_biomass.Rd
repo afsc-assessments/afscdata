@@ -19,9 +19,9 @@ q_bts_biomass(
 
 \item{area}{options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area}
 
-\item{species}{5 digit afsc species code(s) e.g., 79210 or c(79210, 10110)}
+\item{species}{5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)}
 
-\item{by}{"depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total")}
+\item{by}{"depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch}
 
 \item{db}{the database to query (akfin)}
 
@@ -29,14 +29,26 @@ q_bts_biomass(
 
 \item{save}{save the file in designated folder, if FALSE outputs to global environment}
 }
+\value{
+saves bts biomass data as data/raw/area_(by)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+}
 \description{
 probably need to beef up the documentation on the "by" switch
 }
 \details{
+six areas are available to query from
 bs = bering sea + northwest 1987-present (includes nw stations) - recommended
 bsslope = bering sea slope
 nbs = northern bering sea
 ai = aleutian islands
 goa = gulf of alaska
 old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recommended
+
+for the goa and ai there is a "by" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.
+}
+\examples{
+\dontrun{
+db <- afscdata::connect("afsc")
+q_bts_biomass(year=2022, species=21921, area = "goa", by = "depth", db = db)
+} 
 }

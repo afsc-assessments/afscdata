@@ -13,7 +13,7 @@
 #' 
 #' @return saves catch data as data/raw/fsh_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 #' @export q_catch
-#' @example 
+#' @examples 
 #' \dontrun{
 #' db <- afscdata::connect()
 #' q_catch(year=2022, species="NORK", area="goa", db=db)
