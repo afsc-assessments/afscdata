@@ -12,11 +12,11 @@
 #' @examples
 #' \dontrun{
 #' akfin = connect()
-#' q_psc(year=2022, trip_target="k", area="goa", db=akfin, save=FALSE)
+#' q_psc(year=2022, target="k", area="goa", db=akfin, save=FALSE)
 #' disconnect(akfin)
 #' }
 #'
-q_psc <- function(year, trip_target, area, db, save = TRUE) {
+q_psc <- function(year, target, area, db, save = TRUE) {
   # globals 
   area = toupper(area)
   area = if(isTRUE(area == "GOA")){
@@ -37,7 +37,7 @@ q_psc <- function(year, trip_target, area, db, save = TRUE) {
                   species = species_group_name, 
                   psc = pscnq_estimate, 
                   fmp_subarea, trip_target_code) %>% 
-    dplyr::filter(year >= yr-4, year<=yr, 
+    dplyr::filter(year >= yr-4, year <= yr, 
                   fmp_subarea %in% area,
                   trip_target_code %in% target) %>% 
     dplyr::group_by(year, species) %>% 
