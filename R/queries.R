@@ -369,39 +369,46 @@ q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, 
 #' lls_council_sablefish_area_3_to_7_depred
 #' lls_fmp_subarea_all_strata
 #' lls_fmp_subarea_3_to_7_depred
-#' lls_fmp_all_strata -- not available using this fcn
+#' lls_fmp_all_strata* not available in this fcn
 #' lls_ak_wide_3_to_7_depred
 #'  
-#' @param year  max year to retrieve data from 
+#' @param year max year to retrieve data from 
 #' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
 #' @param species 5 digit afsc/race species code(s) e.g., 79210 or c(79210, 10110)
-#' @param by 'depth', 'geoarea', 'councilarea', 'fmpsubarea', or 'akwide'
-#'   (only for sablefish). default = 'fmpsubarea' - can only call a single area
-#' @param use_historical T/F include historical Japanese survey data in the query (defaults to FALSE) 
+#' @param by 'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak
+#'   slope), 'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
+#'   'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
+#'   sablefish). default = 'fmpsubarea' - can only call a single area
+#' @param use_historical T/F include historical Japanese survey data in the
+#'   results (defaults to FALSE)
 #' @param db  the database to query (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save save the file in designated folder, if FALSE outputs to global environment
 #' 
-q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
+q_lls_rpn <- function(year, area=c('goa', 'bs', 'ai'), species, by='fmpsubarea', 
+                      use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
   
   # adjust filters
   yr = year
   sp = species
-  if(!exists(quote(area)) | by %in% c('akwide', 'AKWIDE')) {area <- c('goa', 'bs', 'ai')}
-  if(any(area == 'bsai')) {area <- c('bs', 'ai')}
+  if(by %in% c('akwide', 'AKWIDE')) {
+    message("when by='akwide', the area argument is ignored within this function.\n")
+    area <- c('goa', 'bs', 'ai')
+  }
+  if(any(area == 'bsai')) {
+    area <- c(area[area != 'bsai'], 'bs', 'ai')
+  }
   area = toupper(area)
   by = tolower(by)
   
   # message center
-  if(!any(area %in% c('GOA', 'BS', 'AI'))) {
+  if(any(!area %in% c('GOA', 'BS', 'AI'))) {
     stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
   }
   
-  if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide'))){ 
-    if(length(by) > 1){
-      stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'. only a single arg may be used.")
+  if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide')) | length(by) > 1){ 
+    stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'. only a single arg may be used.")
     }
-  }
   
   if(is.logical(use_historical)==FALSE) {
     stop('appropriate args for use_historical are TRUE or FALSE')
@@ -420,7 +427,7 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
             -are corrected for sperm whale depredation and area summaries exlude gully stations (stratum 2b) \n
             -use interpolated bs/ai values in alternating survey years when aggregated to the fmp or ak-wide level \n
             -assume fixed rpn/rpw data in the ai (1990-1995) and bs (1990-1996) when no bs/ai surveys occurred\n
-            -assume fixed ak-wide rpn/rpws from 1979-1994 for the historical Japanese survey")
+            -assume fixed ak-wide rpn/rpws from 1979-1994 for the historical Japanese survey \n")
   } else {
     strata <- '_all_strata'
     depred <- ''
@@ -454,28 +461,35 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
                   country %in% srv)
   
   # set up table-specific area filters
-  area_lkup = data.frame(area = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
+  area_lkup = data.frame(fmparea = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
                          councilarea = c('Bering Sea', 'Aleutians', 'East Yakutat/Southeast', 'West Yakutat', 'Central Gulf of Alaska', 'Western Gulf of Alaska'),
                          fmpsubarea = c('Bering Sea', 'Aleutians', 'Eastern Gulf of Alaska', 'Eastern Gulf of Alaska', 'Central Gulf of Alaska', 'Western Gulf of Alaska')) %>% 
-    dplyr::filter(area %in% area)
+    dplyr::filter(fmparea %in% area)
   
   if(by %in% c('depth', 'geoarea', 'councilarea')) {
-    table <- table %>% 
-      dplyr::filter(council_sablefish_management_area %in% unique(area_lkup$councilarea)) 
+    tmparea <- unique(area_lkup$councilarea)
+    table <- table %>% dplyr::filter(council_sablefish_management_area %in% tmparea) 
   }
-  if(by %in% c('fmp_subarea')) {
-    table <- table %>% 
-      dplyr::filter(council_sablefish_management_area %in% unique(area_lkup$fmpsubarea)) 
+  if(by %in% c('fmpsubarea')) {
+    tmparea <- unique(area_lkup$fmpsubarea)
+    table <- table %>% dplyr::filter(council_management_area %in% tmparea) 
+  }
+  
+  # id for saving data and sql files
+  id = by
+  if(by == 'depth') {
+    id = "depthstratum"
   }
   
   if(isTRUE(save)){
+    if(isFALSE(dir.exists(here::here(year, "data")))) stop("you must run afscdata::setup_folders() before you can save to the default location")
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, "lls_rpn_data.csv")), 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_rpn_", id, "_data.csv")), 
                          delim = ",")
     capture.output(show_query(table), 
-                   file = here::here(year, "data", "sql", paste0(id, "lls_rpn_sql.txt")))
+                   file = here::here(year, "data", "sql", paste0("lls_rpn_", id, "sql.txt")))
     
-    message("longline survey data can be found in the data/raw folder")
+    message("longline survey data can be found in the data/raw folder, and the associated query is saved in data/sql")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
     dplyr::collect(table)
   } else {

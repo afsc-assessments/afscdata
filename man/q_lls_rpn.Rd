@@ -6,9 +6,10 @@
 \usage{
 q_lls_rpn(
   year,
-  area,
+  area = c("goa", "bs", "ai"),
   species,
-  by = "total",
+  by = "fmpsubarea",
+  use_historical = FALSE,
   db,
   print_sql = FALSE,
   save = TRUE
@@ -17,11 +18,17 @@ q_lls_rpn(
 \arguments{
 \item{year}{max year to retrieve data from}
 
-\item{area}{options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area}
+\item{area}{options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')}
 
-\item{species}{5 digit afsc species code(s) e.g., 79210 or c(79210, 10110)}
+\item{species}{5 digit afsc/race species code(s) e.g., 79210 or c(79210, 10110)}
 
-\item{by}{"depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total")}
+\item{by}{'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak
+slope), 'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
+'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
+sablefish). default = 'fmpsubarea' - can only call a single area}
+
+\item{use_historical}{T/F include historical Japanese survey data in the
+results (defaults to FALSE)}
 
 \item{db}{the database to query (akfin)}
 
@@ -30,13 +37,16 @@ q_lls_rpn(
 \item{save}{save the file in designated folder, if FALSE outputs to global environment}
 }
 \description{
-probably need to beef up the documentation on the "by" switch
-}
-\details{
-bs = bering sea + northwest 1987-present (includes nw stations) - recommended
-bsslope = bering sea slope
-nbs = northern bering sea
-ai = aleutian islands
-goa = gulf of alaska
-old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recommended
+available source tables on akfin:
+lls_area_stratum_rpn
+lls_area_stratum_rpn_depred
+lls_area_rpn_all_strata
+lls_area_rpn_3_to_7
+lls_area_rpn_3_to_7_depred
+lls_council_sablefish_area_all_strata
+lls_council_sablefish_area_3_to_7_depred
+lls_fmp_subarea_all_strata
+lls_fmp_subarea_3_to_7_depred
+lls_fmp_all_strata* not available in this fcn
+lls_ak_wide_3_to_7_depred
 }
