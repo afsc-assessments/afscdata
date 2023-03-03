@@ -4,18 +4,18 @@
 \alias{q_psc}
 \title{query prohibited species catch (psc) estimate}
 \usage{
-q_psc(year, trip_target, area, db, save = TRUE)
+q_psc(year, target, area, db, save = TRUE)
 }
 \arguments{
 \item{year}{assessment year}
+
+\item{target}{targeted species: 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut}
 
 \item{area}{fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)}
 
 \item{db}{data server to connect to (akfin)}
 
 \item{save}{save the file in designated folder (default = T) or the global environment}
-
-\item{target}{targeted species: 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut}
 }
 \value{
 a csv of prohibited species catch by trip target group, saved in the data/output folder
@@ -26,7 +26,7 @@ prohibited species catch (PSC) estimates reported in tons for halibut and herrin
 \examples{
 \dontrun{
 akfin = connect()
-q_psc(year=2022, trip_target="k", area="goa", db=akfin, save=FALSE)
+q_psc(year=2022, target="k", area="goa", db=akfin, save=FALSE)
 disconnect(akfin)
 }
 

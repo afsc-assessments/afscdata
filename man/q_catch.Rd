@@ -25,7 +25,7 @@ q_catch(
 
 \item{add_fields}{add other columns to the database (must currently exist on server). "*" will return all table columns available}
 
-\item{print_sql}{outputs the sql query instead of calling the data}
+\item{print_sql}{outputs the sql query instead of calling the data - save must be false}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }

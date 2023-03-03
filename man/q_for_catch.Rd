@@ -15,7 +15,7 @@ q_for_catch(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{db}{data server to connect to (akfin)}
 
-\item{print_sql}{outputs the sql query instead of calling the data (default: false)}
+\item{print_sql}{outputs the sql query instead of calling the data (default: false) - save must be false}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)}
 }
