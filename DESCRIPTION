@@ -20,14 +20,17 @@ RoxygenNote: 7.2.3
 URL: https://afsc-assessments.github.io/afscdata
 Imports: 
     DBI,
-    tidytable,
     getPass,
     here,
     keyring,
     magrittr,
     odbc,
     utils,
-    vroom
+    vroom,
+    stringi,
+    tidytable,
+    dplyr,
+    lubridate
 Suggests: 
     knitr,
     rmarkdown

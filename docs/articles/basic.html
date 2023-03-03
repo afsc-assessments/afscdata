@@ -132,32 +132,82 @@ in place of files installed with this package.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">catch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sql_read.html">sql_read</a></span><span class="op">(</span><span class="st">'fsh_catch.sql'</span><span class="op">)</span></span>
 <span><span class="va">catch</span></span>
-<span><span class="co">#&gt;  [1] "SELECT "                             "  year,"                            </span></span>
-<span><span class="co">#&gt;  [3] "  species_group_name,"               "  species_name as species,"         </span></span>
-<span><span class="co">#&gt;  [5] "  species_group_code,"               "  retained_or_discarded,"           </span></span>
-<span><span class="co">#&gt;  [7] "  trip_target_code,"                 "  cdq_flag as cdq,"                 </span></span>
-<span><span class="co">#&gt;  [9] "  fmp_gear as gear,"                 "  fmp_area,"                        </span></span>
-<span><span class="co">#&gt; [11] "  fmp_subarea,"                      "  week_end_date,"                   </span></span>
-<span><span class="co">#&gt; [13] "  weight_posted as tons"             "FROM council.comprehensive_blend_ca"</span></span>
-<span><span class="co">#&gt; [15] "WHERE fmp_area"                      "-- insert area"                     </span></span>
-<span><span class="co">#&gt; [17] "AND year"                            "-- insert year"                     </span></span>
-<span><span class="co">#&gt; [19] "AND species_group_code"              "-- insert species"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "SELECT "                               </span></span>
+<span><span class="co">#&gt;  [2] "  year,"                               </span></span>
+<span><span class="co">#&gt;  [3] "  agency_species_code,"                </span></span>
+<span><span class="co">#&gt;  [4] "  species_group_name,"                 </span></span>
+<span><span class="co">#&gt;  [5] "  species_name as species,"            </span></span>
+<span><span class="co">#&gt;  [6] "  species_group_code,"                 </span></span>
+<span><span class="co">#&gt;  [7] "  retained_or_discarded,"              </span></span>
+<span><span class="co">#&gt;  [8] "  trip_target_code,"                   </span></span>
+<span><span class="co">#&gt;  [9] "  trip_target_name,  "                 </span></span>
+<span><span class="co">#&gt; [10] "  cdq_flag as cdq,"                    </span></span>
+<span><span class="co">#&gt; [11] "  fmp_gear as gear,"                   </span></span>
+<span><span class="co">#&gt; [12] "  agency_gear_code,"                   </span></span>
+<span><span class="co">#&gt; [13] "  fmp_area,"                           </span></span>
+<span><span class="co">#&gt; [14] "  fmp_subarea,"                        </span></span>
+<span><span class="co">#&gt; [15] "  reporting_area_code as nmfs_area,"   </span></span>
+<span><span class="co">#&gt; [16] "  week_end_date,"                      </span></span>
+<span><span class="co">#&gt; [17] "  weight_posted as tons,"              </span></span>
+<span><span class="co">#&gt; [18] "  vessel_id,"                          </span></span>
+<span><span class="co">#&gt; [19] "  ves_akr_length,"                     </span></span>
+<span><span class="co">#&gt; [20] "  sampling_strata,"                    </span></span>
+<span><span class="co">#&gt; [21] "  sampling_strata_name,"               </span></span>
+<span><span class="co">#&gt; [22] "  sampling_strata_deployment_category,"</span></span>
+<span><span class="co">#&gt; [23] "  sampling_strata_selection_rate,"     </span></span>
+<span><span class="co">#&gt; [24] "  deployment_trip_pk,"                 </span></span>
+<span><span class="co">#&gt; [25] "  deployment_trip_start_date,"         </span></span>
+<span><span class="co">#&gt; [26] "  deployment_trip_end_date,"           </span></span>
+<span><span class="co">#&gt; [27] "  adfg_stat_area_code,"                </span></span>
+<span><span class="co">#&gt; [28] "  akr_state_federal_waters_code"       </span></span>
+<span><span class="co">#&gt; [29] "FROM council.comprehensive_blend_ca"   </span></span>
+<span><span class="co">#&gt; [30] "WHERE fmp_area"                        </span></span>
+<span><span class="co">#&gt; [31] "-- insert area"                        </span></span>
+<span><span class="co">#&gt; [32] "AND year"                              </span></span>
+<span><span class="co">#&gt; [33] "-- insert year"                        </span></span>
+<span><span class="co">#&gt; [34] "AND species_group_code"                </span></span>
+<span><span class="co">#&gt; [35] "-- insert species"</span></span></code></pre></div>
 <p>Filter the SQL query.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">catch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sql_filter.html">sql_filter</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">species</span>, sql_code <span class="op">=</span> <span class="va">catch</span>, flag <span class="op">=</span> <span class="st">"-- insert species"</span><span class="op">)</span></span>
 <span><span class="va">catch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sql_filter.html">sql_filter</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, sql_code <span class="op">=</span> <span class="va">catch</span>, flag <span class="op">=</span> <span class="st">"-- insert year"</span><span class="op">)</span></span>
 <span><span class="va">catch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sql_filter.html">sql_filter</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">area</span>, sql_code <span class="op">=</span> <span class="va">catch</span>, flag <span class="op">=</span> <span class="st">"-- insert area"</span><span class="op">)</span></span>
 <span><span class="va">catch</span></span>
-<span><span class="co">#&gt;  [1] "SELECT "                             "  year,"                            </span></span>
-<span><span class="co">#&gt;  [3] "  species_group_name,"               "  species_name as species,"         </span></span>
-<span><span class="co">#&gt;  [5] "  species_group_code,"               "  retained_or_discarded,"           </span></span>
-<span><span class="co">#&gt;  [7] "  trip_target_code,"                 "  cdq_flag as cdq,"                 </span></span>
-<span><span class="co">#&gt;  [9] "  fmp_gear as gear,"                 "  fmp_area,"                        </span></span>
-<span><span class="co">#&gt; [11] "  fmp_subarea,"                      "  week_end_date,"                   </span></span>
-<span><span class="co">#&gt; [13] "  weight_posted as tons"             "FROM council.comprehensive_blend_ca"</span></span>
-<span><span class="co">#&gt; [15] "WHERE fmp_area"                      "IN ('GOA')"                         </span></span>
-<span><span class="co">#&gt; [17] "AND year"                            "IN ('2022')"                        </span></span>
-<span><span class="co">#&gt; [19] "AND species_group_code"              "IN ('DUSK')"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "SELECT "                               </span></span>
+<span><span class="co">#&gt;  [2] "  year,"                               </span></span>
+<span><span class="co">#&gt;  [3] "  agency_species_code,"                </span></span>
+<span><span class="co">#&gt;  [4] "  species_group_name,"                 </span></span>
+<span><span class="co">#&gt;  [5] "  species_name as species,"            </span></span>
+<span><span class="co">#&gt;  [6] "  species_group_code,"                 </span></span>
+<span><span class="co">#&gt;  [7] "  retained_or_discarded,"              </span></span>
+<span><span class="co">#&gt;  [8] "  trip_target_code,"                   </span></span>
+<span><span class="co">#&gt;  [9] "  trip_target_name,  "                 </span></span>
+<span><span class="co">#&gt; [10] "  cdq_flag as cdq,"                    </span></span>
+<span><span class="co">#&gt; [11] "  fmp_gear as gear,"                   </span></span>
+<span><span class="co">#&gt; [12] "  agency_gear_code,"                   </span></span>
+<span><span class="co">#&gt; [13] "  fmp_area,"                           </span></span>
+<span><span class="co">#&gt; [14] "  fmp_subarea,"                        </span></span>
+<span><span class="co">#&gt; [15] "  reporting_area_code as nmfs_area,"   </span></span>
+<span><span class="co">#&gt; [16] "  week_end_date,"                      </span></span>
+<span><span class="co">#&gt; [17] "  weight_posted as tons,"              </span></span>
+<span><span class="co">#&gt; [18] "  vessel_id,"                          </span></span>
+<span><span class="co">#&gt; [19] "  ves_akr_length,"                     </span></span>
+<span><span class="co">#&gt; [20] "  sampling_strata,"                    </span></span>
+<span><span class="co">#&gt; [21] "  sampling_strata_name,"               </span></span>
+<span><span class="co">#&gt; [22] "  sampling_strata_deployment_category,"</span></span>
+<span><span class="co">#&gt; [23] "  sampling_strata_selection_rate,"     </span></span>
+<span><span class="co">#&gt; [24] "  deployment_trip_pk,"                 </span></span>
+<span><span class="co">#&gt; [25] "  deployment_trip_start_date,"         </span></span>
+<span><span class="co">#&gt; [26] "  deployment_trip_end_date,"           </span></span>
+<span><span class="co">#&gt; [27] "  adfg_stat_area_code,"                </span></span>
+<span><span class="co">#&gt; [28] "  akr_state_federal_waters_code"       </span></span>
+<span><span class="co">#&gt; [29] "FROM council.comprehensive_blend_ca"   </span></span>
+<span><span class="co">#&gt; [30] "WHERE fmp_area"                        </span></span>
+<span><span class="co">#&gt; [31] "IN ('GOA')"                            </span></span>
+<span><span class="co">#&gt; [32] "AND year"                              </span></span>
+<span><span class="co">#&gt; [33] "IN ('2022')"                           </span></span>
+<span><span class="co">#&gt; [34] "AND species_group_code"                </span></span>
+<span><span class="co">#&gt; [35] "IN ('DUSK')"</span></span></code></pre></div>
 <p>Run the SQL query.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sql_run.html">sql_run</a></span><span class="op">(</span><span class="va">akfin</span>, <span class="va">catch</span><span class="op">)</span></span></code></pre></div>
