@@ -1,15 +1,24 @@
-#' query fishery catch data
+#' query fishery catch data from AKFIN server
 #'
-#' Note that this function will produce results that are confidential. They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
+#' Note that this function produces results that may be confidential. 
+#' They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
 #'
 #' @param year max year to retrieve data from 
 #' @param species species group code e.g., "DUSK" or numeric agency values e.g. c("131", "132") - must be either all 4 digit or 3 digit codes
-#' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI)
+#' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI), can use all fmp_areas or all fmp_subareas, but don't mix the two
 #' @param db data server to connect to (akfin)
 #' @param add_fields add other columns to the database (must currently exist on server). "*" will return all table columns available
 #' @param print_sql outputs the sql query instead of calling the data
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
+#' @return saves catch data as data/raw/fsh_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+#' @export q_catch
+#' @example 
+#' \dontrun{
+#' db <- afscdata::connect()
+#' q_catch(year=2022, species="NORK", area="goa", db=db)
+#' }
+#'  
 q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, save=TRUE) {
   
   # globals 
@@ -18,6 +27,8 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
     area = c("WG", "CG", "WY", "EY", "SE")
   } else if(isTRUE(area=="BSAI")){
     area = c("BS", "AI")
+  } else if(sum(sapply(c("BSAI", "GOA"), grepl, area))==2){
+    area = c("WG", "CG", "WY", "EY", "SE", "BS", "AI")
   } else {
     area
   }
@@ -76,7 +87,9 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   
   # output
   if(isTRUE(save)) {
-    if(isFALSE(dir.exists(here::here(year, "data")))) stop("you must run afscdata::setup_folders() before you can save to the default location")
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+      }
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
                          delim = ",")
@@ -94,22 +107,27 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
 }
   
 
+
 #' query foreign catch data from the AKFIN server
 #' 
-#' something about the species names and area codes?
-#' pulls data from akfin.pre1991.foreign_blend
+#' something about the species names and area codes, since they are so different from everything else?
+#' pulls data from AKFIN pre1991.foreign_blend table
 #'
-#' @param year  max year to retrieve data from 
+#' @param year max year to retrieve data from 
 #' @param species common name (e.g., "sablefish" or "all flounders") - can call multiple species
-#' @param area numeric area digit code
+#' @param area numeric area digit code - multiples is ok
 #' @param db data server to connect to (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
 #'
-#' @return
-#' @export
+#' @return saves catch data as data/raw/for_catch_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_for_catch
 #'
 #' @examples
+#' \dontrun{
+#' db <- afscdata::connect()
+#' q_for_catch(year=2022, species="sablefish", area = 54:57, db = db)
+#' }
 q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   yr = year
   species=toupper(species)
@@ -149,16 +167,27 @@ q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   }
 }
 
+
+
+
 #' query bottom trawl survey length data from the AFSC server
 #' 
 #'
-#' @param year  max year to retrieve data from 
+#' @param year max year to retrieve data from 
 #' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
-#' @param area bs, hwc, wc, hg, ai, goa, or hbs
+#' @param area bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")
 #' @param db data server to connect to (afsc)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
 #' 
+#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_bts_length
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("afsc")
+#' q_bts_length(year=2022, species=10110, area = "goa", db = db)
+#' }
 q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   # globals
@@ -207,16 +236,25 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 }
 
 
+
+
 #' query bottom trawl survey specimen data from the AFSC server
 #' 
 #'
 #' @param year  max year to retrieve data from 
 #' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
-#' @param area bs, hwc, wc, hg, ai, goa, or hbs
+#' @param area bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")
 #' @param db data server to connect to (afsc)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
-#' 
+#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_bts_specimen
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("afsc")
+#' q_bts_length(year=2022, species=21921, area = "goa", db = db)
+#' } 
 q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   # globals
@@ -271,6 +309,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' 
 #' probably need to beef up the documentation on the "by" switch
 #' 
+#' six areas are available to query from 
 #' bs = bering sea + northwest 1987-present (includes nw stations) - recommended
 #' bsslope = bering sea slope 
 #' nbs = northern bering sea
@@ -278,14 +317,24 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' goa = gulf of alaska
 #' old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recommended 
 #' 
+#' for the goa and ai there is a "by" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.
+#' 
 #' @param year  max year to retrieve data from 
 #' @param area options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area
 #' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 10110)
-#' @param by "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") 
+#' @param by "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch
 #' @param db  the database to query (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save save the file in designated folder, if FALSE outputs to global environment
 #' 
+#' @return saves bts biomass data as data/raw/area_(by)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_bts_specimen
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("afsc")
+#' q_bts_length(year=2022, species=21921, area = "goa", db = db)
+#' } 
 q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, save=TRUE) {
   
   # adjust filters
