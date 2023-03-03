@@ -96,11 +96,11 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
       stop("you must run afscdata::setup_folders() before you can save to the default location")
       }
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(species,"_fsh_catch_data.csv")), 
                          delim = ",")
     
     capture.output(show_query(table), 
-                   file = here::here(year, "data", "sql", "fsh_catch_sql.txt"))
+                   file = here::here(year, "data", "sql", paste0(species,"_fsh_catch_sql.txt"))
     
     message("fishery catch data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
