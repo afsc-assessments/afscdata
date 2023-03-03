@@ -169,7 +169,6 @@ q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 
 
 
-
 #' query bottom trawl survey length data from the AFSC server
 #' 
 #'
@@ -208,6 +207,72 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
     dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
                                    end_longitude, bottom_depth, abundance_haul, 
                                    stratum)) %>%
+    dplyr::left_join(dplyr::select(cc, hauljoin, species_code, sex, length, 
+                                   frequency)) %>% 
+    dplyr::mutate(year = lubridate::year(start_date)) %>%
+    dplyr::select(-start_date) %>% 
+    dplyr::filter(abundance_haul == "Y", 
+                  year <= yr, 
+                  region %in% area, 
+                  species_code %in% species) %>% 
+    dplyr::arrange(year) -> table
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", "fsh_catch_sql.txt"))
+    
+    message("bottom trawl survey length data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
+
+#' query bottom trawl survey length data from the AFSC server
+#' 
+#'
+#' @param year max year to retrieve data from 
+#' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
+#' @param area bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")
+#' @param db data server to connect to (afsc)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
+#' 
+#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_bts_length
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("afsc")
+#' q_bts_length(year=2022, species=10110, area = "goa", db = db)
+#' }
+q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
+  
+  # globals
+  yr = year
+  area = toupper(area)
+  
+  # pull data sources
+  dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
+    rename_with(tolower) -> aa
+  
+  dplyr::tbl(db, dplyr::sql("racebase.haul")) %>% 
+    dplyr::rename_with(tolower) -> bb
+  
+  dplyr::tbl(db, dplyr::sql("racebase.length")) %>% 
+    dplyr::rename_with(tolower) -> cc
+  # join, filter and query
+  dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
+    dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
+                                   end_longitude, bottom_depth, abundance_haul, 
+                                   stratum, gear_temperature)) %>%
     dplyr::left_join(dplyr::select(cc, hauljoin, species_code, sex, length, 
                                    frequency)) %>% 
     dplyr::mutate(year = lubridate::year(start_date)) %>%
@@ -275,7 +340,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
     dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
                                    end_longitude, bottom_depth, abundance_haul, 
-                                   stratum)) %>%
+                                   stratum, gear_temperature)) %>%
     dplyr::left_join(dplyr::select(cc, hauljoin, species_code, sex, 
                                    length, weight, age, maturity)) %>% 
     dplyr::mutate(year = lubridate::year(start_date)) %>%
