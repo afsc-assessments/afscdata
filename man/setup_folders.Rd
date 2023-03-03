@@ -6,7 +6,7 @@
 \usage{
 setup_folders(
   year,
-  dirs = c("raw", "user_input", "output", "sara", "sq"),
+  dirs = c("raw", "user_input", "output", "sara", "sql"),
   tier = NULL
 )
 }

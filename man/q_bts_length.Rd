@@ -5,6 +5,8 @@
 \title{query bottom trawl survey length data from the AFSC server}
 \usage{
 q_bts_length(year, species, area, db, print_sql = FALSE, save = TRUE)
+
+q_bts_length(year, species, area, db, print_sql = FALSE, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
@@ -21,11 +23,19 @@ q_bts_length(year, species, area, db, print_sql = FALSE, save = TRUE)
 }
 \value{
 saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+
+saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
 query bottom trawl survey length data from the AFSC server
+
+query bottom trawl survey length data from the AFSC server
 }
 \examples{
+\dontrun{
+db <- afscdata::connect("afsc")
+q_bts_length(year=2022, species=10110, area = "goa", db = db)
+}
 \dontrun{
 db <- afscdata::connect("afsc")
 q_bts_length(year=2022, species=10110, area = "goa", db = db)

@@ -36,3 +36,10 @@ saves catch data as data/raw/fsh_catch_data.csv or outputs to the global environ
 Note that this function produces results that may be confidential.
 They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
 }
+\examples{
+\dontrun{
+db <- afscdata::connect()
+q_catch(year=2022, species="NORK", area="goa", db=db)
+}
+ 
+}
