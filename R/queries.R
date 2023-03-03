@@ -396,7 +396,7 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
   if(!any(area %in% c('GOA', 'BS', 'AI'))) {
     stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
   }
-
+  
   if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide'))){ 
     if(length(by) > 1){
       stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'. only a single arg may be used.")
@@ -408,8 +408,9 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
   } else {
     if(isFALSE(use_historical)) {
       srv <- 'United States'
-    } else {srv <- c('United States', 'Japan')
-      } 
+    } else {
+      srv <- c('United States', 'Japan')
+    } 
   }
   # special sablefish
   if(species == 20510) {
@@ -424,7 +425,7 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
     strata <- '_all_strata'
     depred <- ''
   }
-
+  
   # decide which tables to use 
   if(by == 'depth') {
     table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_stratum_rpn", depred))) %>%
@@ -433,8 +434,6 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
       dplyr::filter(EXPLOITABLE == '1')
   } else if(by == 'geoarea') {
     table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_rpn", strata, depred))) %>%
-      # Code used to flag geographic areas for calculations of relative
-      # population weights and numbers.
       dplyr::filter(EXPLOITABLE == '1')
   } else if(by == 'councilarea') {
     table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_council_sablefish_area", strata, depred)))
@@ -453,13 +452,13 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
     dplyr::filter(year <= yr, 
                   species_code %in% sp,
                   country %in% srv)
-    
+  
   # set up table-specific area filters
   area_lkup = data.frame(area = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
                          councilarea = c('Bering Sea', 'Aleutians', 'East Yakutat/Southeast', 'West Yakutat', 'Central Gulf of Alaska', 'Western Gulf of Alaska'),
                          fmpsubarea = c('Bering Sea', 'Aleutians', 'Eastern Gulf of Alaska', 'Eastern Gulf of Alaska', 'Central Gulf of Alaska', 'Western Gulf of Alaska')) %>% 
     dplyr::filter(area %in% area)
-
+  
   if(by %in% c('depth', 'geoarea', 'councilarea')) {
     table <- table %>% 
       dplyr::filter(council_sablefish_management_area %in% unique(area_lkup$councilarea)) 
@@ -468,26 +467,6 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
     table <- table %>% 
       dplyr::filter(council_sablefish_management_area %in% unique(area_lkup$fmpsubarea)) 
   }
-  
-  
-  # prefix area and type (for goa/ai) to file name
-  area = tolower(area)
-  id = NULL
-  if(by == 'akwide') {
-    id = by
-  } else {
-    if(identical(sort(area), c('ai', 'bs', 'goa'))) {
-      id = paste0('allareas_by_', by)
-    }
-    if(identical(sort(area), c('ai', 'bs',))) {
-      id = paste0('bsai_by_', by)
-    }
-    
-  }
-  
-  
-  by
-  id = paste0(area, "_", id)
   
   if(isTRUE(save)){
     dplyr::collect(table) %>% 
@@ -504,8 +483,7 @@ q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE
     message("this sql code is passed to the server")
   }
   
-  }
-  
-  
-  
-  
+}
+
+
+
