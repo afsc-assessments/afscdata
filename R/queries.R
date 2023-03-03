@@ -357,7 +357,154 @@ q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, 
   
 }
 
+#' query nfms longline survey relative population numbers or weights
+#' 
+#' available source tables on akfin:
+#' lls_area_stratum_rpn
+#' lls_area_stratum_rpn_depred
+#' lls_area_rpn_all_strata
+#' lls_area_rpn_3_to_7
+#' lls_area_rpn_3_to_7_depred
+#' lls_council_sablefish_area_all_strata
+#' lls_council_sablefish_area_3_to_7_depred
+#' lls_fmp_subarea_all_strata
+#' lls_fmp_subarea_3_to_7_depred
+#' lls_fmp_all_strata -- not available using this fcn
+#' lls_ak_wide_3_to_7_depred
+#'  
+#' @param year  max year to retrieve data from 
+#' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
+#' @param species 5 digit afsc/race species code(s) e.g., 79210 or c(79210, 10110)
+#' @param by 'depth', 'geoarea', 'councilarea', 'fmpsubarea', or 'akwide'
+#'   (only for sablefish). default = 'fmpsubarea' - can only call a single area
+#' @param use_historical T/F include historical Japanese survey data in the query (defaults to FALSE) 
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+q_lls_rpn <- function(year, area, species, by='fmpsubarea', use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
   
+  # adjust filters
+  yr = year
+  sp = species
+  if(!exists(quote(area)) | by %in% c('akwide', 'AKWIDE')) {area <- c('goa', 'bs', 'ai')}
+  if(any(area == 'bsai')) {area <- c('bs', 'ai')}
+  area = toupper(area)
+  by = tolower(by)
+  
+  # message center
+  if(!any(area %in% c('GOA', 'BS', 'AI'))) {
+    stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
+  }
+
+  if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide'))){ 
+    if(length(by) > 1){
+      stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'. only a single arg may be used.")
+    }
+  }
+  
+  if(is.logical(use_historical)==FALSE) {
+    stop('appropriate args for use_historical are TRUE or FALSE')
+  } else {
+    if(isFALSE(use_historical)) {
+      srv <- 'United States'
+    } else {srv <- c('United States', 'Japan')
+      } 
+  }
+  # special sablefish
+  if(species == 20510) {
+    strata <- '_3_to_7'
+    depred <- '_depred'
+    message("sablefish rpns:\n
+            -are corrected for sperm whale depredation and area summaries exlude gully stations (stratum 2b) \n
+            -use interpolated bs/ai values in alternating survey years when aggregated to the fmp or ak-wide level \n
+            -assume fixed rpn/rpw data in the ai (1990-1995) and bs (1990-1996) when no bs/ai surveys occurred\n
+            -assume fixed ak-wide rpn/rpws from 1979-1994 for the historical Japanese survey")
+  } else {
+    strata <- '_all_strata'
+    depred <- ''
+  }
+
+  # decide which tables to use 
+  if(by == 'depth') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_stratum_rpn", depred))) %>%
+      # Code used to flag geographic areas for calculations of relative
+      # population weights and numbers.
+      dplyr::filter(EXPLOITABLE == '1')
+  } else if(by == 'geoarea') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_rpn", strata, depred))) %>%
+      # Code used to flag geographic areas for calculations of relative
+      # population weights and numbers.
+      dplyr::filter(EXPLOITABLE == '1')
+  } else if(by == 'councilarea') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_council_sablefish_area", strata, depred)))
+  } else if(by == 'fmpsubarea') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_fmp_subarea", strata, depred)))
+  } else if(by == 'akwide') {
+    if(species != 20510) {
+      stop("ak-wide summaries are only available for sablefish. the lls alternates between the bs/ai in odd/even years, and interpolation methods should be evaluated on a species-specific basis.")
+    }
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_ak_wide", strata, depred)))
+  }
+  
+  # set up filters that are consistent across all tables
+  table <- table %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(year <= yr, 
+                  species_code %in% sp,
+                  country %in% srv)
+    
+  # set up table-specific area filters
+  area_lkup = data.frame(area = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
+                         councilarea = c('Bering Sea', 'Aleutians', 'East Yakutat/Southeast', 'West Yakutat', 'Central Gulf of Alaska', 'Western Gulf of Alaska'),
+                         fmpsubarea = c('Bering Sea', 'Aleutians', 'Eastern Gulf of Alaska', 'Eastern Gulf of Alaska', 'Central Gulf of Alaska', 'Western Gulf of Alaska')) %>% 
+    dplyr::filter(area %in% area)
+
+  if(by %in% c('depth', 'geoarea', 'councilarea')) {
+    table <- table %>% 
+      dplyr::filter(council_sablefish_management_area %in% unique(area_lkup$councilarea)) 
+  }
+  if(by %in% c('fmp_subarea')) {
+    table <- table %>% 
+      dplyr::filter(council_sablefish_management_area %in% unique(area_lkup$fmpsubarea)) 
+  }
+  
+  
+  # prefix area and type (for goa/ai) to file name
+  area = tolower(area)
+  id = NULL
+  if(by == 'akwide') {
+    id = by
+  } else {
+    if(identical(sort(area), c('ai', 'bs', 'goa'))) {
+      id = paste0('allareas_by_', by)
+    }
+    if(identical(sort(area), c('ai', 'bs',))) {
+      id = paste0('bsai_by_', by)
+    }
+    
+  }
+  
+  
+  by
+  id = paste0(area, "_", id)
+  
+  if(isTRUE(save)){
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, "lls_rpn_data.csv")), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", paste0(id, "lls_rpn_sql.txt")))
+    
+    message("longline survey data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+  }
   
   
   
