@@ -321,7 +321,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' 
 #' @param year  max year to retrieve data from 
 #' @param area options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area
-#' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 10110)
+#' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
 #' @param by "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch
 #' @param db  the database to query (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
@@ -333,7 +333,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' @examples
 #' \dontrun{
 #' db <- afscdata::connect("afsc")
-#' q_bts_length(year=2022, species=21921, area = "goa", db = db)
+#' q_bts_biomass(year=2022, species=21921, area = "goa", by = "depth", db = db)
 #' } 
 q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, save=TRUE) {
   
