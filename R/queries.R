@@ -19,7 +19,7 @@
 #' q_catch(year=2022, species="NORK", area="goa", db=db)
 #' }
 #'  
-q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, save=TRUE) {
+q_catch <- function(year, species, area, db, add_fields=FALSE, print_sql=FALSE, save=TRUE) {
   
   # globals 
   area = toupper(area)
@@ -36,7 +36,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   yr = year
   
   # select columns to import
-  if(add_fields == "*") {
+  if(grepl("\\*", add_fields)) {
     table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::filter(year <= yr, fmp_subarea %in% area)
