@@ -35,13 +35,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   
   yr = year
   
-  # select columns to import
-  if(add_fields == "*") {
-    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
-      dplyr::rename_with(tolower) %>% 
-      dplyr::filter(year <= yr, fmp_subarea %in% area)
-  } else {
-    cols = c("year",                             
+  cols = c("year",                             
              "agency_species_code",              
              "species_group_name",               
              "species_name",          
@@ -67,17 +61,28 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
              "deployment_trip_start_date",         
              "deployment_trip_end_date",           
              "adfg_stat_area_code",                
-             "akr_state_federal_waters_code",
-             tolower(add_fields))
-    
-  
-    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
+             "akr_state_federal_waters_code")
+
+  if(is.null(add_fields)){
+      table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::select(!!!cols) %>% 
-      dplyr::filter(year <= yr, fmp_subarea %in% area)
+      dplyr::filter(year <= yr, fmp_subarea %in% area)}
   
-  }
-  
+  # select columns to import
+  if(!is.null(add_fields)){
+    if(add_fields == "*") {
+      table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::filter(year <= yr, fmp_subarea %in% area)
+    } else {
+          cols=c(cols,", ",tolower(add_fields)) 
+          table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
+          dplyr::rename_with(tolower) %>% 
+          dplyr::select(!!!cols) %>% 
+          dplyr::filter(year <= yr, fmp_subarea %in% area)
+        }}
+    
   # filter species
   if(isTRUE(sum(stringi::stri_length(species) - 3) == 0)){
     dplyr::filter(table, agency_species_code %in% species) -> table
