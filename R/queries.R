@@ -19,7 +19,7 @@
 #' q_catch(year=2022, species="NORK", area="goa", db=db)
 #' }
 #'  
-q_catch <- function(year, species, area, db, add_fields=FALSE, print_sql=FALSE, save=TRUE) {
+q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, save=TRUE) {
   
   # globals 
   area = toupper(area)
@@ -36,11 +36,13 @@ q_catch <- function(year, species, area, db, add_fields=FALSE, print_sql=FALSE, 
   yr = year
   
   # select columns to import
-  if(grepl("\\*", add_fields)) {
-    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
-      dplyr::rename_with(tolower) %>% 
-      dplyr::filter(year <= yr, fmp_subarea %in% area)
-  } else {
+  if(!is.null(add_fields)) {
+    if(grepl("\\*", add_fields)){
+      table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::filter(year <= yr, fmp_subarea %in% area)
+    }
+  }  else {
     cols = c("year",                             
              "agency_species_code",              
              "species_group_name",               
@@ -70,12 +72,11 @@ q_catch <- function(year, species, area, db, add_fields=FALSE, print_sql=FALSE, 
              "akr_state_federal_waters_code",
              tolower(add_fields))
     
-  
+    
     table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::select(!!!cols) %>% 
       dplyr::filter(year <= yr, fmp_subarea %in% area)
-  
   }
   
   # filter species
@@ -94,7 +95,7 @@ q_catch <- function(year, species, area, db, add_fields=FALSE, print_sql=FALSE, 
       vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
                          delim = ",")
     
-    capture.output(show_query(table), 
+    capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", "fsh_catch_sql.txt"))
     
     message("fishery catch data can be found in the data/raw folder")
