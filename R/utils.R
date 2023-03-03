@@ -115,7 +115,7 @@ collapse_filters <- function(x) {
 #' \dontrun{
 #' setup(2022)
 #'}
-setup_folders <- function(year, dirs = c("raw", "user_input", "output", "sara", "sq"), tier = NULL){
+setup_folders <- function(year, dirs = c("raw", "user_input", "output", "sara", "sql"), tier = NULL){
   
   for(i in 1:length(dirs)){
     if(dir.exists(here::here(year, "data", dirs[i])) == FALSE){
