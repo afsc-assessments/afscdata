@@ -27,6 +27,9 @@ Authors@R:
              role = "ctb"),
       person(given = "Kalei", 
              family = "Shotwell",
+             role = "ctb"),
+      person(given = "Margaret", 
+             family = "Siple",
              role = "ctb"))
 Maintainer: The package maintainer <ben.williams@noaa.gov>    
 Description: This package provides a folder structure and SQL queries for accessing the AKFIN and AFSC databases in support of fishery stock assessments. 
