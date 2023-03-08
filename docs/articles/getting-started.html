@@ -73,6 +73,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started</h1>
             
+            <h4 data-toc-skip class="date">2023-03-08</h4>
       
       
       <div class="hidden name"><code>getting-started.Rmd</code></div>
@@ -81,11 +82,11 @@
 
     
     
-<p>Step 0. Setup your computer to connect to the databases (afsc &amp;
-akfin), see the <a href="https://afsc-assessments.github.io/sop/data.html#getting-access" class="external-link">sop</a>
+<p><em>Step 0</em>. Setup your computer to connect to the databases
+(afsc &amp; akfin), see the <a href="https://afsc-assessments.github.io/sop/data.html#getting-access" class="external-link">sop</a>
 for how to do this.</p>
-<p>Step 0.5. Setup your <code>keyring</code> to store passwords and user
-names. This keeps your username and password stored outside of any
+<p><em>Step 0.5</em>. Setup <code>keyring</code> to store passwords and
+user names. This keeps your username and password stored outside of any
 publicly viewable materials and they are easy to call across multiple
 data pulling iterations (akfin &amp; afsc) and machines (virtual machine
 and laptop). If you are opposed to this system, that’s okay,
@@ -112,61 +113,102 @@ aren’t using keyring.</p>
 <span></span>
 <span><span class="co"># when your afsc pwd is updated you can easily change it using </span></span>
 <span><span class="fu">keyring</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/keyring/man/key_get.html" class="external-link">key_set_with_value</a></span><span class="op">(</span>service<span class="op">=</span><span class="st">"afsc"</span>, username<span class="op">=</span><span class="st">"WILLIAMSB"</span>, password <span class="op">=</span> <span class="st">"a_new_pwd"</span><span class="op">)</span></span></code></pre></div>
-<p>Step 1. Connect to VPN.<br>
-Step 2. Download the <code>afscdata</code> package (maybe check on
-occasion if it has been updated, we’ll try to keep up on <a href="https://github.com/afsc-assessments/afscdata/releases" class="external-link">releases</a>.
+<p><em>Step 1</em>. Connect to VPN.<br><em>Step 2</em>. Download the <code>afscdata</code> package (maybe check
+on occasion if it has been updated, we’ll try to keep up on <a href="https://github.com/afsc-assessments/afscdata/releases" class="external-link">releases</a>.
 We’ll drop a note in the SMART space when a substantive change is made.
 (Also there is a tag in the homepage readme that shows the status -
 currently “unstable”)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"afsc-assessments/afscdata"</span><span class="op">)</span></span></code></pre></div>
-<p>Step 3. Basic example</p>
-<p>Load the library and connect to both AKFIN and AFSC servers.</p>
+<p><em>Step 3</em>. Basic example</p>
+<p>Load the library and connect to the AKFIN and/or AFSC server.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://afsc-assessments.github.io/afscdata" class="external-link">afscdata</a></span><span class="op">)</span></span>
 <span><span class="va">akfin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">afsc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="st">"afsc"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># globals</span></span>
-<span><span class="va">year</span> <span class="op">&lt;-</span> <span class="fl">2022</span></span></code></pre></div>
-<p>First we will setup a file structure to work with the
-<code>afscdata</code> package. This package is centered around a
-relative path network which is inherent in an R project framework.</p>
+<span><span class="va">year</span> <span class="op">&lt;-</span> <span class="fl">2022</span></span>
+<span><span class="va">area</span> <span class="op">=</span> <span class="st">"goa"</span></span></code></pre></div>
+<p>First, setup a file structure to work with the <code>afscdata</code>
+package. This package is centered around a relative path network which
+is inherent in an R project framework.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/setup_folders.html">setup_folders</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span></span></code></pre></div>
-<p>With a folder structure in place we now can directly save files, as
+<p>With a folder structure in place file can be directly saved, as
 opposed to bringing them into the global environment then saving
 them.</p>
-<p>Let’s retrieve bottom trawl survey length data from the GOA for
-northern rockfish. To do this we need the area of interest (“goa”), and
-the the 5 digit afsc species code. Most of the queries are directed
-toward AKFIN, but this query links to the AFSC database. More
-information can be found using the standard R help call
-<code><a href="../reference/q_bts_length.html">?q_bts_length</a></code>.</p>
+<p>To retrieve bottom trawl survey length data from the GOA for northern
+rockfish. To do this we need the area of interest (“goa”), and the the 5
+digit afsc species code. Most of the queries are directed toward AKFIN,
+but this query links to the AFSC database. More information can be found
+using the standard R help call <code><a href="../reference/q_bts_length.html">?q_bts_length</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/q_bts_length.html">q_bts_length</a></span><span class="op">(</span>year<span class="op">=</span><span class="va">year</span>, species<span class="op">=</span><span class="fl">30420</span>, area<span class="op">=</span><span class="st">'goa'</span>, db<span class="op">=</span><span class="va">afsc</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/q_bts_length.html">q_bts_length</a></span><span class="op">(</span>year<span class="op">=</span><span class="va">year</span>, species<span class="op">=</span><span class="fl">30420</span>, area<span class="op">=</span><span class="va">area</span>, db<span class="op">=</span><span class="va">afsc</span><span class="op">)</span></span></code></pre></div>
 <p>This function will save <code>bts_length_data.csv</code> in the
 <code>data/raw</code> folder. Additionally, it will save a copy of the
 SQL code passed to the server in the <code>data/sql</code> folder.</p>
+<p>When finished with all queries disconnect from the server.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/disconnect.html">disconnect</a></span><span class="op">(</span><span class="va">afsc</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="additional-functionality">Additional functionality<a class="anchor" aria-label="anchor" href="#additional-functionality"></a>
 </h2>
 <p>If you want to query other tables in either the AFSC or AKFIN
 databases it is simple using the following <code>dplyr</code>
 functions.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">afsc</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/sql.html" class="external-link">sql</a></span><span class="op">(</span><span class="st">"racebase.specimen"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Additional functionality is available by chaining functions with
 pipes. Last, only the first 10 rows are pulled in until
 <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code> is called which pulls in the full query.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">afsc</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/sql.html" class="external-link">sql</a></span><span class="op">(</span><span class="st">"racebase.specimen"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename_with</a></span><span class="op">(</span><span class="va">tolower</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example-script">Example script<a class="anchor" aria-label="anchor" href="#example-script"></a>
+</h2>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># load ----</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"afsc-assessments/afscdata"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://afsc-assessments.github.io/afscdata" class="external-link">afscdata</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># setup folder structure</span></span>
+<span><span class="fu"><a href="../reference/setup_folders.html">setup_folders</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># connect to server and show the catch query that is passed to the server</span></span>
+<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect.html">connect</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># default is akfin</span></span>
+<span><span class="fu"><a href="../reference/q_catch.html">q_catch</a></span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, species<span class="op">=</span><span class="st">"NORK"</span>, area<span class="op">=</span><span class="va">area</span>, db <span class="op">=</span> <span class="va">db</span>, print_sql<span class="op">=</span><span class="cn">TRUE</span>, save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># rerun the catch query using default settings</span></span>
+<span><span class="fu"><a href="../reference/q_catch.html">q_catch</a></span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, species<span class="op">=</span><span class="st">"NORK"</span>, area<span class="op">=</span><span class="va">area</span>, db <span class="op">=</span> <span class="va">db</span><span class="op">)</span></span></code></pre></div>
+<p>The default settings will output a “base-level” catch file (i.e.,
+minimal filtering) in <code>year/data/raw/fsh_catch_data.csv</code>.
+<em>Note: All raw data file names end in</em> <code>_data</code>.
+Additionally, the SQL query passed to the server will be saved in
+<code>year/data/sql/fsh_catch_sql.txt</code>.</p>
+<p>If you want to bring the query directly into the global environment
+without saving it to the file structure (e.g., explorations or you have
+a different structure) simply set <code>save = FALSE</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># output to the global environment</span></span>
+<span><span class="fu"><a href="../reference/q_catch.html">q_catch</a></span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, species<span class="op">=</span><span class="st">"NORK"</span>, area<span class="op">=</span><span class="va">area</span>, db <span class="op">=</span> <span class="va">db</span>, save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># filter after querying</span></span>
+<span><span class="fu"><a href="../reference/q_catch.html">q_catch</a></span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, species<span class="op">=</span><span class="st">"NORK"</span>, area<span class="op">=</span><span class="va">area</span>, db <span class="op">=</span> <span class="va">db</span>, save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">fmp_gear</span><span class="op">!=</span><span class="st">"TRW"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># alternatively filter directly from the catch table</span></span>
+<span></span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">db</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/sql.html" class="external-link">sql</a></span><span class="op">(</span><span class="st">"council.comprehensive_blend_ca"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename_with</a></span><span class="op">(</span><span class="va">tolower</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">fmp_subarea</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WG"</span>, <span class="st">"CG"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 

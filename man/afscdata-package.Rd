@@ -31,6 +31,7 @@ Other contributors:
   \item Matt Callahan [contributor]
   \item Meaghan Bryan [contributor]
   \item Kalei Shotwell [contributor]
+  \item Margaret Siple [contributor]
 }
 
 }
