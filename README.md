@@ -11,6 +11,8 @@ Installation:
 remotes::install_github("afsc-assessments/afscdata")
 ```
 
+Website: [afscdata]("https://afsc-assessments.github.io/afscdata/")
+
 ### NOAA README
 
 This repository is a scientific product and is not official
