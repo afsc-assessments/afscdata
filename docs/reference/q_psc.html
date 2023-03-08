@@ -32,10 +32,10 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/basic.html">Basic structure</a>
+      <a href="../articles/development.html">Development</a>
     </li>
     <li>
-      <a href="../articles/development.html">Development</a>
+      <a href="../articles/getting-started.html">Getting started</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -57,13 +57,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">q_psc</span><span class="op">(</span><span class="va">year</span>, <span class="va">trip_target</span>, <span class="va">area</span>, <span class="va">db</span>, save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">q_psc</span><span class="op">(</span><span class="va">year</span>, <span class="va">target</span>, <span class="va">area</span>, <span class="va">db</span>, save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>year</dt>
 <dd><p>assessment year</p></dd>
+
+
+<dt>target</dt>
+<dd><p>targeted species: 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut</p></dd>
 
 
 <dt>area</dt>
@@ -77,10 +81,6 @@
 <dt>save</dt>
 <dd><p>save the file in designated folder (default = T) or the global environment</p></dd>
 
-
-<dt>target</dt>
-<dd><p>targeted species: 'p' = pollock-mid, 'b' = pollock-bottom, x' = rex, 'h' = shallow flats, 'k' = rockfish, 'w' = arrowtooth, 'c' = pcod, 'i' = halibut</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -93,7 +93,7 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span><span class="va">akfin</span> <span class="op">=</span> <span class="fu"><a href="connect.html">connect</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">q_psc</span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, trip_target<span class="op">=</span><span class="st">"k"</span>, area<span class="op">=</span><span class="st">"goa"</span>, db<span class="op">=</span><span class="va">akfin</span>, save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">q_psc</span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, target<span class="op">=</span><span class="st">"k"</span>, area<span class="op">=</span><span class="st">"goa"</span>, db<span class="op">=</span><span class="va">akfin</span>, save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="disconnect.html">disconnect</a></span><span class="op">(</span><span class="va">akfin</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span></code></pre></div>
@@ -106,7 +106,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Benjamin Williams.</p>
+  <p></p><p>Developed by Benjamin Williams, Jane Sullivan.</p>
 </div>
 
 <div class="pkgdown">

@@ -548,7 +548,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' @param save save the file in designated folder, if FALSE outputs to global environment
 #' 
 #' @return saves bts biomass data as data/raw/area_(by)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
-#' @export q_bts_specimen
+#' @export q_bts_biomass
 #'
 #' @examples
 #' \dontrun{
