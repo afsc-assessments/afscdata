@@ -11,7 +11,7 @@ Installation:
 remotes::install_github("afsc-assessments/afscdata")
 ```
 
-Website: [afscdata]("https://afsc-assessments.github.io/afscdata/")
+Website: [afscdata](https://afsc-assessments.github.io/afscdata/)
 
 ### NOAA README
 
