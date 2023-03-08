@@ -1,0 +1,110 @@
+---
+title: "Getting started"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval=F
+)
+```
+
+
+Step 0. Setup your computer to connect to the databases (afsc & akfin), see the [sop](https://afsc-assessments.github.io/sop/data.html#getting-access) for how to do this. 
+
+
+Step 0.5. Setup your `keyring` to store passwords and user names. 
+This keeps your username and password  stored outside of any publicly viewable materials and they are easy to call across multiple data pulling iterations (akfin & afsc) and machines (virtual machine and laptop). 
+If you are opposed to this system, that's okay, `afscdata` will request your username and password if you aren't using keyring.
+
+```{r keys, eval=F}
+# using keyring
+library(keyring)
+
+# store password and user name for a database at a high level (aka not publicly accessible)
+keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "my_secret_pwd")
+
+# the username and password can then be called with 
+    db <- "afsc"
+    keyring::key_list(db)$username
+    keyring::key_get(db, keyring::key_list(db)$username)
+
+# which provides functionality to pass on user/password on to a server connection (this happens in the background in the afscdata package):
+ DBI::dbConnect (odbc::odbc(),
+                 driver = db,
+                 uid = keyring::key_list(db)$username,
+                 pwd =  keyring::key_get(db, keyring::key_list(db)$username))
+
+
+# when your afsc pwd is updated you can easily change it using 
+keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "a_new_pwd")
+
+```
+
+
+Step 1. Connect to VPN.  
+Step 2. Download the `afscdata` package (maybe check on occasion if it has been updated, we'll try to keep up on [releases](https://github.com/afsc-assessments/afscdata/releases). We'll drop a note in the SMART space when a substantive change is made.
+(Also there is a tag in the homepage readme that shows the status - currently "unstable")
+
+```{r setup}
+remotes::install_github("afsc-assessments/afscdata")
+```
+
+Step 3. Basic example
+
+Load the library and connect to both AKFIN and AFSC servers.
+
+```{r start}
+library(afscdata)
+akfin <- connect()
+afsc <- connect("afsc")
+
+# globals
+year <- 2022
+```
+
+First we will setup a file structure to work with the `afscdata` package. 
+This package is centered around a relative path network which is inherent in an R project framework.
+
+```{r files}
+setup_folders(year)
+```
+
+With a folder structure in place we now can directly save files, as opposed to bringing them into the global environment then saving them.
+
+Let's retrieve bottom trawl survey length data from the GOA for northern rockfish. 
+To do this we need the area of interest ("goa"), and the the 5 digit afsc species code. 
+Most of the queries are directed toward AKFIN, but this query links to the AFSC database.
+More information can be found using the standard R help call `?q_bts_length`.
+
+```{r basic}
+q_bts_length(year=year, species=30420, area='goa', db=afsc)
+```
+
+This function will save `bts_length_data.csv` in the `data/raw` folder. 
+Additionally, it will save a copy of the SQL code passed to the server in the `data/sql` folder.
+
+## Additional functionality
+
+If you want to query other tables in either the AFSC or AKFIN databases it is simple using the following `dplyr` functions.
+
+```{r, eval=F}
+dplyr::tbl(afsc, dplyr::sql("racebase.specimen")) %>% 
+  dplyr::collect()
+```
+
+Additional functionality is available by chaining functions with pipes. 
+Last, only the first 10 rows are pulled in until `collect()` is called which pulls in the full query.
+
+```{r, eval=F}
+dplyr::tbl(afsc, dplyr::sql("racebase.specimen")) %>% 
+  dplyr::rename_with(tolower) %>% 
+  dplyr::select(...) %>% 
+  dplyr::group_by(...) %>% 
+  dplyr::summarise(...) %>% 
+  dplyr::collect()
+```
+
+
+
