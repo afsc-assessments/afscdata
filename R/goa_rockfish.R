@@ -19,25 +19,21 @@ goa_nork <- function(year, off_yr = FALSE){
   
   akfin = connect()
   
-  if(isTRUE(off_yr)) {
   q_catch(year, species=species, area=area, db=akfin)
-  # q_obs(year, species=species, area=area, db=akfin)
+  # commented functions are currently in development
+  # q_obs(year, species=norpac_species, area=area, db=akfin)
   q_bts_biomass(year, area=area, species=afsc_species, by='total', db=akfin) 
-  disconnect(akfin)    
-  
+   
+  if(isTRUE(off_yr)) {
+    disconnect(akfin) 
   } else {
-
-    q_catch(year, species=species, area=area, db=akfin)
-    # commented functions are currently in development
-    # q_obs(year, species=species, area=area, db=akfin)
-    q_bts_biomass(year, area=area, species=afsc_species, by='total', db=akfin) 
     # q_fsh_specimen(year, species, area, db, print_sql=FALSE, save=TRUE)
     # q_fsh_length(year, species, area, db, print_sql=FALSE, save=TRUE)  
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year, species, area, db, print_sql=FALSE, save=TRUE)
-    q_bts_length(year, species, area, db, print_sql=FALSE, save=TRUE)  
+    q_bts_specimen(year, species=afsc_species, area, db, print_sql=FALSE, save=TRUE)
+    q_bts_length(year, species=afsc_species, area, db, print_sql=FALSE, save=TRUE)  
     disconnect(afsc)
   }
   
