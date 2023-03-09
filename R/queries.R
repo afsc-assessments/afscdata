@@ -619,6 +619,9 @@ q_fish_ticket <- function(year, area, species, db, add_fields=NULL, print_sql=FA
 #' query nmfs longline survey raw length frequencies at the depth stratum and
 #' station level
 #' 
+#' longline database documentation available on
+#' \href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
+#' 
 #' primarily used in stock assessments for calculating sample size tables
 #' 
 #' sex-specific lengths are collected for sablefish, giant grenadier, spiny
@@ -665,6 +668,10 @@ q_lls_length <- function(year, area=c('goa', 'bs', 'ai'), species, use_historica
     a3 <- c('Aleutians')} else {a3 <- NULL}
   area <- c(a1, a2, a3)
   
+  # message center
+  if(any(!area %in% c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast', 'Bering Sea', 'Aleutians'))) {
+    stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
+  }
   if(is.logical(use_historical)==FALSE) {
     stop('appropriate args for use_historical are TRUE or FALSE')
   } else {
@@ -706,7 +713,7 @@ q_lls_length <- function(year, area=c('goa', 'bs', 'ai'), species, use_historica
 
 #' query nfms longline survey relative population numbers or weights
 #' 
-#' database documentation available on
+#' longline database documentation available on
 #' \href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
 #' 
 #' variables of interest:
@@ -912,6 +919,9 @@ q_lls_rpn <- function(year, area=c('goa', 'bs', 'ai'), species, by='fmpsubarea',
 
 #' query nfms longline survey rpn-weighted length frequencies 
 #' 
+#' longline database documentation available on
+#' \href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
+#' 
 #' sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns are
 #' adjusted for sperm whale depredation
 #' 
@@ -1041,6 +1051,91 @@ q_lls_rpn_length <- function(year, area=c('goa', 'bs', 'ai'), species, by='fmpsu
                    file = here::here(year, "data", "sql", paste0("lls_rpn_length_sql.txt")))
     
     message("longline survey rpn-weighted length frequencies can be found in the data/raw folder,\n
+            and the associated query is saved in data/sql")
+  } else if(isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
+#' query nmfs longine survey specimen data (age, length, weight, sex, maturity).
+#' only available for sablefish!
+#' 
+#' longline database documentation available on
+#' \href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
+#' 
+#' source table on akfin:
+#' afsc.lls_age_view
+#' 
+#' @param year max year to retrieve data from 
+#' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
+#' @param use_historical T/F include historical Japanese survey data in the
+#'   results (default: false)
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#'  
+#' @return saves lls sablefish specimen data as data/raw/lls_specimen_data.csv or outputs to
+#'   the global environment. also saves a copy of the SQL code used for the
+#'   query and stores it in the data/sql folder.
+#' @export q_lls_specimen
+#'
+#' @examples
+#' \dontrun{
+#' # sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) in the gulf of alaska
+#' db <- afscdata::connect("akfin")
+#' q_lls_specimen(year = 2000, area = "goa", use_historical = FALSE, db = db, save = FALSE)
+#' } 
+q_lls_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
+                         db=akfin, print_sql=FALSE, save=TRUE) {
+  
+  # adjust filters
+  yr = year
+  area = toupper(area)
+  if(any(area %in% c('GOA'))) {
+    a1 <- c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast')
+  } else {a1 <- NULL}
+  if(any(area %in% c('BS', 'BSAI'))) {
+    a2 <- c('Bering Sea')} else {a2 <- NULL}
+  if(any(area %in% c('AI', 'BSAI'))) {
+    a3 <- c('Aleutians')} else {a3 <- NULL}
+  area <- c(a1, a2, a3)
+  
+  # message center
+  if(any(!area %in% c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast', 'Bering Sea', 'Aleutians'))) {
+    stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
+  }
+  if(is.logical(use_historical)==FALSE) {
+    stop('appropriate args for use_historical are TRUE or FALSE')
+  } else {
+    if(isFALSE(use_historical)) {
+      srv <- 'United States'
+    } else {
+      srv <- c('United States', 'Japan')
+    } 
+  }
+  
+  table = dplyr::tbl(db, dplyr::sql('afsc.lls_age_view')) %>%
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(year <= yr, 
+                  country %in% srv,
+                  council_sablefish_management_area %in% area) %>% 
+    dplyr::arrange(year)
+  
+  if(isTRUE(save)){
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+    }
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_specimen_data.csv")), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", paste0("lls_specimen_sql.txt")))
+    
+    message("sablefish longline survey specimen data can be found in the data/raw folder,\n
             and the associated query is saved in data/sql")
   } else if(isFALSE(save) & isFALSE(print_sql)) {
     dplyr::collect(table)

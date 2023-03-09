@@ -39,10 +39,13 @@ saves a copy of the SQL code used for the query and stores it in the
 data/sql folder.
 }
 \description{
-sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns are
-adjusted for sperm whale depredation
+longline database documentation available on
+\href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
 }
 \details{
+sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns are
+adjusted for sperm whale depredation
+
 all other species: includes data from all strata (depths 151-1000 m)
 
 sex-specific lengths are collected for sablefish, giant grenadier, spiny

@@ -44,7 +44,7 @@ the global environment. also saves a copy of the SQL code used for the
 query and stores it in the data/sql folder.
 }
 \description{
-database documentation available on
+longline database documentation available on
 \href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
 }
 \details{
