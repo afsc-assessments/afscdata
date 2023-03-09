@@ -1,157 +1,3 @@
-#' query nfms longline survey relative population numbers or weights
-#' 
-#' available source tables on akfin:
-#' lls_area_stratum_rpn
-#' lls_area_stratum_rpn_depred
-#' lls_area_rpn_all_strata
-#' lls_area_rpn_3_to_7
-#' lls_area_rpn_3_to_7_depred
-#' lls_council_sablefish_area_all_strata
-#' lls_council_sablefish_area_3_to_7_depred
-#' lls_fmp_subarea_all_strata
-#' lls_fmp_subarea_3_to_7_depred
-#' lls_fmp_all_strata* not available in this fcn
-#' lls_ak_wide_3_to_7_depred
-#'  
-#' @param year max year to retrieve data from 
-#' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
-#' @param species 5 digit afsc/race species code(s) e.g., 79210 or c(79210, 10110)
-#' @param by 'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak
-#'   slope), 'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
-#'   'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
-#'   sablefish). default: 'fmpsubarea' - can only call a single area
-#' @param use_historical T/F include historical Japanese survey data in the
-#'   results (default: false)
-#' @param db  the database to query (akfin)
-#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
-#' @param save save the file in designated folder, if FALSE outputs to global environment
-#' 
-q_lls_rpn <- function(year, area=c('goa', 'bs', 'ai'), species, by='fmpsubarea', 
-                      use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
-  
-  # adjust filters
-  yr = year
-  sp = species
-  if(by %in% c('akwide', 'AKWIDE')) {
-    message("when by='akwide', the area argument is ignored within this function.\n")
-    area <- c('goa', 'bs', 'ai')
-  }
-  if(any(area == 'bsai')) {
-    area <- c(area[area != 'bsai'], 'bs', 'ai')
-  }
-  area = toupper(area)
-  by = tolower(by)
-  
-  # message center
-  if(any(!area %in% c('GOA', 'BS', 'AI'))) {
-    stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
-  }
-  
-  if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide')) | length(by) > 1){ 
-    stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'.\n 
-         only a single arg may be used.")
-  }
-  
-  if(is.logical(use_historical)==FALSE) {
-    stop('appropriate args for use_historical are TRUE or FALSE')
-  } else {
-    if(isFALSE(use_historical)) {
-      srv <- 'United States'
-    } else {
-      srv <- c('United States', 'Japan')
-    } 
-  }
-  # special sablefish
-  if(species == 20510) {
-    strata <- '_3_to_7'
-    depred <- '_depred'
-    message("sablefish rpns:\n
-            -are corrected for sperm whale depredation and area summaries exlude gully stations (stratum 2b) \n
-            -use interpolated bs/ai values in alternating survey years when aggregated to the fmp or ak-wide level \n
-            -assume fixed rpn/rpw data in the ai (1990-1995) and bs (1990-1996) when no bs/ai surveys occurred\n
-            -assume fixed ak-wide rpn/rpws from 1979-1994 for the historical Japanese survey \n")
-  } else {
-    strata <- '_all_strata'
-    depred <- ''
-  }
-  
-  # decide which tables to use 
-  if(by == 'depth') {
-    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_stratum_rpn", depred))) %>%
-      # Code used to flag geographic areas for calculations of relative
-      # population weights and numbers.
-      dplyr::filter(EXPLOITABLE == '1')
-  } else if(by == 'geoarea') {
-    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_rpn", strata, depred))) %>%
-      dplyr::filter(EXPLOITABLE == '1')
-  } else if(by == 'councilarea') {
-    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_council_sablefish_area", strata, depred)))
-  } else if(by == 'fmpsubarea') {
-    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_fmp_subarea", strata, depred)))
-  } else if(by == 'akwide') {
-    if(species != 20510) {
-      stop("ak-wide summaries are only available for sablefish. the lls alternates between the bs/ai in odd/even years, and interpolation methods should be evaluated on a species-specific basis.")
-    }
-    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_ak_wide", strata, depred)))
-  }
-  
-  # set up filters that are consistent across all tables
-  table <- table %>% 
-    dplyr::rename_with(tolower) %>% 
-    dplyr::filter(year <= yr, 
-                  species_code %in% sp,
-                  country %in% srv)
-  
-  # set up table-specific area filters
-  area_lkup = data.frame(fmparea = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
-                         councilarea = c('Bering Sea', 'Aleutians', 
-                                         'East Yakutat/Southeast', 
-                                         'West Yakutat', 
-                                         'Central Gulf of Alaska', 
-                                         'Western Gulf of Alaska'),
-                         fmpsubarea = c('Bering Sea', 'Aleutians', 
-                                        'Eastern Gulf of Alaska', 
-                                        'Eastern Gulf of Alaska', 
-                                        'Central Gulf of Alaska', 
-                                        'Western Gulf of Alaska')) %>% 
-    dplyr::filter(fmparea %in% area)
-  
-  if(by %in% c('depth', 'geoarea', 'councilarea')) {
-    tmparea <- base::unique(area_lkup$councilarea)
-    table <- table %>% dplyr::filter(council_sablefish_management_area %in% tmparea) 
-  }
-  if(by %in% c('fmpsubarea')) {
-    tmparea <- base::unique(area_lkup$fmpsubarea)
-    table <- table %>% dplyr::filter(council_management_area %in% tmparea) 
-  }
-  
-  # id for saving data and sql files
-  id = by
-  if(by == 'depth') {
-    id = "depthstratum"
-  }
-  
-  if(isTRUE(save)){
-    if(isFALSE(dir.exists(here::here(year, "data")))) {
-      stop("you must run afscdata::setup_folders() before you can save to the default location")
-      }
-    dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_rpn_", id, "_data.csv")), 
-                         delim = ",")
-    capture.output(show_query(table), 
-                   file = here::here(year, "data", "sql", paste0("lls_rpn_", id, "sql.txt")))
-    
-    message("longline survey data can be found in the data/raw folder,\n
-            and the associated query is saved in data/sql")
-  } else if (isFALSE(save) & isFALSE(print_sql)) {
-    dplyr::collect(table)
-  } else {
-    dplyr::show_query(table)
-    message("this sql code is passed to the server")
-  }
-  
-}
-
 #' query fishery catch data from AKFIN server
 #'
 #' Note that this function produces results that may be confidential. 
@@ -630,7 +476,6 @@ q_bts_biomass <- function(year, area, species, by='total', db, print_sql=FALSE, 
 #' 
 #' currently setup for GOA rockfish as unsure how others are estimating data through the end of the year
 #'
-#'
 #' @param year max year to retrieve data from 
 #' @param species numeric agency values e.g. c("131", "132") - must be 3 digit codes (norpac species codes)
 #' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI), can use all fmp_areas or all fmp_subareas, but don't mix the two
@@ -769,4 +614,439 @@ q_fish_ticket <- function(year, area, species, db, add_fields=NULL, print_sql=FA
     dplyr::show_query(table)
     message("this sql code is passed to the server")
   }
+}
+
+#' query nmfs longline survey raw length frequencies at the depth stratum and
+#' station level
+#' 
+#' primarily used in stock assessments for calculating sample size tables
+#' 
+#' sex-specific lengths are collected for sablefish, giant grenadier, spiny
+#' dogfish, pacific cod, and greenland turbot (starting in 2021!). sex codes:
+#' 1=male, 2=female, 3=unknown
+#' 
+#' source table on akfin:
+#' lls_length_summary_view
+#' 
+#' @param year max year to retrieve data from 
+#' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
+#' @param species 5 digit afsc/race species code(s) e.g., 20510 for sablefish or
+#'   c(30576, 30050) for both shortraker and rougheye/blackspotted
+#' @param use_historical T/F include historical Japanese survey data in the
+#'   results (default: false)
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#'  
+#' @return saves lls length data as data/raw/lls_length_data.csv or outputs to
+#'   the global environment. also saves a copy of the SQL code used for the
+#'   query and stores it in the data/sql folder.
+#' @export q_lls_length
+#'
+#' @examples
+#' \dontrun{
+#' # raw sablefish length frequencies in 1988 (year when the domestic survey started) in the gulf of alaska
+#' db <- afscdata::connect("akfin")
+#' q_lls_length(year = 1988, species = 20510, area = "goa", use_historical = FALSE, db = db, save = FALSE)
+#' } 
+q_lls_length <- function(year, area=c('goa', 'bs', 'ai'), species, use_historical=FALSE, 
+                         db=akfin, print_sql=FALSE, save=TRUE) {
+  
+  # adjust filters
+  yr = year
+  sp = species
+  area = toupper(area)
+  if(any(area %in% c('GOA'))) {
+    a1 <- c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast')
+  } else {a1 <- NULL}
+  if(any(area %in% c('BS', 'BSAI'))) {
+    a2 <- c('Bering Sea')} else {a2 <- NULL}
+  if(any(area %in% c('AI', 'BSAI'))) {
+    a3 <- c('Aleutians')} else {a3 <- NULL}
+  area <- c(a1, a2, a3)
+  
+  if(is.logical(use_historical)==FALSE) {
+    stop('appropriate args for use_historical are TRUE or FALSE')
+  } else {
+    if(isFALSE(use_historical)) {
+      srv <- 'United States'
+    } else {
+      srv <- c('United States', 'Japan')
+    } 
+  }
+  
+  table = dplyr::tbl(db, dplyr::sql("afsc.lls_length_summary_view")) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(year <= yr, 
+                  species_code %in% sp,
+                  country %in% srv,
+                  council_sablefish_mgmt_area %in% area) %>% 
+    dplyr::arrange(year)
+  
+  if(isTRUE(save)){
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+    }
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_length_data.csv")), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", paste0("lls_length_sql.txt")))
+    
+    message("longline survey length data can be found in the data/raw folder,\n
+            and the associated query is saved in data/sql")
+  } else if(isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
+#' query nfms longline survey relative population numbers or weights
+#' 
+#' database documentation available on
+#' \href{https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf}{akfin}
+#' 
+#' variables of interest:
+#' cpue = numbers per skate (1 skate = 45 hooks); relative population numbers
+#' (rpns) = area-weighted cpue (area estimates are defined by depth strata and
+#' geographic area), relative population weights (rpw) = rpn multiplied by mean
+#' fish weight, which is calculated using an allometric relationship and the
+#' mean length of fish collected in a given strata and geographic area. 
+#' 
+#' methods for variance estimation of these indices are documented on
+#' \href{https://apps-afsc.fisheries.noaa.gov/REFM/Docs/2016/GOAsablefish.pdf}{p
+#' 26 the 2016 sablefish safe pdf} (p 350 of the goa safe).
+#'
+#' the time series starts for the domestic longline survey in the bs and ai
+#' starts in 1996, and there are historical data available in the bs/ai from the
+#' cooperative Japanese/U.S. survey. in the modern/domestic survey, the eastern
+#' ai are surveyed in even years, and the bs is surveyed in odd years. the
+#' longline survey does not sample the western ai. estimates in nw and sw ai are
+#' based on fixed ratios in the ne and se ai, respectively, from historical
+#' cooperative Japanese/U.S. surveys in 1979-1994.
+#'
+#' sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns are
+#' adjusted for sperm whale depredation
+#' 
+#' all other species: includes data from all strata (depths 151-1000 m)
+#' 
+#' source tables on akfin:
+#' lls_area_stratum_rpn
+#' lls_area_stratum_rpn_depred
+#' lls_area_rpn_all_strata
+#' lls_area_rpn_3_to_7
+#' lls_area_rpn_3_to_7_depred
+#' lls_council_sablefish_area_all_strata
+#' lls_council_sablefish_area_3_to_7_depred
+#' lls_fmp_subarea_all_strata
+#' lls_fmp_subarea_3_to_7_depred
+#' lls_ak_wide_3_to_7_depred
+#'  
+#' @param year max year to retrieve data from 
+#' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
+#' @param species 5 digit afsc/race species code(s) e.g., 20510 for sablefish or
+#'   c(30576, 30050) for both shortraker and rougheye/blackspotted
+#' @param by 'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak
+#'   slope), 'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
+#'   'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
+#'   sablefish). default: 'fmpsubarea' - can only call a single area. note that
+#'   variances are not available at the depth stratum level (by = 'depth')
+#' @param use_historical T/F include historical Japanese survey data in the
+#'   results (default: false)
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+#' @return saves lls rpn/rpw data as data/raw/lls_rpn_(by)_data.csv or outputs to
+#'   the global environment. also saves a copy of the SQL code used for the
+#'   query and stores it in the data/sql folder.
+#' @export q_lls_rpn
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("akfin")
+#' # sablefish domestic survey rpn/rpw time series (1990-2022) by goa fmp subarea (wgoa,
+#' # cgoa, egoa). note that sablefish rpns are corrected for sperm whale
+#' # depredation and only include data from strata 3-7
+#' q_lls_rpn(year = 2022, species = 20510, area = 'goa', by = 'fmpsubarea', use_historical = FALSE, db = db, save = FALSE)
+#' 
+#' # pcod domestic survey rpn/rpw time series by bering sea geographic area and
+#' # depth stratum. note that the domestic bs time series is odd years starting in
+#' # 1997 (ai starts in 1996).
+#' q_lls_rpn(year = 2022, species = 21720, area = 'bs', by = 'depth', use_historical = FALSE, db = db, save = FALSE) 
+#' }
+q_lls_rpn <- function(year, area=c('goa', 'bs', 'ai'), species, by='fmpsubarea', 
+                      use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
+  
+  # adjust filters
+  yr = year
+  sp = species
+  if(by %in% c('akwide', 'AKWIDE')) {
+    message("when by='akwide', the area argument is ignored within this function.\n")
+    area <- c('goa', 'bs', 'ai')
+  }
+  if(any(area == 'bsai')) {
+    area <- c(area[area != 'bsai'], 'bs', 'ai')
+  }
+  area = toupper(area)
+  by = tolower(by)
+  
+  # message center
+  if(any(!area %in% c('GOA', 'BS', 'AI'))) {
+    stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
+  }
+  
+  if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide')) | length(by) > 1){ 
+    stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'.\n 
+         only a single arg may be used.")
+  }
+  
+  if(is.logical(use_historical)==FALSE) {
+    stop('appropriate args for use_historical are TRUE or FALSE')
+  } else {
+    if(isFALSE(use_historical)) {
+      srv <- 'United States'
+    } else {
+      srv <- c('United States', 'Japan')
+    } 
+  }
+  # special sablefish
+  if(any(species %in% 20510)) {
+    strata <- '_3_to_7'
+    depred <- '_depred'
+    message("sablefish rpns:\n
+            -are corrected for sperm whale depredation and area summaries \n
+            -only include data from depth strata 3-7 (201-1000 m) \n
+            -use interpolated bs/ai values in alternating survey years when aggregated to the fmp or ak-wide level \n
+            -assume fixed rpn/rpw data in the ai (1990-1995) and bs (1990-1996) when no bs/ai surveys occurred\n
+            -assume fixed ak-wide rpn/rpws from 1979-1994 for the historical Japanese survey \n")
+    if(base::length(species) > 1) {
+      warning("we do not recommended querying sablefish with other species. \n 
+               output will only include data from strata 3-7, which may be inappropriate for non-sablefish species.")
+    }
+  } else {
+    strata <- '_all_strata'
+    depred <- ''
+  }
+  
+  # decide which tables to use 
+  if(by == 'depth') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_stratum_rpn", depred))) %>%
+      # Code used to flag geographic areas for calculations of relative
+      # population weights and numbers.
+      dplyr::filter(EXPLOITABLE == '1')
+  } else if(by == 'geoarea') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_rpn", strata, depred))) %>%
+      dplyr::filter(EXPLOITABLE == '1')
+  } else if(by == 'councilarea') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_council_sablefish_area", strata, depred)))
+  } else if(by == 'fmpsubarea') {
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_fmp_subarea", strata, depred)))
+  } else if(by == 'akwide') {
+    if(species != 20510) {
+      stop("ak-wide summaries are only available for sablefish. the lls alternates between the bs/ai in odd/even years, and interpolation methods should be evaluated on a species-specific basis.")
+    }
+    table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_ak_wide", strata, depred)))
+  }
+  
+  # set up filters that are consistent across all tables
+  table <- table %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(year <= yr, 
+                  species_code %in% sp,
+                  country %in% srv) %>% 
+    dplyr::arrange(year)
+  
+  # set up table-specific area filters
+  area_lkup = data.frame(fmparea = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
+                         councilarea = c('Bering Sea', 'Aleutians', 
+                                         'East Yakutat/Southeast', 
+                                         'West Yakutat', 
+                                         'Central Gulf of Alaska', 
+                                         'Western Gulf of Alaska'),
+                         fmpsubarea = c('Bering Sea', 'Aleutians', 
+                                        'Eastern Gulf of Alaska', 
+                                        'Eastern Gulf of Alaska', 
+                                        'Central Gulf of Alaska', 
+                                        'Western Gulf of Alaska')) %>% 
+    dplyr::filter(fmparea %in% area)
+  
+  if(by %in% c('depth', 'geoarea', 'councilarea')) {
+    tmparea <- base::unique(area_lkup$councilarea)
+    table <- table %>% dplyr::filter(council_sablefish_management_area %in% tmparea) 
+  }
+  if(by %in% c('fmpsubarea')) {
+    tmparea <- base::unique(area_lkup$fmpsubarea)
+    table <- table %>% dplyr::filter(council_management_area %in% tmparea) 
+  }
+  
+  # id for saving data and sql files
+  id = by
+  if(by == 'depth') {
+    id = "depthstratum"
+  }
+  
+  if(isTRUE(save)){
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+    }
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_rpn_", id, "_data.csv")), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", paste0("lls_rpn_", id, "_sql.txt")))
+    
+    message("longline survey data can be found in the data/raw folder,\n
+            and the associated query is saved in data/sql")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
+#' query nfms longline survey rpn-weighted length frequencies 
+#' 
+#' sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns are
+#' adjusted for sperm whale depredation
+#' 
+#' all other species: includes data from all strata (depths 151-1000 m)
+#' 
+#' sex-specific lengths are collected for sablefish, giant grenadier, spiny
+#' dogfish, pacific cod, and greenland turbot (starting in 2021!). sex codes:
+#' 1=male, 2=female, 3=unknown
+#' 
+#' results only include geographic/stratum areas that are used for rpns calc
+#' (i.e., exploitable == 1). also ' records with length = 999 have been removed.
+#' these records are present in the database to account for instances when there '
+#' was catch in a stratum/station but no lengths collected. the ' 999 lengths
+#' ensure rpns sum properly to the area-level but should not be included in the
+#' length compositions.
+#' 
+#' available source tables on akfin:
+#' lls_length_area_3_to_7_depred
+#' lls_length_area_all_strata
+#'
+#' @param year max year to retrieve data from 
+#' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
+#' @param species 5 digit afsc/race species code(s) e.g., 20510 for sablefish or
+#'   c(30576, 30050) for both shortraker and rougheye/blackspotted
+#' @param use_historical T/F include historical Japanese survey data in the
+#'   results (default: false)
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+#' @return saves lls rpn-weighted length frequency data as
+#'   data/raw/lls_rpn_length_data.csv or outputs to the global environment. also
+#'   saves a copy of the SQL code used for the query and stores it in the
+#'   data/sql folder.
+#' @export q_lls_rpn_length
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("akfin")
+#' # sablefish domestic longline survey rpn-weighted length frequencies (1990-2022) for
+#' # goa and bsai. note that sablefish rpns are corrected for sperm whale 
+#' # depredation and only include data from strata 3-7
+#' q_lls_rpn_length(year = 2022, species = 20510, area = c('bsai','goa'), use_historical = FALSE, db = db, save = FALSE)
+#' 
+#' # pcod domestic longline survey rpn-weighted length frequencies (1997-2022,
+#'# odd years only) for the bering sea
+#' q_lls_rpn_length(year = 2022, species = 21720, area = 'bs', use_historical = FALSE, db = db, save = FALSE) 
+#' }
+q_lls_rpn_length <- function(year, area=c('goa', 'bs', 'ai'), species, by='fmpsubarea', 
+                      use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
+  
+  # adjust filters
+  yr = year
+  sp = species
+  area = toupper(area)
+  if(any(area %in% c('GOA'))) {
+    a1 <- c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast')
+  } else {a1 <- NULL}
+  if(any(area %in% c('BS', 'BSAI'))) {
+    a2 <- c('Bering Sea')} else {a2 <- NULL}
+  if(any(area %in% c('AI', 'BSAI'))) {
+    a3 <- c('Aleutians')} else {a3 <- NULL}
+  area <- c(a1, a2, a3)
+  
+  # message center
+  if(any(!area %in% c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast', 'Bering Sea', 'Aleutians'))) {
+    stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
+  }
+  if(is.logical(use_historical)==FALSE) {
+    stop('appropriate args for use_historical are TRUE or FALSE')
+  } else {
+    if(isFALSE(use_historical)) {
+      srv <- 'United States'
+    } else {
+      srv <- c('United States', 'Japan')
+    } 
+  }
+  # special sablefish
+  if(any(species %in% 20510)) {
+    strata <- '_3_to_7'
+    depred <- '_depred'
+    message("sablefish rpn-weighted length frequencies:\n
+            -are corrected for sperm whale depredation and area summaries \n
+            -only include data from depth strata 3-7 (201-1000 m) \n")
+    if(base::length(species) > 1) {
+      warning("we do not recommended querying sablefish with other species. \n 
+               output will only include data from strata 3-7, which may be inappropriate for non-sablefish species.")
+    }
+  } else {
+    strata <- '_all_strata'
+    depred <- ''
+  }
+  
+  # length freq table 
+  aa <- dplyr::tbl(db, dplyr::sql(paste0('afsc.lls_length_rpn_by_area', strata, depred))) %>%
+    dplyr::rename_with(tolower) 
+  
+  # area look up table
+  bb <- dplyr::tbl(db, dplyr::sql('afsc.lls_area_view')) %>% 
+    dplyr::rename_with(tolower) 
+  
+  # join, filter and query
+  table <- aa %>% 
+    dplyr::left_join(dplyr::distinct(bb, fmp = fmp_management_area, council_sablefish_management_area, 
+                                     council_management_area, geographic_area_name, exploitable)) %>%
+    dplyr::filter(year <= yr,                  
+                  species_code %in% species,
+                  council_sablefish_management_area %in% area,
+                  country %in% srv,
+                  # only include geographic/stratum areas that are used for rpns calc
+                  exploitable == 1,
+                  # records with length = 999 account for instances when there
+                  # was catch in a stratum/station but no lengths collected. the
+                  # 999 lengths ensure rpns sum properly to the area-level but
+                  # should not be included in the length compositions.
+                  length < 999) %>%
+    dplyr::arrange(year)
+  
+  if(isTRUE(save)){
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+    }
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_rpn_length_data.csv")), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", paste0("lls_rpn_length_sql.txt")))
+    
+    message("longline survey rpn-weighted length frequencies can be found in the data/raw folder,\n
+            and the associated query is saved in data/sql")
+  } else if(isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
 }
