@@ -661,9 +661,9 @@ q_fish_obs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
   yr = year
   
   
-  table <- dplyr::tbl(akfin, dplyr::sql("norpac.debriefed_spcomp_mv")) %>% 
+  table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>% 
     dplyr::rename_with(tolower) %>% 
-    dplyr::left_join(dplyr::tbl(akfin, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+    dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                        dplyr::rename_with(tolower) %>% 
                        dplyr::select(fmp_subarea, gear_type, join_key)) %>% 
     dplyr::select(year, haul_date, species, fmp_subarea, gear_type, extrapolated_weight) %>%
@@ -726,7 +726,7 @@ q_fish_ticket <- function(year, area, species, db, add_fields=NULL, print_sql=FA
   # select columns to import
   if(!is.null(add_fields)) {
     if(grepl("\\*", add_fields)){
-      table <- dplyr::tbl(akfin, dplyr::sql("council.comprehensive_ft")) %>% 
+      table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_ft")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::filter(year <= yr, fmp_subarea %in% area)
     }
@@ -741,7 +741,7 @@ q_fish_ticket <- function(year, area, species, db, add_fields=NULL, print_sql=FA
              tolower(add_fields))
     
     
-    table <- dplyr::tbl(akfin, dplyr::sql("council.comprehensive_ft")) %>% 
+    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_ft")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::select(!!!cols) %>% 
       dplyr::filter(year <= yr, fmp_subarea %in% area)
