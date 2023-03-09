@@ -692,4 +692,81 @@ q_fish_obs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
   }
 }
   
+
+#' query fish ticket data
+#'
+#' @param year max year to query through (and location to save results)
+#' @param area fmp_subare
+#' @param species species group code e.g., "DUSK" 
+#' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI), can use all fmp_areas or all fmp_subareas, but don't mix the two
+#' @param db data server to connect to (akfin)
+#' @param add_fields add other columns to the database (must currently exist on server). "*" will return all table columns available
+#' @param print_sql outputs the sql query instead of calling the data - save must be false
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
+#' 
+#' @return
+#' @export
+#'
+#' @examples
+q_fish_ticket <- function(year, area, species, db, add_fields=NULL, print_sql=FALSE, save=TRUE) {
+  # globals 
+  area = toupper(area)
+  area = if(isTRUE(area == "GOA")){
+    area = c("WG", "CG", "WY", "EY", "SE")
+  } else if(isTRUE(area=="BSAI")){
+    area = c("BS", "AI")
+  } else if(sum(sapply(c("BSAI", "GOA"), grepl, area))==2){
+    area = c("WG", "CG", "WY", "EY", "SE", "BS", "AI")
+  } else {
+    area
+  }
+  yr = year
   
+  
+  # select columns to import
+  if(!is.null(add_fields)) {
+    if(grepl("\\*", add_fields)){
+      table <- dplyr::tbl(akfin, dplyr::sql("council.comprehensive_ft")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::filter(year <= yr, fmp_subarea %in% area)
+    }
+  }  else {
+    cols = c("akfin_year",                             
+             "cfec_pacfin_species_code",              
+             "adfg_h_ticket_type",               
+             "fmp_subarea",          
+             "management_area_district_code",               
+             "cfec_whole_pounds",            
+             "fmp_gear",
+             tolower(add_fields))
+    
+    
+    table <- dplyr::tbl(akfin, dplyr::sql("council.comprehensive_ft")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::select(!!!cols) %>% 
+      dplyr::filter(year <= yr, fmp_subarea %in% area)
+  }
+  
+
+    table <- dplyr::filter(table, cfec_pacfin_species_code %in% species) 
+  
+  # output
+  if(isTRUE(save)) {
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+    }
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "fishticket_data.csv"), 
+                         delim = ",")
+    
+    capture.output(dplyr::show_query(table), 
+                   file = here::here(year, "data", "sql", "fishticket_sql.txt"))
+    
+    message("fishery catch data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+}
