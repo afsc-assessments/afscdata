@@ -323,73 +323,6 @@ q_for_catch <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 }
 
 
-
-#' query bottom trawl survey length data from the AFSC server
-#' 
-#'
-#' @param year max year to retrieve data from 
-#' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
-#' @param area bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")
-#' @param db data server to connect to (afsc)
-#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
-#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
-#' 
-#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
-#' @export q_bts_length
-#'
-#' @examples
-#' \dontrun{
-#' db <- afscdata::connect("afsc")
-#' q_bts_length(year=2022, species=10110, area = "goa", db = db)
-#' }
-q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
-  
-  # globals
-  yr = year
-  area = toupper(area)
-  
-  # pull data sources
-  dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
-    rename_with(tolower) -> aa
-  
-  dplyr::tbl(db, dplyr::sql("racebase.haul")) %>% 
-    dplyr::rename_with(tolower) -> bb
-  
-  dplyr::tbl(db, dplyr::sql("racebase.length")) %>% 
-    dplyr::rename_with(tolower) -> cc
-  # join, filter and query
-  dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
-    dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
-                                   end_longitude, bottom_depth, abundance_haul, 
-                                   stratum)) %>%
-    dplyr::left_join(dplyr::select(cc, hauljoin, species_code, sex, length, 
-                                   frequency)) %>% 
-    dplyr::mutate(year = lubridate::year(start_date)) %>%
-    dplyr::select(-start_date) %>% 
-    dplyr::filter(abundance_haul == "Y", 
-                  year <= yr, 
-                  region %in% area, 
-                  species_code %in% species) %>% 
-    dplyr::arrange(year) -> table
-  
-  if(isTRUE(save)) {
-    dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
-                         delim = ",")
-    capture.output(show_query(table), 
-                   file = here::here(year, "data", "sql", "fsh_catch_sql.txt"))
-    
-    message("bottom trawl survey length data can be found in the data/raw folder")
-  } else if (isFALSE(save) & isFALSE(print_sql)) {
-    dplyr::collect(table)
-  } else {
-    dplyr::show_query(table)
-    message("this sql code is passed to the server")
-  }
-  
-}
-
-
 #' query bottom trawl survey length data from the AFSC server
 #' 
 #'
@@ -769,4 +702,87 @@ q_fish_ticket <- function(year, area, species, db, add_fields=NULL, print_sql=FA
     dplyr::show_query(table)
     message("this sql code is passed to the server")
   }
+}
+
+#' query fishery specimen data from the AKFIN server
+#' 
+#'
+#' @param year  max year to retrieve data from 
+#' @param species 3 digit species codes (e.g., 201) - can place multiple in a vector c(201, 131)
+#' @param area bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")
+#' @param db data server to connect to (afsc)
+#' @param add_fields add other columns to the database (must currently exist on server). "*" will return all table columns available
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
+#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_fsh_specimen
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("afsc")
+#' q_bts_length(year=2022, species=21921, area = "goa", db = db)
+#' } 
+q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, save=TRUE){
+  
+  # globals 
+  area = toupper(area)
+  area = if(isTRUE(area == "GOA")){
+    area = c("WG", "CG", "WY", "EY", "SE")
+  } else if(isTRUE(area=="BSAI")){
+    area = c("BS", "AI")
+  } else if(sum(sapply(c("BSAI", "GOA"), grepl, area))==2){
+    area = c("WG", "CG", "WY", "EY", "SE", "BS", "AI")
+  } else {
+    area
+  }
+  
+  yr = year
+  sp = species
+  
+  
+  # select columns to import
+  if(!is.null(add_fields)) {
+    if(grepl("\\*", add_fields)){
+      table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
+        dplyr::rename_with(tolower) %>% 
+        dplyr::filter(year <= yr & year>0, 
+                      fmp_subarea %in% area, 
+                      species %in% sp,
+                      !is.na(age)) %>% 
+        dplyr::arrange(year)
+    }
+  }  else {
+    cols = c("year", "performance", "specimen_type", 
+             "species", "fmp_gear", "fmp_area", "fmp_subarea", 
+             "age", "length", "weight",
+             tolower(add_fields))
+    
+    
+    table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::select(!!!cols) %>% 
+      dplyr::filter(year <= yr & year > 0, 
+                    fmp_subarea %in% area, 
+                    species %in% sp,
+                    !is.na(age)) %>% 
+      dplyr::arrange(year)
+  }
+  
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "fsh_specimen_data.csv"), 
+                         delim = ",")
+    capture.output(show_query(table), 
+                   file = here::here(year, "data", "sql", "fsh_specimen_sql.txt"))
+    
+    message("bottom trawl survey specimen data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+  
 }
