@@ -130,7 +130,7 @@ setup_folders <- function(year, dirs = c("raw", "user_input", "output", "sara", 
 #' @param loc location to save file if different from default
 #' 
 #' @return a query date file saved as `year/data/raw/data_called.txt`
-#'
+#' @export q_date
 q_date <- function(year, loc = NULL){
   txt = "Data were downloaded on:"
   dt = format(Sys.time(), "%Y-%m-%d")
