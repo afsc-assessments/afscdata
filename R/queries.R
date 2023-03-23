@@ -665,7 +665,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
 #' # raw sablefish length frequencies in 1988 (year when the domestic survey started) 
 #' in the gulf of alaska
 #' 
-#' db <- afscdata::connect("akfin")
+#' db <- connect("akfin")
 #' q_lls_length(year=1988, species=20510, area="goa", db = db, save=FALSE)
 #' } 
 q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
@@ -798,7 +798,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
 #'
 #' @examples
 #' \dontrun{
-#' db <- afscdata::connect("akfin")
+#' db <- connect("akfin")
 #' # sablefish domestic survey rpn/rpw time series (1990-2022) by goa fmp subarea (wgoa,
 #' # cgoa, egoa). note that sablefish rpns are corrected for sperm whale
 #' # depredation and only include data from strata 3-7
@@ -1122,10 +1122,8 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
 #' # sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) 
 #' in the gulf of alaska
 #' 
-#' db <- afscdata::connect("akfin")
 #' q_lls_specimen(year=2000, area="goa", db=db, save=FALSE)
 #' } 
-#' 
 q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
                          db=akfin, print_sql=FALSE, save=TRUE) {
 

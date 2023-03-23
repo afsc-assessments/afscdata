@@ -56,7 +56,7 @@ lls_length_summary_view
 # raw sablefish length frequencies in 1988 (year when the domestic survey started) 
 in the gulf of alaska
 
-db <- afscdata::connect("akfin")
+db <- connect("akfin")
 q_lls_length(year=1988, species=20510, area="goa", db = db, save=FALSE)
 } 
 }

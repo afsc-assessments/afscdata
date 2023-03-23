@@ -43,6 +43,33 @@
     <loc>/reference/disconnect.html</loc>
   </url>
   <url>
+    <loc>/reference/fmp_key.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_atf_catch_1961_1990.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_dusk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_dusk_catch_1977_1990.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_nork.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_nork_catch_1961_1992.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_pop_catch_1960_1990.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_pop_fixed_fish_length_comp.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_rebs_catch_1977_2004.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -61,19 +88,55 @@
     <loc>/reference/q_catch.html</loc>
   </url>
   <url>
+    <loc>/reference/q_catch_foreign.html</loc>
+  </url>
+  <url>
     <loc>/reference/q_date.html</loc>
   </url>
   <url>
     <loc>/reference/q_fish_obs.html</loc>
   </url>
   <url>
+    <loc>/reference/q_fish_ticket.html</loc>
+  </url>
+  <url>
     <loc>/reference/q_for_catch.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_fsh_specimen.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_lls_length.html</loc>
   </url>
   <url>
     <loc>/reference/q_lls_rpn.html</loc>
   </url>
   <url>
+    <loc>/reference/q_lls_rpn_length.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_lls_sable_specimen.html</loc>
+  </url>
+  <url>
     <loc>/reference/q_psc.html</loc>
+  </url>
+  <url>
+    <loc>/reference/saa_pop_60.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sabl_fixed_abundance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sabl_fixed_comps.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sabl_new_areas.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sabl_vessel_lengths.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sabl_waa.html</loc>
   </url>
   <url>
     <loc>/reference/setup_folders.html</loc>

@@ -86,7 +86,7 @@ lls_ak_wide_3_to_7_depred
 }
 \examples{
 \dontrun{
-db <- afscdata::connect("akfin")
+db <- connect("akfin")
 # sablefish domestic survey rpn/rpw time series (1990-2022) by goa fmp subarea (wgoa,
 # cgoa, egoa). note that sablefish rpns are corrected for sperm whale
 # depredation and only include data from strata 3-7

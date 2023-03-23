@@ -51,7 +51,8 @@ Imports:
     stringi,
     tidytable,
     dplyr,
-    lubridate
+    lubridate,
+    stats
 Suggests: 
     knitr,
     rmarkdown

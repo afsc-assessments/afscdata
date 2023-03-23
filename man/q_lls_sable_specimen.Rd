@@ -46,8 +46,6 @@ afsc.lls_age_view
 # sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) 
 in the gulf of alaska
 
-db <- afscdata::connect("akfin")
 q_lls_specimen(year=2000, area="goa", db=db, save=FALSE)
 } 
-
 }
