@@ -6,8 +6,8 @@
 \usage{
 q_bts_biomass(
   year,
-  area,
   species,
+  area,
   by = "total",
   db,
   print_sql = FALSE,
@@ -17,9 +17,9 @@ q_bts_biomass(
 \arguments{
 \item{year}{max year to retrieve data from}
 
-\item{area}{options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area}
-
 \item{species}{5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)}
+
+\item{area}{options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area}
 
 \item{by}{"depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch}
 
