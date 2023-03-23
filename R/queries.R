@@ -968,6 +968,11 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
 #' @param species 5 digit afsc/race species code(s) e.g., 20510 for sablefish or
 #'   c(30576, 30050) for both shortraker and rougheye/blackspotted
 #' @param area options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs', 'ai')
+#' @param by 'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak
+#'   slope), 'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
+#'   'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
+#'   sablefish). default: 'fmpsubarea' - can only call a single area. note that
+#'   variances are not available at the depth stratum level (by = 'depth')
 #' @param use_historical T/F include historical Japanese survey data in the
 #'   results (default: false)
 #' @param db  the database to query (akfin)
@@ -986,12 +991,15 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
 #' # sablefish domestic longline survey rpn-weighted length frequencies (1990-2022) for
 #' # goa and bsai. note that sablefish rpns are corrected for sperm whale 
 #' # depredation and only include data from strata 3-7
-#' q_lls_rpn_length(year = 2022, species = 20510, area = c('bsai','goa'), use_historical = FALSE, db = db, save = FALSE)
+#' 
+#' q_lls_rpn_length(year=2022, species=20510, area=c('bsai','goa'), db=db, save=FALSE)
 #' 
 #' # pcod domestic longline survey rpn-weighted length frequencies (1997-2022,
 #'# odd years only) for the bering sea
-#' q_lls_rpn_length(year = 2022, species = 21720, area = 'bs', use_historical = FALSE, db = db, save = FALSE) 
+#'
+#' q_lls_rpn_length(year=2022, species=21720, area='bs', db=db, save=FALSE) 
 #' }
+#' 
 q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea', 
                       use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
 
