@@ -69,8 +69,8 @@
 #'
 #' @format A data frame with 14 observations and 2 variables:
 #' \describe{
-#' \item{year}{year of catch}
-#' \item{catch}{weight of catch in 1,000 t}
+#' \item{Year}{year of catch}
+#' \item{Catch}{weight of catch in 1,000 t}
 #' }
 "goa_dusk_catch_1977_1990"
 
@@ -80,8 +80,8 @@
 #'
 #' @format A data frame with 32 observations and 2 variables:
 #' \describe{
-#' \item{year}{year of catch}
-#' \item{catch}{weight of catch in 1,000 t}
+#' \item{Year}{year of catch}
+#' \item{Catch}{weight of catch in 1,000 t}
 #' }
 "goa_nork_catch_1961_1992"
 
@@ -92,8 +92,8 @@
 #'
 #' @format A data frame with 28 observations and 2 variables:
 #' \describe{
-#' \item{year}{year of catch}
-#' \item{catch}{weight of catch in 1,000 t}
+#' \item{Year}{year of catch}
+#' \item{Catch}{weight of catch in 1,000 t}
 #' }
 "goa_rebs_catch_1977_2004"
 

@@ -89,5 +89,5 @@ goa_dusk <- function(year, off_yr = FALSE){
     vroom::vroom_write(here::here(year, "data", "user_input", "goa_dusk_catch_1977_1990.csv"))
   
   # timestamp
-  afscdata:::q_date(year)
+  q_date(year)
 }

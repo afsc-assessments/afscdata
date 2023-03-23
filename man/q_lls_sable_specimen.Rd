@@ -43,8 +43,11 @@ afsc.lls_age_view
 }
 \examples{
 \dontrun{
-# sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) in the gulf of alaska
+# sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) 
+in the gulf of alaska
+
 db <- afscdata::connect("akfin")
-q_lls_specimen(year = 2000, area = "goa", use_historical = FALSE, db = db, save = FALSE)
+q_lls_specimen(year=2000, area="goa", db=db, save=FALSE)
 } 
+
 }

@@ -90,11 +90,13 @@ db <- afscdata::connect("akfin")
 # sablefish domestic survey rpn/rpw time series (1990-2022) by goa fmp subarea (wgoa,
 # cgoa, egoa). note that sablefish rpns are corrected for sperm whale
 # depredation and only include data from strata 3-7
-q_lls_rpn(year = 2022, species = 20510, area = 'goa', by = 'fmpsubarea', use_historical = FALSE, db = db, save = FALSE)
+
+q_lls_rpn(year=2022, species=20510, area='goa', by='fmpsubarea', db=db, save = FALSE)
 
 # pcod domestic survey rpn/rpw time series by bering sea geographic area and
 # depth stratum. note that the domestic bs time series is odd years starting in
 # 1997 (ai starts in 1996).
-q_lls_rpn(year = 2022, species = 21720, area = 'bs', by = 'depth', use_historical = FALSE, db = db, save = FALSE) 
+
+q_lls_rpn(year=2022, species=21720, area='bs', by='depth', db=db, save=FALSE) 
 }
 }
