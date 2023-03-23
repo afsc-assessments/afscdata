@@ -8,11 +8,12 @@
 A data frame with 2010 observations and 7 variables:
 \describe{
 \item{year}{year}
-\item{age}{if relevant, otherwise NA}
-\item{comp}{age or length}
 \item{fleet}{japan or domestic}
 \item{type}{age or length}
 \item{gear}{lls = longline survey, tf = trawl fishery, ts = trawl survey}
+\item{age}{if relevant, otherwise NA}
+\item{length}{length cm if relevant, otherwise NA}
+\item{comp}{age or length}
 \item{sex}{male, female or NA}
 }
 }

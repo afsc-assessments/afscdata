@@ -38,11 +38,11 @@ goa_nork <- function(year, off_yr = FALSE){
   }
   
   # read in archived catch data
-  afscdata::goa_nork_catch_1961_1992 %>%
+  goa_nork_catch_1961_1992 %>%
     vroom::vroom_write(here::here(year, "data", "user_input", "goa_nork_catch_1961_1992.csv"))
   
   # timestamp
-  afscdata:::q_date(year)
+  q_date(year)
 }
 
 #' raw data query for GOA dusky rockfish

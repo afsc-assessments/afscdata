@@ -113,11 +113,12 @@
 #' @format A data frame with 2010 observations and 7 variables:
 #' \describe{
 #' \item{year}{year}
-#' \item{age}{if relevant, otherwise NA}
-#' \item{comp}{age or length}
 #' \item{fleet}{japan or domestic}
 #' \item{type}{age or length}
 #' \item{gear}{lls = longline survey, tf = trawl fishery, ts = trawl survey}
+#' \item{age}{if relevant, otherwise NA}
+#' \item{length}{length cm if relevant, otherwise NA}
+#' \item{comp}{age or length}
 #' \item{sex}{male, female or NA}
 #' }
 "sabl_fixed_comps"
@@ -149,10 +150,10 @@
 #'
 #' A dataset containing weights at age for two time blocks, by sex
 #'
-#' @format A data frame with 120 observations and 3 variables:
+#' @format A data frame with 90 observations and 3 variables:
 #' \describe{
-#' \item{waa}{length bin groups}
-#' \item{wt_m}{male weight (kg)}
-#' \item{wt_f}{female weight (kg)}
+#' \item{waa}{weight at age}
+#' \item{sex}{male or female}
+#' \item{timeblock}{current or old}
 #' }
 "sabl_waa"

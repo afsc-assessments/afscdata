@@ -5,11 +5,11 @@
 \alias{sabl_waa}
 \title{Sablefish fixed weights at age}
 \format{
-A data frame with 120 observations and 3 variables:
+A data frame with 90 observations and 3 variables:
 \describe{
-\item{waa}{length bin groups}
-\item{wt_m}{male weight (kg)}
-\item{wt_f}{female weight (kg)}
+\item{waa}{weight at age}
+\item{sex}{male or female}
+\item{timeblock}{current or old}
 }
 }
 \usage{
