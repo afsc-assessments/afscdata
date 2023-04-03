@@ -157,7 +157,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #'
 #' @examples
 #' \dontrun{
-#' db <- afscdata::connect("afsc")
+#' db <- afscdata::connect("akfin")
 #' q_bts_biomass(year=2022, species=21921, area = "goa", by = "depth", db = db)
 #' } 
 q_bts_biomass <- function(year, species, area, by='total', db, print_sql=FALSE, save=TRUE) {
