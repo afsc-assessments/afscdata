@@ -24,6 +24,8 @@ goa_nork <- function(year, off_yr = FALSE){
   q_bts_biomass(year, area=area, species=afsc_species, by='total', db=akfin) 
    
   if(isTRUE(off_yr)) {
+    disconnect(akfin) 
+  } else {
     q_fsh_specimen(year, species, area, db, print_sql=FALSE, save=TRUE)
     q_fsh_length(year, species, area, db, print_sql=FALSE, save=TRUE)  
     disconnect(akfin)  
@@ -31,9 +33,7 @@ goa_nork <- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year, species=afsc_species, area, db=afsc)
     q_bts_length(year, species=afsc_species, area, db=afsc)  
-    disconnect(afsc) 
-  } else {
-    disconnect(akfin)
+    disconnect(afsc)
   }
   
   # read in archived catch data
@@ -71,6 +71,8 @@ goa_dusk <- function(year, off_yr = FALSE){
   q_bts_biomass(year=year, area=area, species=afsc_species, by='total', db=akfin) 
   
   if(isTRUE(off_yr)) {
+    disconnect(akfin) 
+  } else {
     # q_fsh_specimen(year=year, species=afsc_species, area=area, db=akfin)
     # q_fsh_length(year=year, species=afsc_species, area=area, db=akfin)  
     disconnect(akfin)  
@@ -78,9 +80,7 @@ goa_dusk <- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
     q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
-    disconnect(afsc) 
-  } else {
-    disconnect(akfin)
+    disconnect(afsc)
   }
   
   # read in archived catch data
@@ -103,7 +103,7 @@ goa_dusk <- function(year, off_yr = FALSE){
 #' \dontrun{
 #' goa_pop(year = 2022, off_yr = FALSE)
 #'}
-goa_pop <- function(year, off_yr = FALSE){
+goa_pop <- function(year, off_yr = NULL){
   
   # globals ----
   species = "POPA"
@@ -118,6 +118,8 @@ goa_pop <- function(year, off_yr = FALSE){
   q_bts_biomass(year=year, area=area, species=afsc_species, by='total', db=akfin) 
   
   if(isTRUE(off_yr)) {
+    disconnect(akfin) 
+  } else {
     q_fsh_specimen(year=year, species=norpac_species, area=area, db=akfin)
     q_fsh_length(year=year, species=norpac_species, area=area, db=akfin)  
     disconnect(akfin)  
@@ -126,18 +128,16 @@ goa_pop <- function(year, off_yr = FALSE){
     q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
     q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
     disconnect(afsc)
-  } else {
-    disconnect(akfin) 
   }
   
   # read in archived catch data
   afscdata::goa_pop_catch_1960_1990 %>%
     vroom::vroom_write(here::here(year, "data", "user_input", "goa_pop_catch_1960_1990.csv"))
   
-  gfdata::goa_pop_fixed_fish_length_comp %>%
+  afscdata::goa_pop_fixed_fish_length_comp %>%
     vroom::vroom_write(here::here(year, "data", "user_input", "goa_pop_fixed_fish_length_comp.csv"))
   
-  gfdata::saa_pop_60 %>%
+  afscdata::saa_pop_60 %>%
     vroom::vroom_write(here::here(year, "data", "user_input", "saa_pop_60.csv"))
  
    # timestamp
