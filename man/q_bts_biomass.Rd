@@ -48,7 +48,7 @@ for the goa and ai there is a "by" switch that queries by depth, stratum, area, 
 }
 \examples{
 \dontrun{
-db <- afscdata::connect("afsc")
+db <- afscdata::connect("akfin")
 q_bts_biomass(year=2022, species=21921, area = "goa", by = "depth", db = db)
 } 
 }

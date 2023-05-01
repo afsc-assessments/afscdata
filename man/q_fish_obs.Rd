@@ -28,7 +28,7 @@ currently setup for GOA rockfish as unsure how others are estimating data throug
 \examples{
 \dontrun{
 db <- afscdata::connect()
-q_fish_obs(year=2022, species="NORK", area="goa", db=db)
+q_fish_obs(year=2022, species=301, area="goa", db=db)
 }
 
 }
