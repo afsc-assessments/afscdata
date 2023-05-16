@@ -5,6 +5,8 @@
 \title{query prohibited species catch (psc) estimate}
 \usage{
 q_psc(year, target, area, db, save = TRUE)
+
+q_psc(year, target, area, db, save = TRUE)
 }
 \arguments{
 \item{year}{assessment year}
@@ -19,11 +21,21 @@ q_psc(year, target, area, db, save = TRUE)
 }
 \value{
 a csv of prohibited species catch by trip target group, saved in the data/output folder
+
+a csv of prohibited species catch by trip target group, saved in the data/output folder
 }
 \description{
 prohibited species catch (PSC) estimates reported in tons for halibut and herring, counts for salmon, crabs and other fish. Note that you can combine trip target codes c("k", "x") and regions - though results will be lumped together
+
+prohibited species catch (PSC) estimates reported in tons for halibut and herring, counts for salmon, crabs and other fish. Note that you can combine trip target codes c("k", "x") and regions - though results will be lumped together
 }
 \examples{
+\dontrun{
+akfin = connect()
+q_psc(year=2022, target="k", area="goa", db=akfin, save=FALSE)
+disconnect(akfin)
+}
+
 \dontrun{
 akfin = connect()
 q_psc(year=2022, target="k", area="goa", db=akfin, save=FALSE)

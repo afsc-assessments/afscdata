@@ -4,7 +4,7 @@
 \alias{goa_pop}
 \title{raw data query for GOA POP}
 \usage{
-goa_pop(year, off_yr = FALSE)
+goa_pop(year, off_yr = NULL)
 }
 \arguments{
 \item{year}{assessment year}
