@@ -55,7 +55,9 @@ Imports:
     stats
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 Depends: 
     R (>= 2.10)
 LazyData: true
+Config/testthat/edition: 3
