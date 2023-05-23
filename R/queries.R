@@ -594,7 +594,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
         dplyr::arrange(year)
     }
   }  else {
-    cols = c("year", "performance", "specimen_type", 
+    cols = c("year", "performance", "specimen_type", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
              "age", "length", "weight",
              tolower(add_fields))
