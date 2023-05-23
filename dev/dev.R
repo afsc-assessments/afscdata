@@ -16,9 +16,10 @@ devtools::build()
 
 use_r("queries")
 use_r("tables")
-
+use_test("queries")
 pkgdown::build_site(examples = FALSE)
 
+usethis::use_data(goa_pcod_larval_indices)
 
 # check/test keyring
 # keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "pswd1")
