@@ -116,6 +116,7 @@ goa_pop <- function(year, off_yr = NULL){
   q_catch(year=year, species=species, area=area, db=akfin)
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
   q_bts_biomass(year=year, area=area, species=afsc_species, by='total', db=akfin) 
+  q_bts_biomass(year=year, area=area, species=afsc_species, by='area', db=akfin) 
   
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
