@@ -401,13 +401,14 @@ q_catch_foreign <- function(year, species, area, db, print_sql=FALSE, save=TRUE)
 
 #' fishery observer data query
 #' 
-#' currently setup for GOA rockfish as unsure how others are estimating data through the end of the year
+#' currently setup for pulling haul level detail for age or length compositions
 #'
 #'
 #' @param year max year to retrieve data from 
 #' @param species numeric agency values e.g. c("131", "132") - must be 3 digit codes (norpac species codes)
 #' @param area fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI), can use all fmp_areas or all fmp_subareas, but don't mix the two
 #' @param db data server to connect to (akfin)
+#' @param type get "age" or "length" comp info: default "age"
 #' @param print_sql outputs the sql query instead of calling the data - save must be false
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
@@ -419,7 +420,7 @@ q_catch_foreign <- function(year, species, area, db, print_sql=FALSE, save=TRUE)
 #' q_fish_obs(year=2022, species=301, area="goa", db=db)
 #' }
 #'
-q_fish_obs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
+q_fish_obs <- function(year, species, area, db, type = 'age', print_sql=FALSE, save=TRUE) {
   # globals 
   area = toupper(area)
   area = if(isTRUE(area == "GOA")){
@@ -434,27 +435,51 @@ q_fish_obs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
   yr = year
   sp = species
   
+  if(type != "age"){
+    table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                         dplyr::rename_with(tolower) %>% 
+                         dplyr::select(fmp_subarea, gear_type, join_key)) %>% 
+      dplyr::select(year, haul_date, species, fmp_subarea, gear_type, extrapolated_weight) %>%
+      dplyr::filter(year<=yr, 
+                    species %in% sp, 
+                    fmp_subarea %in% area) 
+  } else {
   table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                        dplyr::rename_with(tolower) %>% 
                        dplyr::select(fmp_subarea, gear_type, join_key)) %>% 
     dplyr::select(year, haul_date, species, fmp_subarea, gear_type, extrapolated_weight) %>%
-    dplyr::filter(year>=(yr-3) & year<=(yr-1), 
+    dplyr::filter(year<=yr, 
                   species %in% sp, 
                   fmp_subarea %in% area) 
+  }
     
   # output
   if(isTRUE(save)) {
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
     }
-    dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_obs_data.csv"), 
-                         delim = ",")
     
-    capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "fsh_obs_sql.txt"))
+    if(type != "age"){
+      dplyr::collect(table) %>% 
+        vroom::vroom_write(here::here(year, "data", "raw", "fsh_length_obs_data.csv"), 
+                           delim = ",")
+      
+      capture.output(dplyr::show_query(table), 
+                     file = here::here(year, "data", "sql", "fsh_length_obs_sql.txt"))
+    } else {
+      dplyr::collect(table) %>% 
+        vroom::vroom_write(here::here(year, "data", "raw", "fsh_age_obs_data.csv"), 
+                           delim = ",")
+      
+      capture.output(dplyr::show_query(table), 
+                     file = here::here(year, "data", "sql", "fsh_age_obs_sql.txt"))
+    }
+    
+    
     
     message("fishery observer data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {

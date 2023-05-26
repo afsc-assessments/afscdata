@@ -4,7 +4,15 @@
 \alias{q_fish_obs}
 \title{fishery observer data query}
 \usage{
-q_fish_obs(year, species, area, db, print_sql = FALSE, save = TRUE)
+q_fish_obs(
+  year,
+  species,
+  area,
+  db,
+  type = "age",
+  print_sql = FALSE,
+  save = TRUE
+)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
@@ -15,6 +23,8 @@ q_fish_obs(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{db}{data server to connect to (akfin)}
 
+\item{type}{get "age" or "length" comp info: default "age"}
+
 \item{print_sql}{outputs the sql query instead of calling the data - save must be false}
 
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
@@ -23,7 +33,7 @@ q_fish_obs(year, species, area, db, print_sql = FALSE, save = TRUE)
 saves observer data as data/raw/fsh_obs_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
-currently setup for GOA rockfish as unsure how others are estimating data through the end of the year
+currently setup for pulling haul level detail for age or length compositions
 }
 \examples{
 \dontrun{
