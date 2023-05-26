@@ -113,21 +113,21 @@ goa_pop <- function(year, off_yr = NULL){
   
   akfin = connect()
   
-  q_catch(year=year, species=species, area=area, db=akfin)
-  q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
-  q_bts_biomass(year=year, area=area, species=afsc_species, by='total', db=akfin) 
-  q_bts_biomass(year=year, area=area, species=afsc_species, by='area', db=akfin) 
+  q_catch(year = year, species = species, area = area, db = akfin)
+  q_fish_obs(year = year, species = norpac_species, area = area, db = akfin)
+  q_bts_biomass(year = year, area = area, species = afsc_species, by = 'total', db = akfin) 
+  q_bts_biomass(year = year, area = area, species = afsc_species, by = 'area', db = akfin) 
   
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
-    q_fsh_specimen(year=year, species=norpac_species, area=area, db=akfin)
-    q_fsh_length(year=year, species=norpac_species, area=area, db=akfin)  
+    q_fsh_specimen(year = year, species = norpac_species, area = area, db = akfin)
+    q_fsh_length(year = year, species = norpac_species, area = area, db = akfin)  
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
-    q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
+    q_bts_specimen(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_length(year = year, species = afsc_species, area = area, db = afsc)  
     disconnect(afsc)
   }
   
