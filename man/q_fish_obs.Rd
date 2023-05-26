@@ -4,15 +4,7 @@
 \alias{q_fish_obs}
 \title{fishery observer data query}
 \usage{
-q_fish_obs(
-  year,
-  species,
-  area,
-  db,
-  type = "age",
-  print_sql = FALSE,
-  save = TRUE
-)
+q_fish_obs(year, species, area, db, print_sql = FALSE, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
@@ -22,8 +14,6 @@ q_fish_obs(
 \item{area}{fmp_area (GOA, BSAI) or fmp_subarea (BS, AI, WG, CG, WY, EY, SE) - also available (SEI, PWSI), can use all fmp_areas or all fmp_subareas, but don't mix the two}
 
 \item{db}{data server to connect to (akfin)}
-
-\item{type}{get "age" or "length" comp info: default "age"}
 
 \item{print_sql}{outputs the sql query instead of calling the data - save must be false}
 
