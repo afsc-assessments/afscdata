@@ -441,7 +441,6 @@ q_fish_obs <- function(year, species, area, db, type = 'age', print_sql=FALSE, s
       dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                          dplyr::rename_with(tolower) %>% 
                          dplyr::select(fmp_subarea, gear_type, join_key)) %>% 
-      dplyr::select(year, haul_date, species, fmp_subarea, gear_type, extrapolated_weight) %>%
       dplyr::filter(year<=yr, 
                     species %in% sp, 
                     fmp_subarea %in% area) 
@@ -451,7 +450,6 @@ q_fish_obs <- function(year, species, area, db, type = 'age', print_sql=FALSE, s
     dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                        dplyr::rename_with(tolower) %>% 
                        dplyr::select(fmp_subarea, gear_type, join_key)) %>% 
-    dplyr::select(year, haul_date, species, fmp_subarea, gear_type, extrapolated_weight) %>%
     dplyr::filter(year<=yr, 
                   species %in% sp, 
                   fmp_subarea %in% area) 
