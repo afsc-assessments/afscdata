@@ -387,7 +387,7 @@ q_catch_foreign <- function(year, species, area, db, print_sql=FALSE, save=TRUE)
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", "for_catch_data.csv"), 
                          delim = ",")
-    capture.output(show_query(table), 
+    capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", "for_catch_sql.txt"))
     
     message("foreign catch data can be found in the data/raw folder")
@@ -808,7 +808,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_length_data.csv")), 
                          delim = ",")
-    capture.output(show_query(table), 
+    capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_length_sql.txt")))
 
     message("longline survey length data can be found in the data/raw folder,\n
@@ -1016,7 +1016,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_rpn_", id, "_data.csv")), 
                          delim = ",")
-    capture.output(show_query(table), 
+    capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_rpn_", id, "_sql.txt")))
 
     message("longline survey data can be found in the data/raw folder,\n
@@ -1168,7 +1168,7 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_rpn_length_data.csv")), 
                          delim = ",")
-    capture.output(show_query(table), 
+    capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_rpn_length_sql.txt")))
 
     message("longline survey rpn-weighted length frequencies can be found in the data/raw folder,\n
@@ -1262,7 +1262,7 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", paste0("lls_specimen_data.csv")), 
                          delim = ",")
-    capture.output(show_query(table), 
+    capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_specimen_sql.txt")))
 
     message("sablefish longline survey specimen data can be found in the data/raw folder,\n
