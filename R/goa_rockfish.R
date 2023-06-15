@@ -73,8 +73,8 @@ goa_dusk <- function(year, off_yr = FALSE){
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
-    # q_fsh_specimen(year=year, species=afsc_species, area=area, db=akfin)
-    # q_fsh_length(year=year, species=afsc_species, area=area, db=akfin)  
+    q_fsh_specimen(year=year, species=afsc_species, area=area, db=akfin)
+    q_fsh_length(year=year, species=afsc_species, area=area, db=akfin)  
     disconnect(akfin)  
     
     afsc = connect("afsc")
