@@ -21,7 +21,7 @@ goa_nork <- function(year, off_yr = FALSE){
   
   q_catch(year, species=species, area=area, db=akfin)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
-  q_bts_biomass(year, area=area, species=afsc_species, by='total', db=akfin) 
+  q_bts_biomass(year, area=area, species=afsc_species, type='total', db=akfin) 
    
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
@@ -68,7 +68,7 @@ goa_dusk <- function(year, off_yr = FALSE){
   q_catch(year=year, species=species, area=area, db=akfin)
   # commented functions are currently in development
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
-  q_bts_biomass(year=year, area=area, species=afsc_species, by='total', db=akfin) 
+  q_bts_biomass(year=year, area=area, species=afsc_species, type='total', db=akfin) 
   
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
@@ -115,8 +115,8 @@ goa_pop <- function(year, off_yr = NULL){
   
   q_catch(year = year, species = species, area = area, db = akfin)
   q_fish_obs(year = year, species = norpac_species, area = area, db = akfin)
-  q_bts_biomass(year = year, area = area, species = afsc_species, by = 'total', db = akfin) 
-  q_bts_biomass(year = year, area = area, species = afsc_species, by = 'area', db = akfin) 
+  q_bts_biomass(year = year, area = area, species = afsc_species, type = 'total', db = akfin) 
+  q_bts_biomass(year = year, area = area, species = afsc_species, type = 'area', db = akfin) 
   
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
@@ -170,7 +170,7 @@ goa_rebs <- function(year, off_yr = FALSE){
   
   q_catch(year=year, species=species, area=area, db=akfin)
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
-  q_bts_biomass(year=year, area=area, species=afsc_species, by='area', db=akfin) 
+  q_bts_biomass(year=year, area=area, species=afsc_species, type='area', db=akfin) 
   q_lls_rpn(year=year, area=area, species=afsc_species, by='fmpsubarea', db=akfin)
   
   if(isTRUE(off_yr)) {

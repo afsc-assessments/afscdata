@@ -21,7 +21,7 @@ goa_fhs <- function(year, off_yr = FALSE){
   
   q_catch(year, species=species, area=area, db=akfin)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
-  q_bts_biomass(year, area=area, species=afsc_species, by='total', db=akfin) 
+  q_bts_biomass(year, area=area, species=afsc_species, type='total', db=akfin) 
   
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
