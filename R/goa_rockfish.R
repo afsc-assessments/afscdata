@@ -103,7 +103,7 @@ goa_dusk <- function(year, off_yr = FALSE){
 #' \dontrun{
 #' goa_pop(year = 2022, off_yr = FALSE)
 #'}
-goa_pop <- function(year, off_yr = NULL){
+goa_pop <- function(year, off_yr = FALSE){
   
   # globals ----
   species = "POPA"
@@ -122,7 +122,7 @@ goa_pop <- function(year, off_yr = NULL){
     disconnect(akfin) 
   } else {
     q_fsh_specimen(year = year, species = norpac_species, area = area, db = akfin)
-    q_fsh_length(year = year, species = norpac_species, area = area, db = akfin)  
+    q_fsh_length(year = year, species = norpac_species, area = area, db = akfin) 
     disconnect(akfin)  
     
     afsc = connect("afsc")
