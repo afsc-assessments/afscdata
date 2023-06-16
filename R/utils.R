@@ -117,12 +117,15 @@ collapse_filters <- function(x) {
 #'}
 setup_folders <- function(year, dirs = c("raw", "user_input", "output", "sara", "sql"), tier = NULL){
   
-  for(i in 1:length(dirs)){
-    if(dir.exists(here::here(year, "data", dirs[i])) == FALSE){
-      dir.create(here::here(year, "data", dirs[i]), recursive=TRUE)
+
+    for(i in 1:length(dirs)){
+      if(dir.exists(here::here(year, "data", dirs[i])) == FALSE){
+        dir.create(here::here(year, "data", dirs[i]), recursive=TRUE)
+      }
     }
-  }
+    
 }
+
 
 #' utility function for date of data query
 #'
