@@ -18,7 +18,7 @@ bsai_octopus <- function(year) {
                    78404, 78452, 78454, 78455)
   
   db = connect()
-  q_catch(year=year, species=species, area=area, db=db, save=F)
+  q_catch(year=year, species=species, area=area, db=db)
  
     
   

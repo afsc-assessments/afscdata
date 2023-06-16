@@ -142,35 +142,35 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' goa = gulf of alaska
 #' old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recommended 
 #' 
-#' for the goa and ai there is a "by" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.
+#' for the goa and ai there is a "type" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.
 #' 
 #' @param year  max year to retrieve data from 
 #' @param area options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area
 #' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
-#' @param by "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch
+#' @param type "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch
 #' @param db  the database to query (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save save the file in designated folder, if FALSE outputs to global environment
 #' 
-#' @return saves bts biomass data as data/raw/area_(by)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @return saves bts biomass data as data/raw/area_(type)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
 #' @export q_bts_biomass
 #'
 #' @examples
 #' \dontrun{
 #' db <- afscdata::connect("akfin")
-#' q_bts_biomass(year=2022, species=21921, area = "goa", by = "depth", db = db)
+#' q_bts_biomass(year=2022, species=21921, area = "goa", type = "depth", db = db)
 #' } 
-q_bts_biomass <- function(year, species, area, by='total', db, print_sql=FALSE, save=TRUE) {
+q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE, save=TRUE) {
   
   # adjust filters
   yr = year
   area = toupper(area)
-  by = tolower(by)
+  type = tolower(type)
   
   # message center
-  if(by!="total") {
-    if(by %in% c("depth", "stratum", "area", "total", "inpfc", "inpfc_depth")==FALSE){ 
-      stop("appropriate args for by are: 'depth', 'stratum' 'area', or 'total'.\n 
+  if(type!="total") {
+    if(type %in% c("depth", "stratum", "area", "total", "inpfc", "inpfc_depth")==FALSE){ 
+      stop("appropriate args for type are: 'depth', 'stratum' 'area', or 'total'.\n 
            these args will be ignored if area != 'goa' or 'ai'")
     }
   }
@@ -185,15 +185,15 @@ q_bts_biomass <- function(year, species, area, by='total', db, print_sql=FALSE, 
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsslope"))
   } else if(area=="NBS") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_nbs"))
-  } else if(area %in% c("GOA", "AI") & by=="depth"){
+  } else if(area %in% c("GOA", "AI") & type=="depth"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassdepthaigoa"))
-  } else if(area %in% c("GOA", "AI") & by=="area"){
+  } else if(area %in% c("GOA", "AI") & type=="area"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassareaaigoa"))    
-  } else if(area %in% c("GOA", "AI") & by=="stratum"){
+  } else if(area %in% c("GOA", "AI") & type=="stratum"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassstratumaigoa"))    
-  } else if(area %in% c("GOA", "AI") & by=="inpfc"){
+  } else if(area %in% c("GOA", "AI") & type=="inpfc"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcaigoa")) 
-  } else if(area %in% c("GOA", "AI") & by=="inpfc_depth"){
+  } else if(area %in% c("GOA", "AI") & type=="inpfc_depth"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcdepthaigoa")) 
   } else {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomasstotalaigoa"))     
@@ -211,7 +211,7 @@ q_bts_biomass <- function(year, species, area, by='total', db, print_sql=FALSE, 
   # prefix area and type (for goa/ai) to file name
   area = tolower(area)
   id = NULL
-  if(area %in% c("ai", "goa")) id = paste0(by, "_")
+  if(area %in% c("ai", "goa")) id = paste0(type, "_")
   id = paste0(area, "_", id)
   
   if(isTRUE(save)){
