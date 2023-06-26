@@ -38,7 +38,7 @@ goa_nork <- function(year, off_yr = FALSE){
   }
   
   # read in archived catch data
-  goa_nork_catch_1961_1992 %>%
+  afscdata::goa_nork_catch_1961_1992 %>%
     vroom::vroom_write(here::here(year, "data", "user_input", "goa_nork_catch_1961_1992.csv"))
   
   # timestamp
