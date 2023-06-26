@@ -36,7 +36,7 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
     dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
                                    end_longitude, bottom_depth, abundance_haul, 
-                                   stratum, gear_temperature)) %>%
+                                   stratum, gear_temperature, performance)) %>%
     dplyr::left_join(dplyr::select(cc, hauljoin, species_code, sex, length, 
                                    frequency)) %>% 
     dplyr::mutate(year = lubridate::year(start_date)) %>%
