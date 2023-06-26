@@ -40,7 +40,7 @@ for the goa and ai there is a "type" switch that queries by stratum, or total - 
 }
 \examples{
 \dontrun{
-db <- afscdata::connect("akfin")
-q_bts_biomass(year=2022, species=21921, area = "goa", type = "depth", db = db)
+db <- afscdata::connect("afsc")
+q_bts_agecomp(year=2022, species=21921, area = "goa", type = "total", db = db)
 } 
 }
