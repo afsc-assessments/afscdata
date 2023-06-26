@@ -61,7 +61,7 @@
 <span>  <span class="va">year</span>,</span>
 <span>  <span class="va">species</span>,</span>
 <span>  <span class="va">area</span>,</span>
-<span>  by <span class="op">=</span> <span class="st">"total"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"total"</span>,</span>
 <span>  <span class="va">db</span>,</span>
 <span>  print_sql <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -82,7 +82,7 @@
 <dd><p>options are bs, bsslope, nbs, ai, goa, old_bs - can only call a single area</p></dd>
 
 
-<dt>by</dt>
+<dt>type</dt>
 <dd><p>"depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch</p></dd>
 
 
@@ -102,7 +102,7 @@
     <h2>Value</h2>
     
 
-<p>saves bts biomass data as data/raw/area_(by)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.</p>
+<p>saves bts biomass data as data/raw/area_(type)_bts_biomass_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -113,14 +113,14 @@ nbs = northern bering sea
 ai = aleutian islands
 goa = gulf of alaska
 old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recommended</p>
-<p>for the goa and ai there is a "by" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.</p>
+<p>for the goa and ai there is a "type" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">afscdata</span><span class="fu">::</span><span class="fu"><a href="connect.html">connect</a></span><span class="op">(</span><span class="st">"afsc"</span><span class="op">)</span></span>
-<span><span class="fu">q_bts_biomass</span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, species<span class="op">=</span><span class="fl">21921</span>, area <span class="op">=</span> <span class="st">"goa"</span>, by <span class="op">=</span> <span class="st">"depth"</span>, db <span class="op">=</span> <span class="va">db</span><span class="op">)</span></span>
+<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">afscdata</span><span class="fu">::</span><span class="fu"><a href="connect.html">connect</a></span><span class="op">(</span><span class="st">"akfin"</span><span class="op">)</span></span>
+<span><span class="fu">q_bts_biomass</span><span class="op">(</span>year<span class="op">=</span><span class="fl">2022</span>, species<span class="op">=</span><span class="fl">21921</span>, area <span class="op">=</span> <span class="st">"goa"</span>, type <span class="op">=</span> <span class="st">"depth"</span>, db <span class="op">=</span> <span class="va">db</span><span class="op">)</span></span>
 <span><span class="op">}</span> </span></code></pre></div>
     </div>
   </div>

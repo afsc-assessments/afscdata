@@ -44,8 +44,8 @@ afsc.lls_age_view
 \examples{
 \dontrun{
 # sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) 
-in the gulf of alaska
+# in the gulf of alaska
 
-q_lls_specimen(year=2000, area="goa", db=db, save=FALSE)
+q_lls_specimen(year=2000, area="goa", db=db)
 } 
 }

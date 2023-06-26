@@ -31,7 +31,13 @@
     <loc>/LICENSE.html</loc>
   </url>
   <url>
+    <loc>/reference/accepted_model.html</loc>
+  </url>
+  <url>
     <loc>/reference/afscdata-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/bsai_octopus.html</loc>
   </url>
   <url>
     <loc>/reference/collapse_filters.html</loc>
@@ -55,16 +61,34 @@
     <loc>/reference/goa_dusk_catch_1977_1990.html</loc>
   </url>
   <url>
+    <loc>/reference/goa_fhs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_fhs_catch_1978_1990.html</loc>
+  </url>
+  <url>
     <loc>/reference/goa_nork.html</loc>
   </url>
   <url>
     <loc>/reference/goa_nork_catch_1961_1992.html</loc>
   </url>
   <url>
+    <loc>/reference/goa_pcod_catch_1977_1990.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_pcod_larval_indices.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_pop.html</loc>
+  </url>
+  <url>
     <loc>/reference/goa_pop_catch_1960_1990.html</loc>
   </url>
   <url>
     <loc>/reference/goa_pop_fixed_fish_length_comp.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_rebs.html</loc>
   </url>
   <url>
     <loc>/reference/goa_rebs_catch_1977_2004.html</loc>
@@ -76,10 +100,16 @@
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>/reference/q_bts_agecomp.html</loc>
+  </url>
+  <url>
     <loc>/reference/q_bts_biomass.html</loc>
   </url>
   <url>
     <loc>/reference/q_bts_length.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_bts_sizecomp.html</loc>
   </url>
   <url>
     <loc>/reference/q_bts_specimen.html</loc>
@@ -101,6 +131,9 @@
   </url>
   <url>
     <loc>/reference/q_for_catch.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_fsh_length.html</loc>
   </url>
   <url>
     <loc>/reference/q_fsh_specimen.html</loc>

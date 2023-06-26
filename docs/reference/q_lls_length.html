@@ -125,7 +125,14 @@ lls_length_summary_view</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="co"># raw sablefish length frequencies in 1988 (year when the domestic survey started) </span></span>
+<span><span class="co"># in the gulf of alaska</span></span>
+<span></span>
+<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="connect.html">connect</a></span><span class="op">(</span><span class="st">"akfin"</span><span class="op">)</span></span>
+<span><span class="fu">q_lls_length</span><span class="op">(</span>year<span class="op">=</span><span class="fl">1988</span>, species<span class="op">=</span><span class="fl">20510</span>, area<span class="op">=</span><span class="st">"goa"</span>, db<span class="op">=</span><span class="va">db</span><span class="op">)</span></span>
+<span><span class="op">}</span> </span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -53,7 +53,7 @@ keyring::key_set_with_value(service="afsc", username="WILLIAMSB", password = "a_
 *Step 2*. Download the `afscdata` package (maybe check on occasion if it has been updated, we'll try to keep up on [releases](https://github.com/afsc-assessments/afscdata/releases). We'll drop a note in the SMART space when a substantive change is made.
 (Also there is a tag in the homepage readme that shows the status - currently "unstable")
 
-```{r setup}
+```{r setup, eval=F}
 remotes::install_github("afsc-assessments/afscdata")
 ```
 
@@ -61,7 +61,7 @@ remotes::install_github("afsc-assessments/afscdata")
 
 Load the library and connect to the AKFIN and/or AFSC server.
 
-```{r start}
+```{r start, eval=F}
 library(afscdata)
 akfin <- connect()
 afsc <- connect("afsc")
@@ -74,7 +74,7 @@ area = "goa"
 First, setup a file structure to work with the `afscdata` package. 
 This package is centered around a relative path network which is inherent in an R project framework.
 
-```{r files}
+```{r files, eval=F}
 setup_folders(year)
 ```
 
@@ -85,7 +85,7 @@ To do this we need the area of interest ("goa"), and the the 5 digit afsc specie
 Most of the queries are directed toward AKFIN, but this query links to the AFSC database.
 More information can be found using the standard R help call `?q_bts_length`.
 
-```{r basic}
+```{r basic, eval=F}
 q_bts_length(year=year, species=30420, area=area, db=afsc)
 ```
 
