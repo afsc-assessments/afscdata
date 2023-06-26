@@ -911,11 +911,12 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
 #' @examples
 #' \dontrun{
 #' # raw sablefish length frequencies in 1988 (year when the domestic survey started) 
-#' in the gulf of alaska
+#' # in the gulf of alaska
 #' 
 #' db <- connect("akfin")
-#' q_lls_length(year=1988, species=20510, area="goa", db = db, save=FALSE)
+#' q_lls_length(year=1988, species=20510, area="goa", db=db)
 #' } 
+#' 
 q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
                          db, print_sql=FALSE, save=TRUE) {
 
@@ -1368,9 +1369,9 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
 #' @examples
 #' \dontrun{
 #' # sablefish specimen data in 1996 (first year ages were collected in the goa domestic survey) 
-#' in the gulf of alaska
+#' # in the gulf of alaska
 #' 
-#' q_lls_specimen(year=2000, area="goa", db=db, save=FALSE)
+#' q_lls_specimen(year=2000, area="goa", db=db)
 #' } 
 q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
                          db=akfin, print_sql=FALSE, save=TRUE) {
