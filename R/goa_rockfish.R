@@ -33,6 +33,7 @@ goa_nork <- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year, species=afsc_species, area, db=afsc)
     q_bts_length(year, species=afsc_species, area, db=afsc)  
+    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -80,6 +81,7 @@ goa_dusk <- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
     q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
+    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -128,6 +130,7 @@ goa_pop <- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year = year, species = afsc_species, area = area, db = afsc)
     q_bts_length(year = year, species = afsc_species, area = area, db = afsc)  
+    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -184,6 +187,7 @@ goa_rebs <- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
     q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
+    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   

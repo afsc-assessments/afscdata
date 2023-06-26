@@ -180,7 +180,7 @@
 #' }
 "sabl_waa"
 
-"goa_pcod_larval_indices"
+
 
 #' GOA Pacific cod historical larval index data
 #'
@@ -195,12 +195,12 @@
 #' \item{se_log}{log standard error of obs}
 #' }
 #' 
+"goa_pcod_larval_indices"
 
-"goa_pcod_catch_1977_1990"
 
 #' GOA Pacific cod historical catch
 #'
-#' A dataset containing length comp collection data by year for 1977-1990
+#' A dataset containing historical catch data by year for 1977-1990
 #'
 #' @format A data frame with 280 observations and 4 variables:
 #' \describe{
@@ -210,15 +210,16 @@
 #' \item{season}{quarterly fishery season}
 #' } 
 #' 
+"goa_pcod_catch_1977_1990"
 
-"goa_fhs_catch_1978_1990"
 
 #' GOA flathead sole historical catch
 #'
-#' A dataset containing length comp collection data by year for 1978-1990
+#' A dataset containing historical catch data by year for 1978-1990
 #'
 #' @format A data frame with 13 observations and 2 variables:
 #' \describe{
 #' \item{year}{1978-1990}
 #' \item{catch}{catch in tons}
 #' }
+"goa_fhs_catch_1978_1990"

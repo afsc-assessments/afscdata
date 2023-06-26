@@ -3,20 +3,18 @@
 \docType{data}
 \name{goa_fhs_catch_1978_1990}
 \alias{goa_fhs_catch_1978_1990}
-\title{GOA Pacific cod historical catch}
+\title{GOA flathead sole historical catch}
 \format{
-A data frame with 280 observations and 4 variables:
+A data frame with 13 observations and 2 variables:
 \describe{
-\item{tons}{catch in tons}
-\item{gear}{fishery gear type}
-\item{year}{1977-1990}
-\item{season}{quarterly fishery season}
+\item{year}{1978-1990}
+\item{catch}{catch in tons}
 }
 }
 \usage{
 goa_fhs_catch_1978_1990
 }
 \description{
-A dataset containing length comp collection data by year for 1977-1990
+A dataset containing historical catch data by year for 1978-1990
 }
 \keyword{datasets}

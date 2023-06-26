@@ -3,21 +3,20 @@
 \docType{data}
 \name{goa_pcod_catch_1977_1990}
 \alias{goa_pcod_catch_1977_1990}
-\title{GOA Pacific cod historical larval index data}
+\title{GOA Pacific cod historical catch}
 \format{
-A data frame with 92 observations and 5 variables:
+A data frame with 280 observations and 4 variables:
 \describe{
-\item{year}{1977-2022}
-\item{seas}{season?}
-\item{index}{index id}
-\item{obs}{observation}
-\item{se_log}{log standard error of obs}
+\item{tons}{catch in tons}
+\item{gear}{fishery gear type}
+\item{year}{1977-1990}
+\item{season}{quarterly fishery season}
 }
 }
 \usage{
 goa_pcod_catch_1977_1990
 }
 \description{
-A dataset containing larval index collections year for 1977-2022
+A dataset containing historical catch data by year for 1977-1990
 }
 \keyword{datasets}

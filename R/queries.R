@@ -231,6 +231,87 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   
 }
 
+#' query bottom trawl survey agecomps
+#' 
+#' 
+#' currently only available for goa and ai
+#' 
+#' for the goa and ai there is a "type" switch that queries by stratum, or total - !!stratum should not be used at the moment !!. only one of these can be used at a time.
+#' 
+#' @param year  max year to retrieve data from 
+#' @param area options are 'ai' or 'goa' - can only call a single area
+#' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
+#' @param type "stratum" or "total" - only available for goa/ai (default: "total") - can only use a single switch
+#' @param db  the database to query (afsc)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+#' @return saves bts agecomp data as data/raw/area_(type)_bts_agecomp_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_bts_biomass
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("akfin")
+#' q_bts_biomass(year=2022, species=21921, area = "goa", type = "depth", db = db)
+#' } 
+q_bts_agecomp <- function(year, species, area, type='total', db, print_sql=FALSE, save=TRUE){
+  # adjust filters
+  yr = year
+  area = tolower(area)
+  type = tolower(type)
+  
+  # message center
+  if(type!="total") {
+    if(type %in% c("stratum", "total")==FALSE){ 
+      stop("appropriate args for type are: 'stratum' or 'total'.\n 
+           these args will be ignored if area != 'goa' or 'ai'")
+    }
+  }
+  
+  if(area == 'goa' & type == 'total') {
+    survey = 47
+    id = 99903
+    } else if(area == 'goa' & type == 'stratum'){
+      survey = 47
+      id = 10:550
+    } else if(area == "ai" & type == 'total') {
+      survey = 52    
+      id = c(211:224,311:324,411:424,511:523,611:624,711:722)
+    } else if(area == "ai" & type == 'stratum') {
+      survey = 52  
+      id = 99904
+    } else {
+      stop('incorrect area and type combination')
+    }
+  
+  dplyr::tbl(db, dplyr::sql("gap_products.agecomp")) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(survey_definition_id == survey,
+                  area_id %in% id, 
+                  species_code %in% species) -> table
+
+  # # prefix area and type to file name
+  id = NULL
+  if(area %in% c("ai", "goa")) id = paste0(type, "_")
+  id = paste0(area, "_", id)
+
+  if(isTRUE(save)){
+    dplyr::collect(table) %>%
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, "bts_agecomp_data.csv")),
+                         delim = ",")
+    capture.output(dplyr::show_query(table),
+                   file = here::here(year, "data", "sql", paste0(id, "bts_agecomp_sql.txt")))
+
+    message("bottom trawl survey agecomp data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
 # fishery ----
 #' query fishery catch data from AKFIN server
 #'
