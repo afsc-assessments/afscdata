@@ -615,7 +615,7 @@ table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>%
     }
     
       dplyr::collect(table) %>% 
-        vroom::vroom_write(here::here(year, "data", "raw", "fsh_obs_data.csv"), 
+        vroom::vroom_write(here::here(year, "data", "raw", "fsh_obs_data.txt"), 
                            delim = ",")
       
       capture.output(dplyr::show_query(table), 
@@ -789,7 +789,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_specimen_data.csv"), 
+      vroom::vroom_write(here::here(year, "data", "raw", "fsh_specimen_data.txt"), 
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", "fsh_specimen_sql.txt"))
@@ -883,7 +883,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_length_data.csv"), 
+      vroom::vroom_write(here::here(year, "data", "raw", "fsh_length_data.txt"), 
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", "fsh_length_sql.txt"))
