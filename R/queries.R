@@ -602,8 +602,8 @@ table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>%
           dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>% 
           dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                              dplyr::rename_with(tolower) %>% 
-                             dplyr::select(fmp_subarea, gear_type, join_key) %>% 
-                             dplyr::mutate(dplyr::across(contains("key"), as.character))) %>% 
+                             dplyr::select(fmp_subarea, gear_type, join_key, haul_seq) %>% 
+                             dplyr::mutate(haul_key = as.character(paste0(join_key, haul_seq)))) %>% 
           dplyr::filter(year<=yr, 
                         species %in% sp, 
                         fmp_subarea %in% area) 
@@ -756,8 +756,8 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
         dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>% 
         dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                            dplyr::rename_with(tolower) %>% 
-                           dplyr::select(fmp_subarea, gear_type, join_key) %>% 
-                           dplyr::mutate(join_key = as.character(join_key))) %>% 
+                           dplyr::select(fmp_subarea, gear_type, join_key, haul_seq) %>% 
+                           dplyr::mutate(haul_key = as.character(paste0(join_key, haul_seq)))) %>% 
         dplyr::filter(year <= yr & year>0, 
                       fmp_subarea %in% area, 
                       species %in% sp,
@@ -777,8 +777,8 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
       dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>% 
       dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                          dplyr::rename_with(tolower) %>% 
-                         dplyr::select(fmp_subarea, gear_type, join_key) %>% 
-                         dplyr::mutate(join_key = as.character(join_key))) %>% 
+                         dplyr::select(fmp_subarea, gear_type, join_key, haul_seq) %>% 
+                         dplyr::mutate(haul_key = as.character(paste0(join_key, haul_seq)))) %>% 
       dplyr::filter(year <= yr & year > 0, 
                     fmp_subarea %in% area, 
                     species %in% sp,
@@ -850,8 +850,8 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
         dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>% 
         dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                            dplyr::rename_with(tolower) %>% 
-                           dplyr::select(fmp_subarea, gear_type, join_key) %>% 
-                           dplyr::mutate(join_key = as.character(join_key))) %>% 
+                           dplyr::select(fmp_subarea, gear_type, join_key, haul_seq) %>% 
+                           dplyr::mutate(haul_key = as.character(paste0(join_key, haul_seq)))) %>% 
         dplyr::filter(year <= yr & year>0, 
                       fmp_subarea %in% area, 
                       species %in% sp,
@@ -870,8 +870,8 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
       dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>% 
       dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                          dplyr::rename_with(tolower) %>% 
-                         dplyr::select(fmp_subarea, gear_type, join_key) %>% 
-                         dplyr::mutate(join_key = as.character(join_key))) %>% 
+                         dplyr::select(fmp_subarea, gear_type, join_key, haul_seq) %>% 
+                         dplyr::mutate(haul_key = as.character(paste0(join_key, haul_seq)))) %>% 
       dplyr::select(!!!cols) %>% 
       dplyr::filter(year <= yr & year > 0, 
                     fmp_subarea %in% area, 
