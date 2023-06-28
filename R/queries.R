@@ -599,9 +599,11 @@ q_fish_obs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
   
 table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>% 
     dplyr::rename_with(tolower) %>% 
-    dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
-                       dplyr::rename_with(tolower) %>% 
-                       dplyr::select(fmp_subarea, gear_type, join_key)) %>% 
+  dplyr::mutate(join_key = as.character(join_key)) %>% 
+  dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                     dplyr::rename_with(tolower) %>% 
+                     dplyr::select(fmp_subarea, gear_type, join_key) %>% 
+                     dplyr::mutate(join_key = as.character(join_key))) %>% 
     dplyr::filter(year<=yr, 
                   species %in% sp, 
                   fmp_subarea %in% area) 
@@ -751,6 +753,11 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
     if(grepl("\\*", add_fields)){
       table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
         dplyr::rename_with(tolower) %>% 
+        dplyr::mutate(join_key = as.character(join_key)) %>% 
+        dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                           dplyr::rename_with(tolower) %>% 
+                           dplyr::select(fmp_subarea, gear_type, join_key) %>% 
+                           dplyr::mutate(join_key = as.character(join_key))) %>% 
         dplyr::filter(year <= yr & year>0, 
                       fmp_subarea %in% area, 
                       species %in% sp,
@@ -758,7 +765,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
         dplyr::arrange(year)
     }
   }  else {
-    cols = c("year", "performance", "specimen_type", "haul_join", "port_join",
+    cols = c("year", "performance", "specimen_type", "join_key", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
              "age", "length", "weight",
              tolower(add_fields))
@@ -767,6 +774,11 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
     table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
       dplyr::rename_with(tolower) %>% 
       dplyr::select(!!!cols) %>% 
+      dplyr::mutate(join_key = as.character(join_key)) %>% 
+      dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                         dplyr::rename_with(tolower) %>% 
+                         dplyr::select(fmp_subarea, gear_type, join_key) %>% 
+                         dplyr::mutate(join_key = as.character(join_key))) %>% 
       dplyr::filter(year <= yr & year > 0, 
                     fmp_subarea %in% area, 
                     species %in% sp,
@@ -835,6 +847,11 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
     if(grepl("\\*", add_fields)){
       table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
         dplyr::rename_with(tolower) %>% 
+        dplyr::mutate(join_key = as.character(join_key)) %>% 
+        dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                           dplyr::rename_with(tolower) %>% 
+                           dplyr::select(fmp_subarea, gear_type, join_key) %>% 
+                           dplyr::mutate(join_key = as.character(join_key))) %>% 
         dplyr::filter(year <= yr & year>0, 
                       fmp_subarea %in% area, 
                       species %in% sp,
@@ -850,6 +867,11 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
     
     table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
       dplyr::rename_with(tolower) %>% 
+      dplyr::mutate(join_key = as.character(join_key)) %>% 
+      dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                         dplyr::rename_with(tolower) %>% 
+                         dplyr::select(fmp_subarea, gear_type, join_key) %>% 
+                         dplyr::mutate(join_key = as.character(join_key))) %>% 
       dplyr::select(!!!cols) %>% 
       dplyr::filter(year <= yr & year > 0, 
                     fmp_subarea %in% area, 
