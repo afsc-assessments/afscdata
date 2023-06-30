@@ -855,7 +855,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
         dplyr::filter(year <= yr & year>0, 
                       fmp_subarea %in% area, 
                       species %in% sp,
-                      !is.na(age)) %>% 
+                      !is.na(length)) %>% 
         dplyr::arrange(year)
     }
   }  else {
@@ -885,7 +885,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", "fsh_length_data.txt"), 
                          delim = ",")
-    capture.output(dplyr::show_query(table), 
+    utils::capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", "fsh_length_sql.txt"))
     
     message("fishery length data can be found in the data/raw folder")
