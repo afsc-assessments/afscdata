@@ -44,13 +44,13 @@ goa_fhs <- function(year, off_yr = FALSE){
   q_date(year)
 }
 
-#' raw data query for GOA flathead sole
-#'
+#' raw data query for GOA arrowtooth founder
+#' 
 #' @param year assessment year
 #' @param off_yr if this is an off-year assessment change to TRUE
 #'
 #' @return a suite of raw data .csv files and a time stamp of when the query was done 
-#' @export goa_fhs
+#' @export goa_atf
 #'
 #' @examples
 #' \dontrun{
@@ -61,7 +61,7 @@ goa_atf <- function(year, off_yr = FALSE){
   area = "GOA"
   species = "ARTH"
   afsc_species = 10110
-  # norpac_species = 103
+  norpac_species = 103
   
   akfin = connect()
   
