@@ -109,7 +109,7 @@ goa_dusk <- function(year, off_yr = FALSE){
 #'}
 goa_pop <- function(year, off_yr = FALSE){
   
-  # globals ----
+  # globals 
   species = "POPA"
   area = "GOA"
   afsc_species = 30060
