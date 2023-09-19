@@ -61,7 +61,7 @@ goa_atf <- function(year, off_yr = FALSE){
   area = "GOA"
   species = "ARTH"
   afsc_species = 10110
-  norpac_species = 103
+  norpac_species = 141
   
   akfin = connect()
   
