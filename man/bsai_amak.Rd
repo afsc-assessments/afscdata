@@ -2,7 +2,7 @@
 % Please edit documentation in R/atka_mackerel.R
 \name{bsai_amak}
 \alias{bsai_amak}
-\title{raw data query for the BSAI atka mackerel assessment}
+\title{raw data query for the BSAI Atka mackerel assessment}
 \usage{
 bsai_amak(year, off_yr = FALSE)
 }
@@ -15,7 +15,7 @@ bsai_amak(year, off_yr = FALSE)
 a suite of raw data .csv files and a time stamp of when the query was done
 }
 \description{
-raw data query for the BSAI atka mackerel assessment
+raw data query for the BSAI Atka mackerel assessment
 }
 \examples{
 \dontrun{
