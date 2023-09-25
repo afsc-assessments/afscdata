@@ -223,16 +223,3 @@
 #' \item{catch}{catch in tons}
 #' }
 "goa_fhs_catch_1978_1990"
-
-
-#' BSAI Atka mackerel historical catch
-#'
-#' A dataset containing historical catch data by year for 1977-1990, pulled from
-#' 2022 stock assessment data file.
-#'
-#' @format A data frame with 14 observations and 2 variables:
-#' \describe{
-#' \item{year}{1977-1990}
-#' \item{catch}{catch in tons}
-#' }
-"bsai_amak_catch_1977_1990"

@@ -1,4 +1,4 @@
-#' raw data query for the BSAI atka mackerel assessment
+#' raw data query for the BSAI Atka mackerel assessment
 #'
 #' @param year assessment year
 #' @param off_yr if this is an off-year assessment change to TRUE

@@ -18,13 +18,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Benjamin Williams \email{ben.williams@noaa.gov}
 
-Authors:
-\itemize{
-  \item Jane Sullivan \email{jane.sullivan@noaa.gov}
-}
-
 Other contributors:
 \itemize{
+  \item Jane Sullivan \email{jane.sullivan@noaa.gov} [contributor]
   \item Steve Barbeaux [contributor]
   \item Pete Hulson [contributor]
   \item Jim Ianelli [contributor]
