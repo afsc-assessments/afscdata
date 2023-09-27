@@ -73,7 +73,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Development</h1>
             
-            <h4 data-toc-skip class="date">2023-06-26</h4>
+            <h4 data-toc-skip class="date">2023-09-27</h4>
       
       
       <div class="hidden name"><code>development.Rmd</code></div>
@@ -182,12 +182,12 @@ is extremely well setup for a project-oriented workflow. Using
 <code><a href="https://here.r-lib.org//reference/here.html" class="external-link">here::here()</a></code> is another option.</p>
 <p>Using <code>here()</code>: <strong>Do not use absolute
 paths!!</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">here</span>()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"C:/Users/Ben.Williams/Work"</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">set_here</span>(<span class="st">"C:/Users/Ben.Williams/Work/some_project"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">here</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"C:/Users/Ben.Williams/Work"</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">set_here</span>(<span class="st">"C:/Users/Ben.Williams/Work/some_project"</span>)</span></code></pre></div>
 <p>There is a bit more to using <code>here</code> which can be found
 at:<br><a href="https://here.r-lib.org/index.html" class="external-link uri">https://here.r-lib.org/index.html</a><br>
 and<br><a href="https://github.com/jennybc/here_here" class="external-link uri">https://github.com/jennybc/here_here</a></p>
@@ -469,13 +469,13 @@ they must be called explicitly:</p>
 <h3 id="framework">Framework<a class="anchor" aria-label="anchor" href="#framework"></a>
 </h3>
 <p>Establish assessments on annual basis.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>species<span class="sc">/</span>group  </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|--</span> raw_data              Rpackage<span class="dv">-1</span> <span class="co"># specific to data query</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|--</span> cleaned_data          Rpackage<span class="dv">-2</span> <span class="co"># basic data cleaning</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|--</span> eda                   Rpackage<span class="dv">-2</span> <span class="co"># visualization of raw data</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|--</span> assessment_functions  Rpackage<span class="dv">-2</span> <span class="co"># comps, .dat builder, process output, etc.</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|--</span> safe_figs             Rpackage<span class="dv">-3</span> <span class="co"># consistent figures (both safe &amp; presentation)</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    </span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>species<span class="sc">/</span>group  </span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="sc">|--</span> raw_data              Rpackage<span class="dv">-1</span> <span class="co"># specific to data query</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="sc">|--</span> cleaned_data          Rpackage<span class="dv">-2</span> <span class="co"># basic data cleaning</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="sc">|--</span> eda                   Rpackage<span class="dv">-2</span> <span class="co"># visualization of raw data</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="sc">|--</span> assessment_functions  Rpackage<span class="dv">-2</span> <span class="co"># comps, .dat builder, process output, etc.</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="sc">|--</span> safe_figs             Rpackage<span class="dv">-3</span> <span class="co"># consistent figures (both safe &amp; presentation)</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>    </span></code></pre></div>
 <div class="section level4">
 <h4 id="code-framework">Code framework<a class="anchor" aria-label="anchor" href="#code-framework"></a>
 </h4>
@@ -483,25 +483,25 @@ they must be called explicitly:</p>
 <code>Parent code</code> with variants to address specifics for similar
 groups. These groups generally split out by region, then species
 clusters, w/a couple of species with highly specific needs.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Parent code</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|--</span>GOA<span class="sc">/</span>AI</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span><span class="sc">--</span> groundfish</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>flatfish</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>rockfish</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>pollock</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>pcod</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>sablefish</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>other</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span><span class="sc">--</span> crab</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="er">|</span><span class="sc">--</span>EBS</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|--</span> groundfish</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>flatfish</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>rockfish</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>pollock</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>pcod</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>other</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        <span class="sc">|--</span> crab</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>Parent code</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>    <span class="sc">|--</span>GOA<span class="sc">/</span>AI</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span><span class="sc">--</span> groundfish</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>flatfish</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>rockfish</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>pollock</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>pcod</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>sablefish</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span>       <span class="er">|</span><span class="sc">--</span>other</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    <span class="sc">|</span>  <span class="er">|</span><span class="sc">--</span> crab</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="sc">|</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>    <span class="er">|</span><span class="sc">--</span>EBS</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>        <span class="sc">|--</span> groundfish</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>flatfish</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>rockfish</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>pollock</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>pcod</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>        <span class="sc">|</span>     <span class="er">|</span><span class="sc">--</span>other</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>        <span class="sc">|--</span> crab</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="teams-framework">Teams framework<a class="anchor" aria-label="anchor" href="#teams-framework"></a>
@@ -537,7 +537,7 @@ clusters, w/a couple of species with highly specific needs.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Benjamin Williams, Jane Sullivan.</p>
+<p>Developed by Benjamin Williams.</p>
 </div>
 
 <div class="pkgdown">

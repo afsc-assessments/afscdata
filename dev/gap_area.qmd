@@ -1,0 +1,73 @@
+---
+title: "GAP data area ID"
+format: html
+---
+
+My general understanding of the `GAP_PRODUCTS.AREA` table.
+
+Region 
+
+ - `99900 = afsc.race_biomass_ebsshelf_plusnw`
+ - `99901 = afsc.race_biomass_ebsshelf_standard`
+ - `99902 = afsc.race_biomass_nbs`
+ - `99903/5 = afsc.race_biomasstotalaigoa` - filter survey == 'goa' (the 99905 code will be the updated strata - a 2025+ placeholder) 
+ - `99904 = afsc.race_biomasstotalaigoa` - filter survey == 'ai'
+
+
+GOA - Area
+
+ - 807 = central goa - 2025
+ - 808 = eastern goa - 2025
+ - 806 = western goa - 2025
+
+GOA INPFC - Area
+
+ - 803 = central goa
+ - 804 = eastern goa
+ - 805 = western goa
+
+
+
+Aleutians
+
+ - 5699 = eastern aleutians
+ - 3499 = central aleutians
+ - 3491 
+ - 
+
+INPFC 
+
+- 919, 929, 939, 949, 959 = INPFC 
+- 911, 912, 913, 914, 921, 922, 923, 924, 931, 932, 933, 934, 941, 942, 943, 944, 951, 952, 953, 954 - INPFC by depth
+- 
+
+Stat area - begins in 2025 
+
+ - 610, 620, 630, 640, 650 = available GOA areas
+
+
+```{r}
+#| eval: false
+#| output: asis
+  if(area=="BS") {
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_standard"))
+  } else if(area=="BSNW") {
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_plusnw"))
+  } else if(area=="BSSLOPE") {
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsslope"))
+  } else if(area=="NBS") {
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_nbs"))
+  } else if(area %in% c("GOA", "AI") & by=="depth"){
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassdepthaigoa"))
+  } else if(area %in% c("GOA", "AI") & by=="area"){
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassareaaigoa"))    
+  } else if(area %in% c("GOA", "AI") & by=="stratum"){
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassstratumaigoa"))    
+  } else if(area %in% c("GOA", "AI") & by=="inpfc"){
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcaigoa")) 
+  } else if(area %in% c("GOA", "AI") & by=="inpfc_depth"){
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcdepthaigoa")) 
+  } else {
+    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomasstotalaigoa"))     
+  }
+```
