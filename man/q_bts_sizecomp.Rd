@@ -4,15 +4,7 @@
 \alias{q_bts_sizecomp}
 \title{query bottom trawl survey sizecomps}
 \usage{
-q_bts_sizecomp(
-  year,
-  species,
-  area,
-  type = "total",
-  db,
-  print_sql = FALSE,
-  save = TRUE
-)
+q_bts_sizecomp(year, species, area, db, print_sql = FALSE, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
@@ -21,8 +13,6 @@ q_bts_sizecomp(
 
 \item{area}{options are 'ai' or 'goa' - can only call a single area}
 
-\item{type}{"stratum" or "total" - only available for goa/ai (default: "total") - can only use a single switch}
-
 \item{db}{the database to query (afsc)}
 
 \item{print_sql}{outputs the sql query instead of calling the data (default: false)}
@@ -30,17 +20,14 @@ q_bts_sizecomp(
 \item{save}{save the file in designated folder, if FALSE outputs to global environment}
 }
 \value{
-saves bts sizecomp data as data/raw/area_(type)_bts_sizecomp_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+saves bts sizecomp data as data/raw/area_bts_sizecomp_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
-currently only available for goa and ai
-}
-\details{
-for the goa and ai there is a "type" switch that queries by stratum, or total - !! stratum should not be used at the moment !!. only one of these can be used at a time.
+currently only available for goa and ai total size comps
 }
 \examples{
 \dontrun{
 db <- afscdata::connect("afsc")
-q_bts_sizecomp(year=2022, species=21921, area = "goa", type = "total", db = db)
+q_bts_sizecomp(year=2022, species=21921, area = "goa", db = db)
 } 
 }

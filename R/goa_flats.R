@@ -38,7 +38,7 @@ goa_fhs <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::goa_fhs_catch_1978_1990 %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "goa_fhs_catch_1978_1990.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "goa_fhs_catch_1978_1990.csv"), ",")
   
   # timestamp
   q_date(year)
@@ -84,7 +84,7 @@ goa_atf <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::goa_fhs_catch_1978_1990 %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "goa_fhs_catch_1978_1990.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "goa_fhs_catch_1978_1990.csv"), ",")
   
   # timestamp
   q_date(year)

@@ -40,7 +40,7 @@ goa_nork <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::goa_nork_catch_1961_1992 %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "goa_nork_catch_1961_1992.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "goa_nork_catch_1961_1992.csv"), ",")
   
   # timestamp
   q_date(year)
@@ -89,7 +89,7 @@ goa_dusk <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::goa_dusk_catch_1977_1990 %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "goa_dusk_catch_1977_1990.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "goa_dusk_catch_1977_1990.csv"), ",")
   
   # timestamp
   q_date(year)
@@ -139,7 +139,7 @@ goa_pop <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::goa_pop_catch_1960_1990 %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "goa_pop_catch_1960_1990.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "goa_pop_catch_1960_1990.csv"), ",")
   
   afscdata::goa_pop_fixed_fish_length_comp %>%
     vroom::vroom_write(here::here(year, "data", "user_input", "goa_pop_fixed_fish_length_comp.csv"))
@@ -197,7 +197,7 @@ goa_rebs <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::goa_rebs_catch_1977_2004 %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "goa_rebs_catch_1977_2004.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "goa_rebs_catch_1977_2004.csv"), ",")
   
   # timestamp
   q_date(year)

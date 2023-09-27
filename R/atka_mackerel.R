@@ -39,7 +39,7 @@ bsai_amak <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   afscdata::bsai_amak_catch_1977_1990.rda %>%
-    vroom::vroom_write(here::here(year, "data", "user_input", "bsai_amak_catch_1977_1990.csv"))
+    vroom::vroom_write(here::here(year, "data", "user_input", "bsai_amak_catch_1977_1990.csv"), ",")
   
   # timestamp
   q_date(year)
