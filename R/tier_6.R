@@ -46,7 +46,7 @@ bsai_octopus <- function(year) {
     vroom::vroom_write(here::here(year, "data", "raw", "survey_biomass.csv"), ",")
   
   q_date(year=year)
-  
+
 }
 
 
