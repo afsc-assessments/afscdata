@@ -145,7 +145,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' for the goa and ai there is a "type" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.
 #' 
 #' @param year  max year to retrieve data from 
-#' @param area options are bsnw, bsslope, nbs, ai, goa, old_bs - can only call a single area
+#' @param area options are bs (the bs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard") - can only call a single area
 #' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
 #' @param type "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch
 #' @param db  the database to query (akfin)
@@ -179,7 +179,7 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   
   if(area=="old_BS") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_standard"))
-  } else if(area=="BSNW") {
+  } else if(area=="BS") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_plusnw"))
   } else if(area=="BSSLOPE") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsslope"))
