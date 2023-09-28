@@ -4,13 +4,13 @@
 #' @param off_yr if this is an off-year assessment change to TRUE
 #'
 #' @return a suite of raw data .csv files and a time stamp of when the query was done 
-#' @export goa_atf
+#' @export bsai_atf
 #'
 #' @examples
 #' \dontrun{
 #' goa_atf(year = 2022, off_yr = FALSE)
 #'}
-goa_atf <- function(year, off_yr = FALSE){
+bsai_atf <- function(year, off_yr = FALSE){
   # globals 
   area = "BSAI"
   species = "ARTH"
