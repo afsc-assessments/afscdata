@@ -3,6 +3,8 @@
 export("%>%")
 export(accepted_model)
 export(bsai_amak)
+export(bsai_atf)
+export(bsai_fhs)
 export(bsai_octopus)
 export(collapse_filters)
 export(connect)
