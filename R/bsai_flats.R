@@ -52,3 +52,6 @@ bsai_atf <- function(year, off_yr = FALSE){
   # timestamp
   q_date(year)
 }
+
+bsai_fhs<- function(year, off_yr = FALSE){
+}
