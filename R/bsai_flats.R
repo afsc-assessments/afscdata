@@ -5,6 +5,7 @@
 #'
 #' @return a suite of raw data .csv files and a time stamp of when the query was done 
 #' @export bsai_atf
+#' @export bsai_fhs
 #'
 #' @examples
 #' \dontrun{
