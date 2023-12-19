@@ -56,7 +56,7 @@ bsai_amak <- function(year, off_yr = FALSE){
 #'
 #' @examples
 #' \dontrun{
-#goa_amak(year = 2023)
+#' goa_amak(year = 2023)
 #'}
 goa_amak <- function(year) {
   # globals 

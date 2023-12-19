@@ -17,5 +17,6 @@ raw data query for the GOA Atka mackerel assessment
 }
 \examples{
 \dontrun{
+goa_amak(year = 2023)
 }
 }
