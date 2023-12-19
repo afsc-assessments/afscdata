@@ -49,4 +49,38 @@ bsai_octopus <- function(year) {
 
 }
 
+#' raw data query for GOA octopus
+#'
+#' @param year assessment year
+#' 
+#' @return a suite of raw data .csv files and a time stamp of when the query was done 
+#' @export goa_octopus
+#'
+#' @examples
+#' \dontrun{
+#' goa_octopus(year = 2023)
+#'}
+goa_octopus <- function(year) {
+  
+  # these functions are being "handrolled" until I get the base functions to pull from the gap_products tables
+  # globals 
+  area = "goa"
+  species = 870
+
+  # catch 
+  db = connect()
+  q_catch(year=year, species=species, area=area, db=db)
+  
+  # survey biomass
+  # db2 = connect("afsc")
+  # dplyr::tbl(db2, dplyr::sql("gap_products.biomass")) %>%
+  #   dplyr::rename_with(tolower) %>%
+  #   dplyr::filter(area_id %in% srv_area, 
+  #                 species_code %in% afsc_species) %>% 
+  #   dplyr::collect()  %>% 
+  #   vroom::vroom_write(here::here(year, "data", "raw", "survey_biomass.csv"), ",")
+  # 
+  q_date(year=year)
+  
+}
 

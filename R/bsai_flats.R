@@ -5,11 +5,10 @@
 #'
 #' @return a suite of raw data .csv files and a time stamp of when the query was done 
 #' @export bsai_atf
-#' @export bsai_fhs
 #'
 #' @examples
 #' \dontrun{
-#' goa_atf(year = 2022, off_yr = FALSE)
+#' bsai_atf(year = 2022, off_yr = FALSE)
 #'}
 bsai_atf <- function(year, off_yr = FALSE){
   # globals 
@@ -54,12 +53,24 @@ bsai_atf <- function(year, off_yr = FALSE){
   q_date(year)
 }
 
+#' raw data query for BSAI flathead sole
+#'  
+#' @param year assessment year
+#' @param off_yr if this is an off-year assessment change to TRUE
+#'
+#' @return a suite of raw data .csv files and a time stamp of when the query was done 
+#' @export bsai_fhs
+#'
+#' @examples
+#' \dontrun{
+#' bsai_fhs(year = 2022, off_yr = FALSE)
+#'}
 bsai_fhs<- function(year, off_yr = FALSE){
   # globals 
   area = "BSAI"
   species = "FSOL" 
-  afsc_species = c(103,145) ## fhs, bering flounder
-  norpac_species = 141
+  afsc_species = 10130 
+  norpac_species = c(103,145) # fhs, bering flounder
   
   akfin = connect()
   
