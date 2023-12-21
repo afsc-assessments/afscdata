@@ -214,7 +214,7 @@ accepted_model <- function(base_year, base_model, year, folder = NULL){
 
 catch_to_ss <- function(year, se = 0.01, season = 7, fleet=1, round = FALSE){
   vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
-    mutate(seas = season, fleet, catch = ifelse(round, round(catch),catch, catch_se = se) %>%
+    mutate(seas = season, fleet, catch = ifelse(round, round(catch),catch), catch_se = se) %>%
     select(year, seas, fleet, catch, catch_se) %>%
     vroom::vroom_write(here::here(year, "data", "output", "fsh_catch_ss3.csv"), delim = ",")
 }
