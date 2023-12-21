@@ -3,6 +3,7 @@
 #' utility function to connect to server
 #' @param db the database schema ("akfin" or "afsc")
 #' @export connect
+#' @export catch_to_ss
 #' 
 connect <- function(db = "akfin") {
 
@@ -208,4 +209,11 @@ accepted_model <- function(base_year, base_model, year, folder = NULL){
   }
   
   
+}
+
+
+catch_to_ss <- function(year, catch_data, se = 0.01, season = 7, fleet=1){
+  vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
+    mutate(seas = season, fleet, catch, catch_se = se) %>%
+    vroom::vroom_write(here::here(year, "data", "output", "fsh_catch_ss3.csv"), delim = ",")
 }
