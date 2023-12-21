@@ -85,7 +85,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
                   min_biomass=lowerb, max_biomass = upperb, total_pop = population,
                   pop_var = varpop, min_pop = lowerp, max_pop = upperp, akfin_load_date) %>% 
     dplyr::bind_rows(q_bts_biomass(year, area="AI", species=afsc_species, db=akfin, save=F)) %>% 
-    vroom::vroom_write(here::here(year, "data", "raw", "bts_biomass_data.csv"), delim = ",")
+    vroom::vroom_write(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",")
   
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
