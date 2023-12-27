@@ -75,7 +75,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
   akfin = connect()
   
   q_catch(year, species=species, area=area, db=akfin)
-  q_fish_obs(year, species=norpac_species, area=area, db=akfin)
+  q_fish_obs(year, species=norpac_species, area=area, db=akfin,)
   ## download EBS & AI raw survey data
   q_bts_biomass(year, area="BS", species=afsc_species, db=akfin, save=F) %>% 
     dplyr::mutate(species_code = as.numeric(species_code)) %>% 
@@ -152,7 +152,8 @@ bsai_fhs<- function(year, off_yr = FALSE){
   
   SS_index <- data.frame(year=index$year, seas=7, index=2, 
                          obs=index$biomass, se_log=index$se_log)
-  write.csv(x=SS_index, file= here(year,'data','output',paste0(Sys.Date(),'-SS_survey_index.csv')) , row.names=FALSE)
+  write.csv(x=SS_index, file= here(year,'data','output','SS_survey_index.csv'),
+            row.names=FALSE)
   
   
   
@@ -160,7 +161,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
-    q_fsh_specimen(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)
+    q_fsh_specimen(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE, add_fields='sex')
     q_fsh_length(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)  
     disconnect(akfin)  
     
