@@ -69,7 +69,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
   # globals 
   area = "BSAI"
   species = "FSOL" 
-  afsc_species = c(10130, 10410)  # fhs, bering flounder
+  afsc_species = c(10130, 10140)  # fhs, bering flounder
   norpac_species = c(103,145) # fhs, bering flounder
   
   akfin = connect()
