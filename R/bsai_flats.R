@@ -147,7 +147,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
               variance=sum(sd_AI^2,sd_ebs^2,na.rm = TRUE),
               .groups='drop') %>%
     ## SE on log scale, which SS requires, is sqrt(log(1+CV^2))
-    mutate(se_log=round(sqrt(log(1+variance/biomass^2)),5)) %>%
+    mutate(se_log=round(sqrt(log(1+(variance/biomass)^2)),5)) %>%
     select(-variance)
   
   SS_index <- data.frame(year=index$year, seas=7, index=2, 
