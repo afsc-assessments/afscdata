@@ -162,12 +162,12 @@ bsai_fhs<- function(year, off_yr = FALSE){
     disconnect(akfin) 
   } else {
     q_fsh_specimen(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE, add_fields='sex')
-    q_fsh_length(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)  
+    q_fsh_length(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE, add_fields='sex') 
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year, species=afsc_species, area, db=afsc)
-    q_bts_length(year, species=afsc_species, area, db=afsc)  
+    q_bts_specimen(year, species=afsc_species, area, db=afsc, add_fields='sex')
+    q_bts_length(year, species=afsc_species, area, db=afsc, add_fields='sex') 
     disconnect(afsc)
   }
   
