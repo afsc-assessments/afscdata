@@ -3,7 +3,6 @@
 #' utility function to connect to server
 #' @param db the database schema ("akfin" or "afsc")
 #' @export connect
-#' @export catch_to_ss3
 #' 
 connect <- function(db = "akfin") {
 
@@ -210,7 +209,14 @@ accepted_model <- function(base_year, base_model, year, folder = NULL){
   
   
 }
-
+#' Reformat Catch to SS3 structure
+#' currently only handles a single fleet, values in t
+#' @param year assessment year
+#' @param se standard error in log space, typically quite small
+#' @param season numeric month for catches to be applied
+#' @param fleet numeric id of the fishery fleet
+#' @return saves a csv in output/ with the correct format
+#' @export setup_folders
 
 catch_to_ss3 <- function(year, se = 0.01, season = 7, fleet=1){
   vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
