@@ -110,7 +110,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
                variance=sum(sd_AI^2,sd_EBS_SHELF^2,na.rm = TRUE),
                .groups='drop') %>%
      ## SE on log scale, which SS requires, is sqrt(log(1+CV^2))
-     dplyr::mutate(se_log=round(sqrt(log(1+variance/biomass^2)),5)) %>%
+     dplyr::mutate(se_log=round(sqrt(log(1+(variance/biomass)^2)),5)) %>%
      dplyr::select(-variance)
    
 
