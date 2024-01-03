@@ -216,7 +216,7 @@ accepted_model <- function(base_year, base_model, year, folder = NULL){
 #' @param season numeric month for catches to be applied
 #' @param fleet numeric id of the fishery fleet
 #' @return saves a csv in output/ with the correct format
-#' @export setup_folders
+#' @export catch_to_ss3
 
 catch_to_ss3 <- function(year, se = 0.01, season = 7, fleet=1){
   vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
