@@ -12,9 +12,9 @@
 
 #' BSAI flathead sole historical catch data 1964-1994
 #'
-#' A dataset containing trawl gear catch by year for 1961-1990
+#' A dataset containing trawl gear catch by year for 1964-1994
 #'
-#' @format A data frame with 32 observations and 2 variables:
+#' @format A data frame with 30 observations and 2 variables:
 #' \describe{
 #' \item{Year}{year of catch}
 #' \item{Catch}{weight of catch in 1,000 t}
