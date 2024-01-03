@@ -93,8 +93,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
   
   ## calculate variance by region,
   
-  vroom::vroom(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",")
-   cpue %>% 
+  vroom::vroom(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",") %>% 
      dplyr::group_by(year, survey) %>%
      dplyr::summarise(biomass= sum(total_biomass),
                sd = sqrt(sum(biomass_var))/1000) %>%
