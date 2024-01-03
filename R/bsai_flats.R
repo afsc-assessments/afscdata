@@ -88,11 +88,6 @@ bsai_fhs<- function(year, off_yr = FALSE){
     dplyr::bind_rows(q_bts_biomass(year, area="AI", species=afsc_species, db=akfin, save=F)) %>% 
     vroom::vroom_write(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",")
   
-  ## placeholder -- perform AI/EBS linear model here, reformat and save.
-  ## this supercedes use of afscassess::bts_biomass for this stock.
-  
-  ## calculate variance by region,
-  
   vroom::vroom(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",") %>% 
      dplyr::group_by(year, survey) %>%
      dplyr::summarise(biomass= sum(total_biomass),
@@ -109,7 +104,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
    z2$sd <- as.numeric(predict(lm_var, newdata=z2))
    ## calculate total index and variance
    ## Recombine and add together biomass and variances
-    rbind(z1,z2) %>% 
+   index <- rbind(z1,z2) %>% 
      dplyr::group_by(year) %>%
      dplyr::summarize(biomass=round(biomass_AI+biomass_EBS_SHELF,5),
                variance=sum(sd_AI^2,sd_EBS_SHELF^2,na.rm = TRUE),
@@ -120,34 +115,34 @@ bsai_fhs<- function(year, off_yr = FALSE){
    
 
   
-  index_ebs <-  read.csv(here(year,'data','raw',"2023-12-19-biomass_survey_ebs.csv")) %>%
-    select(year=YEAR, biomass=BIOMASS,
-           variance=VARBIO) %>% cbind(survey='ebs')
-  index_ai <- read.csv(here(year, 'data','raw','2023-12-19-biomass_survey_ai.csv')) %>%
-    mutate(species=gsub(" ", "_",COMMON_NAME)) %>%
-    select(year=YEAR, biomass=TOTAL_BIOMASS,
-           variance=BIOMASS_VAR) %>% cbind(survey='AI')
-  index_raw <- rbind(index_ebs, index_ai) %>%
-    pivot_wider(names_from=survey, values_from=c(biomass, variance))
-  
-  ## Do a linear regression to get missing AI years
-  index_raw  <- index_raw %>% mutate(sd_ebs=sqrt(variance_ebs), sd_AI=sqrt(variance_AI))
-  interpyr <- index_raw$year[which(is.na(index_raw$biomass_AI))]
-  z1 <- subset(index_raw, !is.na(biomass_AI))
-  z2 <- subset(index_raw, is.na(biomass_AI))
-  lmbio <- lm(biomass_AI~biomass_ebs, data=z1)
-  z2$biomass_AI <- as.numeric(predict(lmbio, newdata=z2))
-  lmvar <- lm(sd_AI~sd_ebs, data=z1)
-  z2$sd_AI <- as.numeric(predict(lmvar, newdata=z2))
-  
-  ## Recombine and add together biomass and variances
-  index <- rbind(z1,z2) %>% group_by(year) %>%
-    summarize(biomass=round(biomass_AI+biomass_ebs,5),
-              variance=sum(sd_AI^2,sd_ebs^2,na.rm = TRUE),
-              .groups='drop') %>%
-    ## SE on log scale, which SS requires, is sqrt(log(1+CV^2))
-    mutate(se_log=round(sqrt(log(1+(variance/biomass)^2)),5)) %>%
-    select(-variance)
+  # index_ebs <-  read.csv(here(year,'data','raw',"2023-12-19-biomass_survey_ebs.csv")) %>%
+  #   select(year=YEAR, biomass=BIOMASS,
+  #          variance=VARBIO) %>% cbind(survey='ebs')
+  # index_ai <- read.csv(here(year, 'data','raw','2023-12-19-biomass_survey_ai.csv')) %>%
+  #   mutate(species=gsub(" ", "_",COMMON_NAME)) %>%
+  #   select(year=YEAR, biomass=TOTAL_BIOMASS,
+  #          variance=BIOMASS_VAR) %>% cbind(survey='AI')
+  # index_raw <- rbind(index_ebs, index_ai) %>%
+  #   pivot_wider(names_from=survey, values_from=c(biomass, variance))
+  # 
+  # ## Do a linear regression to get missing AI years
+  # index_raw  <- index_raw %>% mutate(sd_ebs=sqrt(variance_ebs), sd_AI=sqrt(variance_AI))
+  # interpyr <- index_raw$year[which(is.na(index_raw$biomass_AI))]
+  # z1 <- subset(index_raw, !is.na(biomass_AI))
+  # z2 <- subset(index_raw, is.na(biomass_AI))
+  # lmbio <- lm(biomass_AI~biomass_ebs, data=z1)
+  # z2$biomass_AI <- as.numeric(predict(lmbio, newdata=z2))
+  # lmvar <- lm(sd_AI~sd_ebs, data=z1)
+  # z2$sd_AI <- as.numeric(predict(lmvar, newdata=z2))
+  # 
+  # ## Recombine and add together biomass and variances
+  # index <- rbind(z1,z2) %>% group_by(year) %>%
+  #   summarize(biomass=round(biomass_AI+biomass_ebs,5),
+  #             variance=sum(sd_AI^2,sd_ebs^2,na.rm = TRUE),
+  #             .groups='drop') %>%
+  #   ## SE on log scale, which SS requires, is sqrt(log(1+CV^2))
+  #   mutate(se_log=round(sqrt(log(1+(variance/biomass)^2)),5)) %>%
+  #   select(-variance)
   
   SS_index <- data.frame(year=index$year, seas=7, index=2, 
                          obs=index$biomass, se_log=index$se_log)
