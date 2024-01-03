@@ -171,10 +171,6 @@ bsai_fhs<- function(year, off_yr = FALSE){
     disconnect(afsc)
   }
   
-  # read in archived catch data
-  # afscdata::goa_atf_catch_1961_1990 %>%
-  # vroom::vroom_write(here::here(year, "data", "user_input", "goa_atf_catch_1961_1990.csv"), ",")
-  
   # timestamp
   q_date(year)
   
