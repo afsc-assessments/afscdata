@@ -86,7 +86,9 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   # globals
   yr = year
   area = toupper(area)
-  
+  if(isTRUE(area=="BSAI")){
+    area = c("BS", "AI")
+  }
   # pull data sources
   dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
     dplyr::rename_with(tolower) -> aa
@@ -106,9 +108,9 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
                                    length, weight, age, maturity)) %>% 
     dplyr::mutate(year = lubridate::year(start_date)) %>%
     dplyr::select(-start_date) %>% 
-    dplyr::filter(abundance_haul == "Y", 
-                  year <= yr, 
-                  region %in% area, 
+    dplyr::filter(abundance_haul == "Y",
+                  year <= yr,
+                  region %in% area,
                   species_code %in% species) %>% 
     dplyr::arrange(year) -> table
   
