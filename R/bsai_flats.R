@@ -162,6 +162,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
     afsc = connect("afsc")
     q_bts_specimen(year, species=afsc_species, area, db=afsc)
     q_bts_length(year, species=afsc_species, area, db=afsc) 
+    q_bts_length(year, species=afsc_species, area, db=afsc) 
     disconnect(afsc)
   }
   

@@ -22,7 +22,9 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   # globals
   yr = year
   area = toupper(area)
-  
+  if(isTRUE(area=="BSAI")){
+    area = c("BS", "AI")
+  }
   # pull data sources
   dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
     dplyr::rename_with(tolower) -> aa
