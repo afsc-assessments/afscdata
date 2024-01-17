@@ -106,7 +106,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
     dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
                                    end_longitude, bottom_depth, abundance_haul, 
                                    stratum, gear_temperature)) %>%
-    dplyr::left_join(dplyr::select(cc, hauljoin, species_code, sex, 
+    dplyr::left_join(dplyr::select(cc, hauljoin, specimenid, species_code, sex, 
                                    length, weight, age, maturity)) %>% 
     dplyr::mutate(year = lubridate::year(start_date)) %>%
     dplyr::select(-start_date) %>% 
