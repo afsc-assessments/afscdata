@@ -77,11 +77,10 @@ bsai_fhs<- function(year, off_yr = FALSE){
   q_catch(year, species=species, area=area, db=akfin)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
   
-  message("using GAP_PRODUCTS for survey biomass, length and age compositions")
-  message("This returns comp values for FHS only, excluding the NW EBS")
-  message("This routine will fail unless you have Oracle access to RACE_DATA")
-  
-
+  message("This script will only return fishery catches, fishery comps \n
+          and raw survey biomass. The reformatting of these data, and the download \n
+          of survey comp data, are accomplished in a standalone script due to \n
+          ongoing issues with GAPINDEX.") 
   
   ## download EBS & AI raw survey data
   q_bts_biomass(year, area="BS", species=afsc_species, db=akfin, save=F) %>%
