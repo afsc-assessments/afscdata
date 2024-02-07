@@ -102,9 +102,6 @@ bsai_fhs<- function(year, off_yr = FALSE){
     q_fsh_specimen(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE, add_fields='sex')
     q_fsh_length(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE) 
     disconnect(akfin)  
-    
-    afsc = connect("afsc") 
-    disconnect(afsc)
   }
   
   # timestamp
