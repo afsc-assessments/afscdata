@@ -47,7 +47,7 @@ bsai_atf <- function(year, off_yr = FALSE){
   
   # read in archived catch data
   # afscdata::goa_atf_catch_1961_1990 %>%
-    # vroom::vroom_write(here::here(year, "data", "user_input", "goa_atf_catch_1961_1990.csv"), ",")
+  # vroom::vroom_write(here::here(year, "data", "user_input", "goa_atf_catch_1961_1990.csv"), ",")
   
   # timestamp
   q_date(year)
@@ -96,10 +96,6 @@ bsai_fhs<- function(year, off_yr = FALSE){
   
   vroom::vroom(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",")
   
-  
-  
-  
-  
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
@@ -107,13 +103,11 @@ bsai_fhs<- function(year, off_yr = FALSE){
     q_fsh_length(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE) 
     disconnect(akfin)  
     
-    afsc = connect("afsc")
-    # q_bts_specimen(year, species=afsc_species, area, db=afsc)
-    # q_bts_length(year, species=afsc_species, area, db=afsc)  
+    afsc = connect("afsc") 
     disconnect(afsc)
   }
   
   # timestamp
   q_date(year)
   
-  }
+}
