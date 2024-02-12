@@ -5,7 +5,7 @@
 \title{Reformat Catch to SS3 structure
 currently only handles a single fleet, values in t}
 \usage{
-catch_to_ss3(year, se = 0.01, season = 7, fleet = 1)
+catch_to_ss3(year, se = 0.01, season = 7, fleet = 1, yld_rat = NULL)
 }
 \arguments{
 \item{year}{assessment year}
@@ -15,6 +15,8 @@ catch_to_ss3(year, se = 0.01, season = 7, fleet = 1)
 \item{season}{numeric month for catches to be applied}
 
 \item{fleet}{numeric id of the fishery fleet}
+
+\item{yld_rat}{default NULL; else look for a vector with the projected-in year catch in output/ and replace}
 }
 \value{
 saves a csv in output/ with the correct format

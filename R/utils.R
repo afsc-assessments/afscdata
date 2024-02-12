@@ -215,12 +215,27 @@ accepted_model <- function(base_year, base_model, year, folder = NULL){
 #' @param se standard error in log space, typically quite small
 #' @param season numeric month for catches to be applied
 #' @param fleet numeric id of the fishery fleet
+#' @param yld_rat default NULL; else look for a vector with the projected-in year catch in output/ and replace
 #' @return saves a csv in output/ with the correct format
 #' @export catch_to_ss3
 
-catch_to_ss3 <- function(year, se = 0.01, season = 7, fleet=1){
-  vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
-    mutate(seas = season, fleet, catch_t = round(catch), catch_se = se) %>%
-    select(year, seas, fleet, catch_t, catch_se) %>%
-    vroom::vroom_write(here::here(year, "data", "output", "fsh_catch_ss3.csv"), delim = ",")
+catch_to_ss3 <- function(year, se = 0.01, season = 7, fleet=1, yld_rat = NULL){
+  if(is.null(yld_rat)){
+    vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
+      mutate(seas = season, fleet, catch_t = round(catch), catch_se = se) %>%
+      select(year, seas, fleet, catch_t, catch_se) %>%
+      vroom::vroom_write(here::here(year, "data", "output", "fsh_catch_ss3.csv"), delim = ",")
+    
+  } else{
+    yr <- vroom::vroom(here::here(year,'data','output','yld_rat.csv')) 
+    
+    c_tmp <- vroom::vroom(here::here(year,'data','output','fsh_catch.csv')) %>%
+      mutate(seas = season, fleet, catch_t = round(catch), catch_se = se) %>%
+      select(year, seas, fleet, catch_t, catch_se)
+    
+    c_tmp$catch_t[c_tmp$year == year] <- round(yr$proj_catch)
+    vroom::vroom_write(c_tmp, here::here(year, "data", "output", "fsh_catch_ss3.csv"), delim = ",")
+    
+  }
+
 }
