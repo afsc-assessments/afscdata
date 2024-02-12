@@ -66,6 +66,12 @@ bsai_atf <- function(year, off_yr = FALSE){
 #' bsai_fhs(year = 2022, off_yr = FALSE)
 #'}
 bsai_fhs<- function(year, off_yr = FALSE){
+  
+  message("This script will only return fishery catches and fishery compositions. \n
+  The reformatting of these data, and the download \n
+          of survey comp data, are accomplished in a standalone script to avoid dependency \n
+          on GAPINDEX at this time.") 
+  
   # globals 
   area = "BSAI"
   species = "FSOL" 
@@ -77,25 +83,7 @@ bsai_fhs<- function(year, off_yr = FALSE){
   q_catch(year, species=species, area=area, db=akfin)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
   
-  message("This script will only return fishery catches, fishery comps \n
-          and raw survey biomass. The reformatting of these data, and the download \n
-          of survey comp data, are accomplished in a standalone script due to \n
-          ongoing issues with GAPINDEX.") 
-  
-  ## download EBS & AI raw survey data
-  q_bts_biomass(year, area="BS", species=afsc_species, db=akfin, save=F) %>%
-    dplyr::mutate(species_code = as.numeric(species_code)) %>%
-    dplyr::select(survey, year, species_code, haul_count=haulcount, catch_count=catcount,
-                  mean_wgt_cpue = meanwgtcpue, var_wgt_cpue = varmnwgtcpue,
-                  mean_num_cpue = meannumcpue, var_num_cpue = varmnnumcpue,
-                  total_biomass = biomass, biomass_var=varbio,
-                  min_biomass=lowerb, max_biomass = upperb, total_pop = population,
-                  pop_var = varpop, min_pop = lowerp, max_pop = upperp, akfin_load_date) %>%
-    dplyr::bind_rows(q_bts_biomass(year, area="AI", species=afsc_species, db=akfin, save=F)) %>%
-    vroom::vroom_write(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",")
-  
-  vroom::vroom(here::here(year, "data", "raw", "bsai_total_bts_biomass_data.csv"), delim = ",")
-  
+
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
