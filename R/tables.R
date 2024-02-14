@@ -64,7 +64,7 @@ q_psc <- function(year, target, area, db, save = TRUE) {
 #'
 #' @return a csv of non-target species catch by trip target group, saved in the data/output folder
 #' @export 
-#' @description non-target catch estimates 
+#' @description non-target catch estimates by weight (or numbers)
 #' @examples
 #' \dontrun{
 #' akfin = afscdaya::connect()
