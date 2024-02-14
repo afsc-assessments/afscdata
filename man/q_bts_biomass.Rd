@@ -8,7 +8,7 @@ q_bts_biomass(
   year,
   species,
   area,
-  type = "total",
+  type = 1,
   db,
   print_sql = FALSE,
   save = TRUE
@@ -19,9 +19,17 @@ q_bts_biomass(
 
 \item{species}{5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)}
 
-\item{area}{options are bs (the bs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard") - can only call a single area}
+\item{area}{options are ebs (the ebs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard")}
 
-\item{type}{"depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch}
+\item{type}{area numeric values - can only use a single switch, default = 1 (region)
+1 REGION - all
+2 REGULATORY AREA - goa/ai
+3 STRATUM - goa/ai/nbs
+4 INPFC - goa
+5 INPFC BY DEPTH -goa
+6 DEPTH - all(except nbs)
+7 SUBAREA - ai
+8 SUBAREA BY DEPTH - ai}
 
 \item{db}{the database to query (akfin)}
 
@@ -37,7 +45,7 @@ probably need to beef up the documentation on the "by" switch
 }
 \details{
 six areas are available to query from
-bs = bering sea + northwest 1987-present (includes nw stations) - recommended
+ebs = bering sea + northwest 1987-present (includes nw stations) - recommended
 bsslope = bering sea slope
 nbs = northern bering sea
 ai = aleutian islands
@@ -49,6 +57,6 @@ for the goa and ai there is a "type" switch that queries by depth, stratum, area
 \examples{
 \dontrun{
 db <- afscdata::connect("akfin")
-q_bts_biomass(year=2022, species=21921, area = "goa", type = "depth", db = db)
+q_bts_biomass(year=2022, species=21921, area = "goa", type = 1, db = db)
 } 
 }
