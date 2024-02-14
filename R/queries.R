@@ -139,7 +139,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' probably need to beef up the documentation on the "by" switch
 #' 
 #' six areas are available to query from 
-#' bs = bering sea + northwest 1987-present (includes nw stations) - recommended
+#' ebs = bering sea + northwest 1987-present (includes nw stations) - recommended
 #' bsslope = bering sea slope 
 #' nbs = northern bering sea
 #' ai = aleutian islands 
@@ -149,9 +149,17 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' for the goa and ai there is a "type" switch that queries by depth, stratum, area, total, or uses the inpfc table or inpfc by depth table only one of these can be used at a time.
 #' 
 #' @param year  max year to retrieve data from 
-#' @param area options are bs (the bs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard") - can only call a single area
+#' @param area options are ebs (the ebs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard")
 #' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
-#' @param type "depth", "stratum", "area", "total", "inpfc", "inpfc_depth" - only available for goa/ai (default: "total") - can only use a single switch
+#' @param type area numeric values - can only use a single switch, default = 1 (region)
+#' 1 REGION - all       
+#' 2 REGULATORY AREA - goa/ai
+#' 3 STRATUM - goa/ai/nbs       
+#' 4 INPFC - goa         
+#' 5 INPFC BY DEPTH -goa
+#' 6 DEPTH - all(except nbs)
+#' 7 SUBAREA - ai
+#' 8 SUBAREA BY DEPTH - ai 
 #' @param db  the database to query (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save save the file in designated folder, if FALSE outputs to global environment
@@ -162,9 +170,9 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' @examples
 #' \dontrun{
 #' db <- afscdata::connect("akfin")
-#' q_bts_biomass(year=2022, species=21921, area = "goa", type = "depth", db = db)
+#' q_bts_biomass(year=2022, species=21921, area = "goa", type = 1, db = db)
 #' } 
-q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE, save=TRUE) {
+q_bts_biomass <- function(year, species, area, type=1, db, print_sql=FALSE, save=TRUE) {
   
   # adjust filters
   yr = year
@@ -172,46 +180,77 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   type = tolower(type)
   
   # message center
-  if(type!="total") {
-    if(type %in% c("depth", "stratum", "area", "total", "inpfc", "inpfc_depth")==FALSE){ 
-      stop("appropriate args for type are: 'depth', 'stratum' 'area', or 'total'.\n 
-           these args will be ignored if area != 'goa' or 'ai'")
-    }
-  }
+  # fill this in later?
   
-  # decide which tables to use 
+  # globals 
+  area_nm = NULL
+  design_yr = 2025
   
-  if(area=="old_BS") {
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_standard"))
-  } else if(area=="BS") {
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_plusnw"))
-  } else if(area=="BSSLOPE") {
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsslope"))
-  } else if(area=="NBS") {
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_nbs"))
-  } else if(area %in% c("GOA", "AI") & type=="depth"){
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassdepthaigoa"))
-  } else if(area %in% c("GOA", "AI") & type=="area"){
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassareaaigoa"))    
-  } else if(area %in% c("GOA", "AI") & type=="stratum"){
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassstratumaigoa"))    
-  } else if(area %in% c("GOA", "AI") & type=="inpfc"){
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcaigoa")) 
-  } else if(area %in% c("GOA", "AI") & type=="inpfc_depth"){
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcdepthaigoa")) 
+  # survey id 
+  if(all(grepl('.*goa & .*ai', area, ignore.case = T))){
+    srv_id = c(47, 52)
+  } else if(all(grepl('.*ebs &.*ai', area, ignore.case = T))){
+    srv_id = c(52, 98)
+    area_nm = "Standard Plus NW"
+  } else if(all(grepl('.*old_bs & .*ai', area, ignore.case = T))){
+    srv_id = c(52, 98)
+    area_nm = "Standard"
+  } else if(area=='GOA'){
+    srv_id = 47
+  } else if (area=='AI') {
+    srv_id = 52
+  } else if (area == 'EBS') {
+    srv_id = 98
+    area_nm = "Standard Plus NW"
+  } else if (area == 'OLD_BS') {
+    srv_id = 98
+    area_nm = "Standard"
   } else {
-    table = dplyr::tbl(db, dplyr::sql("afsc.race_biomasstotalaigoa"))     
+    srv_id = 143
   }
-    
-    
-  table <- table %>% 
-    dplyr::rename_with(tolower) %>% 
-    dplyr::filter(year <= yr, species_code %in% species)
   
-  if(area %in% c("AI", "GOA")){
-    table <- dplyr::filter(table, survey == area)
-  } 
-
+  if(type == 1) {
+    type = 'REGION' # all       
+  } else if(type == 2) {
+    type = 'REGULATORY AREA' # goa/ai
+  } else if(type == 3) {
+    type = 'STRATUM' # goa/ai/nbs       
+  } else if(type == 4) {
+    type = 'INPFC' # goa         
+  } else if(type == 5) {
+    type = 'INPFC BY DEPTH' # goa
+  } else if (type == 6) {
+    type = 'DEPTH' # all(except nbs)
+  } else if(type == 7) {
+    type = 'SUBAREA' # ai
+  } else if(type == 8) {
+    type = 'SUBAREA BY DEPTH' # ai
+  }
+  
+  if(is.null(area_nm)) {
+    at = dplyr::tbl(db, dplyr::sql("gap_products.area")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::filter(survey_definition_id %in% srv_id,
+                    design_year < design_yr,
+                    area_type == type) 
+  } else {
+    at = dplyr::tbl(db, dplyr::sql("gap_products.area")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::filter(survey_definition_id %in% srv_id,
+                    area_name == area_nm,
+                    design_year < design_yr,
+                    area_type == type) 
+  }
+  
+  
+  dplyr::left_join(at,
+                   dplyr::tbl(db, dplyr::sql("gap_products.biomass")) %>% 
+                     dplyr::rename_with(tolower) %>% 
+                     dplyr::filter(year <= yr,
+                                   survey_definition_id %in% srv_id,
+                                   species_code %in% species)
+  ) -> table
+  
   # prefix area and type (for goa/ai) to file name
   area = tolower(area)
   id = NULL
