@@ -381,12 +381,10 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   yr = year
   
   # select columns to import
-  if(!is.null(add_fields)) {
-    if(grepl("\\*", add_fields)){
+  if(isTRUE(grepl("\\*", add_fields))){
       table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::filter(year <= yr, fmp_subarea %in% area)
-    }
   }  else {
     cols = c("year",                             
              "agency_species_code",              
