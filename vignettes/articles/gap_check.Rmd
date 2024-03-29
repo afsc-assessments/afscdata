@@ -1,0 +1,168 @@
+---
+title: "gap_check"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+A couple of simple functions to evaluate differences between updated survey databases from GAP and historical databases.
+
+`Step 1 - connect to VPN`
+
+```{r setup, eval = F}
+# load ----
+library(afscdata)
+
+# globals ----
+year = 2024
+species = 30420 # northern rockfish
+area = 'ai'
+type = 'region'
+```
+
+There is a function named `gap_check_bio()` in the `afscdata` package. 
+It produces a brief report of differences in the databases. 
+Note that some of the function inputs differ slightly from the `afscdata` queries to be more in line with GAP naming conventions.
+
+```{r, eval = F}
+out <- gap_check_bio(year = year, species = species, type = 'region', area = area)
+outa <- gap_check_bio(year = year, species = species, type = 'area', area = area)
+outd <- gap_check_bio(year = year, species = species, type = 'depth', area = area)
+outi <- gap_check_bio(year = year, species = species, type = 'inpfc', area = area)
+outid <- gap_check_bio(year = year, species = species, type = 'inpfc_depth', area = area)
+```
+The reports generated from these queries should be the same (or really, really close) since they are summing over the same data, just with different objectives.
+
+The output is a list and the biomass and variance estimates can be compared by calling the report.
+Here, we can see there are minor differences that can likely be attributed to slight computational differences. 
+
+```
+outa$report
+# A tibble: 16 × 7
+    year     tot          var   tot_g        var_g bio_diff var_diff
+   <dbl>   <dbl>        <dbl>   <dbl>        <dbl>    <dbl>    <dbl>
+ 1  1980  37593.  1146927834.     NA           NA    NA        NA   
+ 2  1983  56368.    75319232.     NA           NA    NA        NA   
+ 3  1986 140405.  2255266444.     NA           NA    NA        NA   
+ 4  1991 212812.  1080676741. 212813.  1080676741.   -0.338     0   
+ 5  1994  88463.  1930605884.  88463.  1930605884.   -0.2       0   
+ 6  1997  87391.   730236669.  87391.   730236669.   -0.171     0   
+ 7  2000 205373.  3627754487. 205373.  3627754487.    0.213     0   
+ 8  2002 178791.  2268494951. 178791.  2268494951.   -0.029     0   
+ 9  2004 189446   1753885854. 189446.  1753885854.   -0.112     0   
+10  2006 219350.  2833224664. 219350.  2833224664.   -0.134     0   
+11  2010 217319.  2256385707. 217318.  2256385707.    0.115     0   
+12  2012 285164. 20603776739. 285165. 20603776739.   -0.303     0   
+13  2014 472895. 21594362893. 472895. 21594362893.    0.049     0   
+14  2016 253217.  2177621012. 253216.  2177621012.    0.139     0   
+15  2018 212472.  1852635907. 212471.  1852635907.    0.212     0   
+16  2022 287315.  4239548374. 287316.  4239548380.   -0.746    -6.27
+```
+
+However if we change the area to the GOA, then we note a difference between the regional and INPFC by depth estimates, particularly for 2005.
+
+```{r, eval = F}
+out <- gap_check_bio(year = year, species = species, type = 'region', area = 'GOA' )
+outid <- gap_check_bio(year = year, species = species, type = 'inpfc_depth', area = 'GOA' )
+out$report
+```
+
+```
+# A tibble: 18 × 7
+    year     tot          var   tot_g        var_g bio_diff var_diff
+   <dbl>   <dbl>        <dbl>   <dbl>        <dbl>    <dbl>    <dbl>
+ 1  1984  39334.   127857605.     NA           NA    NA       NA    
+ 2  1987 136417.  1532588438.     NA           NA    NA       NA    
+ 3  1990 107076.  2068646138. 107076.  2068646159.    0.121  -21.2  
+ 4  1993 104992.  1358147916. 104992.  1358148033.   -0.007 -117.   
+ 5  1996  98965.   707334568.  98965.   707334567.    0.148    0.938
+ 6  1999 242187. 21641102940. 242187. 21641102895.   -0.271   44.6  
+ 7  2001 343614. 42219837391. 343614. 42219837394.   -0.151   -3.63 
+ 8  2003  66310.  1021150676.  66310.  1021150323.   -0.041  353.   
+ 9  2005 358999. 17538253085. 358999. 17538251713.   -0.088 1373.   
+10  2007 221226.  7153639777. 221226.  7153639738.   -0.057   39.0  
+11  2009  89896.   834489465.  89896.   834489567.    0.058 -102.   
+12  2011 173642.  4504728201. 173642.  4504728555.   -0.154 -354.   
+13  2013 370454. 48669985128. 370454. 48669985125.    0.055    3.37 
+14  2015  48933.   278528587.  48933.   278528608.   -0.049  -20.9  
+15  2017 150326.  4609076209. 150326.  4609075707.    0.016  502.   
+16  2019  86725    942842957.  86725.   942842996.   -0.263  -38.8  
+17  2021  90670.  1004131755.  90670.  1004131900.    0.061 -145.   
+18  2023  31758.   290679663.  31758.   290679663.    0.245   -0.042
+```
+
+```
+outid$report
+# A tibble: 18 × 7
+    year     tot          var   tot_g        var_g bio_diff var_diff
+   <dbl>   <dbl>        <dbl>   <dbl>        <dbl>    <dbl>    <dbl>
+ 1  1984  39334.   127857605.     NA           NA    NA       NA    
+ 2  1987 136417.  1532588438.     NA           NA    NA       NA    
+ 3  1990 107076.  2068646138. 107076.  2068646159.    0.121  -21.2  
+ 4  1993 104992.  1358147916. 104992.  1358148033.   -0.007 -117.   
+ 5  1996  98965.   707334568.  98965.   707334567.    0.148    0.938
+ 6  1999 242187. 21641102940. 242187. 21641102895.   -0.271   44.6  
+ 7  2001 343614. 42219837391. 343614. 42219837394.   -0.151   -3.63 
+ 8  2003  66310.  1021150676.  66310.  1021150323.   -0.041  353.   
+ 9  2005 358999. 17538253085. 358961. 17538250296.   37.5   2789.   
+10  2007 221226.  7153639777. 221226.  7153639738.   -0.057   39.0  
+11  2009  89896.   834489465.  89896.   834489567.    0.058 -102.   
+12  2011 173642.  4504728201. 173642.  4504728555.   -0.154 -354.   
+13  2013 370454. 48669985128. 370454. 48669985125.    0.055    3.37 
+14  2015  48933.   278528587.  48933.   278528608.   -0.049  -20.9  
+15  2017 150326.  4609076209. 150326.  4609075707.    0.016  502.   
+16  2019  86725    942842957.  86725.   942842996.   -0.263  -38.8  
+17  2021  90670.  1004131755.  90670.  1004131900.    0.061 -145.   
+18  2023  31758.   290679663.  31758.   290679663.    0.245   -0.042
+```
+
+We can dril down to see where this difference may be coming from (and chat with GAP if there are questions).
+Note the different variable names in the datasets.  
+In this instance it looks like the number of hauls is being treated differently within the two datasets.
+
+```{r, eval = FALSE}
+outid$orig %>% 
+  group_by(year) %>% 
+  summarise(haul = sum(haul_count),
+            count = sum(catch_count)) %>% 
+  left_join(
+    outid$gap %>% 
+    group_by(year) %>% 
+    summarise(haul_g = sum(n_haul),
+              count_g = sum(n_count))
+  ) %>% 
+  mutate(haul_diff = haul - haul_g,
+         count_diff = count - count_g)
+```
+
+```
+Joining with `by = join_by(year)`
+# A tibble: 18 × 7
+    year  haul count haul_g count_g haul_diff count_diff
+   <dbl> <dbl> <dbl>  <dbl>   <dbl>     <dbl>      <dbl>
+ 1  1984   929   157     NA      NA        NA         NA
+ 2  1987   783   202     NA      NA        NA         NA
+ 3  1990   708   130    708     129         0          1
+ 4  1993   774   148    774     148         0          0
+ 5  1996   807   135    807     135         0          0
+ 6  1999   764   119    717     119        47          0
+ 7  2001   489   107    489     107         0          0
+ 8  2003   809   126    794     126        15          0
+ 9  2005   837   147    802     146        35          1
+10  2007   816   139    777     139        39          0
+11  2009   823   132    795     132        28          0
+12  2011   670    89    653      89        17          0
+13  2013   548    86    536      86        12          0
+14  2015   771    95    743      95        28          0
+15  2017   536    92    525      92        11          0
+16  2019   541    74    531      74        10          0
+17  2021   529    70    519      70        10          0
+18  2023   526    52    516      52        10          0
+```
+
+
+
