@@ -28,6 +28,10 @@ There is a function named `gap_check_bio()` in the `afscdata` package.
 It produces a brief report of differences in the databases. 
 Note that some of the function inputs differ slightly from the `afscdata` queries to be more in line with GAP naming conventions.
 
+The area inputs available are: ai, goa, ebs, bss, nbs  
+The type inputs available are: region, subarea, area, stat_area, stratum, inpfc, inpfc_depth, depth, reg_area_depth  
+Of course some of these types are not available in some areas, its assumed the user is aware of this.
+
 ```{r, eval = F}
 out <- gap_check_bio(year = year, species = species, type = 'region', area = area)
 outa <- gap_check_bio(year = year, species = species, type = 'area', area = area)
