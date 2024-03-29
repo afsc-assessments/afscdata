@@ -14,19 +14,23 @@
 #' out$report
 #' }
 gap_check_bio <- function(year, species, area, type) {
-  
+
   area = toupper(area)
   type = tolower(type)
+  data.frame(id = c('AI', 'GOA', 'EBS', 'BSS', 'NBS'),
+             srv_id = c(52, 47, 98, 78, 143)) %>%  
+    dplyr::filter(id %in% area) %>% 
+    dplyr::pull(srv_id) -> srv_id
+  
+  if(area == 'EBS') area = 'BS'
+  if(area =='BSS') area = 'BSSLOPE'
   
   db = connect()
   db2 = connect('afsc')
   # og data 
   orig = q_bts_biomass(year, species = species, type = type, area = area, db = db, save = FALSE)
   # gap data '
-  data.frame(id = c('AI', 'GOA', 'EBS', 'BSS', 'NBS'),
-             srv_id = c(52, 47, 98, 78, 143)) %>%  
-    dplyr::filter(id %in% area) %>% 
-    dplyr::pull(srv_id) -> srv_id
+
   
   if(type == 'area') {
     aid = 'REGULATORY AREA'
