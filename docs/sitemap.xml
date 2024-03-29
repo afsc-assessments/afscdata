@@ -10,6 +10,9 @@
     <loc>/articles/development.html</loc>
   </url>
   <url>
+    <loc>/articles/gap_check.html</loc>
+  </url>
+  <url>
     <loc>/articles/getting-started.html</loc>
   </url>
   <url>
@@ -43,7 +46,22 @@
     <loc>/reference/bsai_amak_catch_1977_1990.html</loc>
   </url>
   <url>
+    <loc>/reference/bsai_atf.html</loc>
+  </url>
+  <url>
+    <loc>/reference/bsai_fhs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/bsai_fhs_catch_1964_1994.html</loc>
+  </url>
+  <url>
     <loc>/reference/bsai_octopus.html</loc>
+  </url>
+  <url>
+    <loc>/reference/bsai_orox.html</loc>
+  </url>
+  <url>
+    <loc>/reference/catch_to_ss3.html</loc>
   </url>
   <url>
     <loc>/reference/collapse_filters.html</loc>
@@ -85,6 +103,9 @@
     <loc>/reference/goa_nork_catch_1961_1992.html</loc>
   </url>
   <url>
+    <loc>/reference/goa_octopus.html</loc>
+  </url>
+  <url>
     <loc>/reference/goa_pcod_catch_1977_1990.html</loc>
   </url>
   <url>
@@ -104,6 +125,12 @@
   </url>
   <url>
     <loc>/reference/goa_rebs_catch_1977_2004.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_shal_flats.html</loc>
+  </url>
+  <url>
+    <loc>/reference/goa_thornyhead.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
@@ -185,6 +212,9 @@
   </url>
   <url>
     <loc>/reference/setup_folders.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sharks.html</loc>
   </url>
   <url>
     <loc>/reference/species_switch.html</loc>
