@@ -45,3 +45,6 @@ keyring::key_list(db)
 
 
 keyring::key_get(db, keyring::key_list(db)$username)
+
+use_r('gap_check_bio')
+use_article('gap_check')
