@@ -381,7 +381,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   yr = year
   
   # select columns to import
-  if(isTRUE(grepl("\\*", add_fields))){
+  if(sum(grepl("\\*", add_fields)) != 0){
       table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::filter(year <= yr, fmp_subarea %in% area)
@@ -614,7 +614,7 @@ q_fish_ticket <- function(year, species, area, db, add_fields=NULL, print_sql=FA
   
   # select columns to import
   if(!is.null(add_fields)) {
-    if(grepl("\\*", add_fields)){
+    if(sum(grepl("\\*", add_fields)) != 0){
       table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_ft")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::filter(year <= yr, fmp_subarea %in% area)
@@ -698,7 +698,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
   
   # select columns to import
   if(!is.null(add_fields)) {
-    if(grepl("\\*", add_fields)){
+    if(sum(grepl("\\*", add_fields)) != 0){
       table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
@@ -792,7 +792,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
   
   # select columns to import
   if(!is.null(add_fields)) {
-    if(grepl("\\*", add_fields)){
+    if(sum(grepl("\\*", add_fields)) != 0){
       table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
