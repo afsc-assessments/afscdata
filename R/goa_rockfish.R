@@ -26,8 +26,8 @@ goa_nork <- function(year, off_yr = FALSE){
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
-    q_fsh_specimen(year, species, area, db=akfin, print_sql=FALSE, save=TRUE)
-    q_fsh_length(year, species, area, db=akfin, print_sql=FALSE, save=TRUE)  
+    q_fsh_specimen(year, species = norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)
+    q_fsh_length(year, species = norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)  
     disconnect(akfin)  
     
     afsc = connect("afsc")
@@ -75,8 +75,8 @@ goa_dusk <- function(year, off_yr = FALSE){
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
-    q_fsh_specimen(year=year, species=afsc_species, area=area, db=akfin)
-    q_fsh_length(year=year, species=afsc_species, area=area, db=akfin)  
+    q_fsh_specimen(year=year, species=norpac_species, area=area, db=akfin)
+    q_fsh_length(year=year, species=norpac_species, area=area, db=akfin)  
     disconnect(akfin)  
     
     afsc = connect("afsc")
@@ -182,8 +182,8 @@ goa_rebs <- function(year, off_yr = FALSE){
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
-    q_fsh_specimen(year=year, species=afsc_species, area=area, db=akfin)
-    q_fsh_length(year=year, species=afsc_species, area=area, db=akfin)
+    q_fsh_specimen(year=year, species=norpac_species, area=area, db=akfin)
+    q_fsh_length(year=year, species=norpac_species, area=area, db=akfin)
     q_lls_rpn_length(year=year, species=afsc_species, area=area, by='fmpsubarea', db=akfin)
     disconnect(akfin)  
     
@@ -235,8 +235,8 @@ goa_thornyhead <- function(year, off_yr = FALSE, catch_report = FALSE){
   if(isTRUE(off_yr) | isTRUE(catch_report)) {
     disconnect(akfin) 
   } else {
-    q_fsh_specimen(year, species, area, db=akfin, print_sql=FALSE, save=TRUE)
-    q_fsh_length(year, species, area, db=akfin, print_sql=FALSE, save=TRUE)  
+    q_fsh_specimen(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)
+    q_fsh_length(year, species=norpac_species, area, db=akfin, print_sql=FALSE, save=TRUE)  
     disconnect(akfin)  
     
     afsc = connect("afsc")
