@@ -381,7 +381,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   yr = year
   
   # select columns to import
-  if(sum(grepl("\\*", add_fields)) != 0){
+  if(any(grepl("\\*", add_fields))){
       table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::filter(year <= yr, fmp_subarea %in% area)
@@ -613,12 +613,10 @@ q_fish_ticket <- function(year, species, area, db, add_fields=NULL, print_sql=FA
   
   
   # select columns to import
-  if(!is.null(add_fields)) {
-    if(sum(grepl("\\*", add_fields)) != 0){
+  if(any(grepl("\\*", add_fields))){
       table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_ft")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::filter(year <= yr, fmp_subarea %in% area)
-    }
   }  else {
     cols = c("akfin_year",                             
              "cfec_pacfin_species_code",              
@@ -697,8 +695,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
   
   
   # select columns to import
-  if(!is.null(add_fields)) {
-    if(sum(grepl("\\*", add_fields)) != 0){
+  if(any(grepl("\\*", add_fields))){
       table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
@@ -711,7 +708,6 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
                       species %in% sp,
                       !is.na(age)) %>% 
         dplyr::arrange(year)
-    }
   }  else {
     cols = c("year", "performance", "specimen_type", "join_key", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
@@ -791,8 +787,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
   
   
   # select columns to import
-  if(!is.null(add_fields)) {
-    if(sum(grepl("\\*", add_fields)) != 0){
+  if(any(grepl("\\*", add_fields))){
       table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
         dplyr::rename_with(tolower) %>% 
         dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
@@ -805,7 +800,6 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
                       species %in% sp,
                       !is.na(length)) %>% 
         dplyr::arrange(year)
-    }
   }  else {
     cols = c("year", "performance", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
