@@ -725,8 +725,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
                          dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
       dplyr::filter(year <= yr & year > 0, 
                     fmp_subarea %in% area, 
-                    species %in% sp,
-                    !is.na(age)) %>% 
+                    species %in% sp) %>% 
       dplyr::arrange(year)
   }
   
