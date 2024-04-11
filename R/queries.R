@@ -793,12 +793,8 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
         dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
                            dplyr::rename_with(tolower) %>% 
                            dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
-                           dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
-        dplyr::filter(year <= yr & year>0, 
-                      fmp_subarea %in% area, 
-                      species %in% sp,
-                      !is.na(length)) %>% 
-        dplyr::arrange(year)
+                           dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) 
+
   }  else {
     cols = c("year", "performance", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
@@ -813,13 +809,14 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
                          dplyr::rename_with(tolower) %>% 
                          dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
                          dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
-      dplyr::select(!!!cols) %>% 
-      dplyr::filter(year <= yr & year > 0, 
-                    fmp_subarea %in% area, 
-                    species %in% sp,
-                    !is.na(length)) %>% 
-      dplyr::arrange(year)
+      dplyr::select(!!!cols) 
   }
+  
+    table <- table %>% 
+      dplyr::filter(year <= yr & year>0, 
+                    fmp_subarea %in% area, 
+                    species %in% sp) %>% 
+      dplyr::arrange(year)
   
   
   if(isTRUE(save)) {
