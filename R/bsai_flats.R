@@ -67,7 +67,11 @@ bsai_atf <- function(year, off_yr = FALSE){
 #'}
 bsai_fhs<- function(year, off_yr = FALSE){
   
-
+  message("This script will only return fishery catches and fishery compositions. \n
+  The reformatting of these data, and the download \n
+          of survey comp data, are accomplished in a standalone script to avoid dependency \n
+          on GAPINDEX at this time.") 
+  
   # globals 
   area = "BSAI"
   # species = "FSOL" 
