@@ -67,15 +67,11 @@ bsai_atf <- function(year, off_yr = FALSE){
 #'}
 bsai_fhs<- function(year, off_yr = FALSE){
   
-  message("This script will only return fishery catches and fishery compositions. \n
-  The reformatting of these data, and the download \n
-          of survey comp data, are accomplished in a standalone script to avoid dependency \n
-          on GAPINDEX at this time.") 
-  
+
   # globals 
   area = "BSAI"
-  species = "FSOL" 
-  afsc_species = c(10130, 10140)  # fhs, bering flounder
+  # species = "FSOL" 
+  # afsc_species = c(10130, 10140)  # fhs, bering flounder
   norpac_species = c(104, 120) 
   
   akfin = connect()
@@ -103,22 +99,23 @@ bsai_fhs<- function(year, off_yr = FALSE){
 #' @param off_yr if this is an off-year assessment change to TRUE
 #'
 #' @return a suite of raw data .csv files and a time stamp of when the query was done 
-#' @export bsai_atf
+#' @export bsai_nrs
 #'
 #' @examples
 #' \dontrun{
 #' bsai_atf(year = 2022, off_yr = FALSE)
 #'}
-bsai_atf <- function(year, off_yr = FALSE){
+bsai_nrs <- function(year, off_yr = FALSE){
   # globals 
   area = "BSAI"
-  species = "ARTH"
-  afsc_species = 10110
-  norpac_species = 141
+  species = "RSOL"
+  # flag - what's this code supposed to be?
+  # afsc_species = 10110
+  norpac_species = c(104, 120)
   
   akfin = connect()
   
-  q_catch(year, species=species, area=area, db=akfin)
+  q_catch(year, species=species, area=area, db=akfin, save = FALSE)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
   q_bts_biomass(year, area="BS", species=afsc_species, db=akfin, save=F) %>% 
     dplyr::mutate(species_code = as.numeric(species_code)) %>% 
