@@ -47,49 +47,63 @@ gap_check_bio <- function(year, species, area, type) {
   }
   
   dplyr::tbl(db2, dplyr::sql('gap_products.area')) %>% 
-    rename_all(tolower) %>% 
-    filter(survey_definition_id %in% srv_id,
+    dplyr::rename_all(tolower) %>% 
+    dplyr::filter(survey_definition_id %in% srv_id,
            area_type == aid,
            design_year < year) %>% 
-    left_join(dplyr::tbl(db2, dplyr::sql('gap_products.biomass')) %>% 
-                rename_all(tolower) %>% 
-                filter(species_code %in% species)) %>% 
-    collect() -> gap
+    dplyr::left_join(dplyr::tbl(db2, dplyr::sql('gap_products.biomass')) %>% 
+                       dplyr::rename_all(tolower) %>% 
+                       dplyr::filter(species_code %in% species)) %>% 
+    dplyr::collect() -> gap
   
   if(type=='total'){
     orig %>% 
-      group_by(year) %>% 
-      summarise(tot = sum(total_biomass, na.rm = T),
+      dplyr::group_by(year) %>% 
+      dplyr::summarise(tot = sum(total_biomass, na.rm = T),
                 var = sum(biomass_var, na.rm = T)) %>% 
-      left_join(gap %>%
-                  group_by(year) %>% 
-                  summarise(tot_g = sum(biomass_mt, na.rm = T),
+      dplyr::left_join(gap %>%
+                  dplyr::group_by(year) %>% 
+                  dplyr::summarise(tot_g = sum(biomass_mt, na.rm = T),
                             var_g = sum(biomass_var, na.rm = T))) %>% 
-      mutate(bio_diff = round(tot - tot_g, 3),
+      dplyr::mutate(bio_diff = round(tot - tot_g, 3),
              var_diff = round(var - var_g, 3)) -> report
     
   } else if(type =='stratum'){
     orig %>% 
-      group_by(year) %>% 
-      summarise(tot = sum(stratum_biomass, na.rm = T),
+      dplyr::group_by(year) %>% 
+      dplyr::summarise(tot = sum(stratum_biomass, na.rm = T),
                 var = sum(biomass_var, na.rm = T)) %>% 
-      left_join(gap %>%
-                  group_by(year) %>% 
-                  summarise(tot_g = sum(biomass_mt, na.rm = T),
+      dplyr::left_join(gap %>%
+                         dplyr::group_by(year) %>% 
+                         dplyr::summarise(tot_g = sum(biomass_mt, na.rm = T),
                             var_g = sum(biomass_var, na.rm = T))) %>% 
-      mutate(bio_diff = round(tot - tot_g, 3),
+      dplyr::mutate(bio_diff = round(tot - tot_g, 3),
+             var_diff = round(var - var_g, 3)) -> report
+  } else if(type =='area'){
+    orig %>% 
+      dplyr::rename(area = regulatory_area_name) %>% 
+      dplyr::group_by(year, area) %>% 
+      dplyr::mutate(area = stringr::str_to_title(area)) %>% 
+      dplyr::summarise(tot = sum(area_biomass, na.rm = T),
+                var = sum(biomass_var, na.rm = T)) %>% 
+      dplyr::left_join(gap %>%
+                         dplyr::rename(area = area_name) %>% 
+                         dplyr::mutate(area = stringr::str_to_title(area)) %>% 
+                         dplyr::group_by(year, area) %>% 
+                         dplyr::summarise(tot_g = sum(biomass_mt, na.rm = T),
+                            var_g = sum(biomass_var, na.rm = T))) %>% 
+      dplyr::mutate(bio_diff = round(tot - tot_g, 3),
              var_diff = round(var - var_g, 3)) -> report
   } else {
-    
     orig %>% 
-      group_by(year) %>% 
-      summarise(tot = sum(area_biomass, na.rm = T),
+      dplyr::group_by(year) %>% 
+      dplyr::summarise(tot = sum(area_biomass, na.rm = T),
                 var = sum(biomass_var, na.rm = T)) %>% 
-      left_join(gap %>%
-                  group_by(year) %>% 
-                  summarise(tot_g = sum(biomass_mt, na.rm = T),
+      dplyr::left_join(gap %>%
+                  dplyr::group_by(year) %>% 
+                  dplyr::summarise(tot_g = sum(biomass_mt, na.rm = T),
                             var_g = sum(biomass_var, na.rm = T))) %>% 
-      mutate(bio_diff = round(tot - tot_g, 3),
+      dplyr::mutate(bio_diff = round(tot - tot_g, 3),
              var_diff = round(var - var_g, 3)) -> report
   }
   
