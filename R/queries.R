@@ -346,7 +346,7 @@ q_bts_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' query fishery catch data from AKFIN server
 #'
 #' Note that this function produces results that may be confidential. 
-#' They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
+#' They can be hidden from git/GitHub by adding fish_catch_data.csv to your .gitignore file
 #'
 #' @param year max year to retrieve data from 
 #' @param species species group code e.g., "DUSK" or numeric agency values e.g. c("131", "132") - must be either all 4 digit or 3 digit codes
@@ -356,7 +356,7 @@ q_bts_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' @param print_sql outputs the sql query instead of calling the data - save must be false
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
-#' @return saves catch data as data/raw/fsh_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+#' @return saves catch data as data/raw/fish_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 #' @export q_catch
 #' @examples 
 #' \dontrun{
@@ -435,11 +435,11 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
       stop("you must run afscdata::setup_folders() before you can save to the default location")
       }
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_catch_data.csv"), 
+      vroom::vroom_write(here::here(year, "data", "raw", "fish_catch_data.csv"), 
                          delim = ",")
     
     capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "fsh_catch_sql.txt"))
+                   file = here::here(year, "data", "sql", "fish_catch_sql.txt"))
     
     message("fishery catch data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -520,7 +520,7 @@ q_catch_foreign <- function(year, species, area, db, print_sql=FALSE, save=TRUE)
 #' @param print_sql outputs the sql query instead of calling the data - save must be false
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)
 #' 
-#' @return saves observer data as data/raw/fsh_obs_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+#' @return saves observer data as data/raw/fish_obs_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 #' @export q_fish_obs
 #' @examples 
 #' \dontrun{
@@ -563,11 +563,11 @@ table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>%
     }
     
       dplyr::collect(table) %>% 
-        vroom::vroom_write(here::here(year, "data", "raw", "fsh_obs_data.txt"), 
+        vroom::vroom_write(here::here(year, "data", "raw", "fish_obs_data.txt"), 
                            delim = ",")
       
       capture.output(dplyr::show_query(table), 
-                     file = here::here(year, "data", "sql", "fsh_obs_sql.txt"))
+                     file = here::here(year, "data", "sql", "fish_obs_sql.txt"))
     
     
     message("fishery observer data can be found in the data/raw folder")
@@ -668,7 +668,7 @@ q_fish_ticket <- function(year, species, area, db, add_fields=NULL, print_sql=FA
 #' @param add_fields add other columns to the database (must currently exist on server). "*" will return all table columns available
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
-#' @return saves fishery specimen data as data/raw/fsh_specimen_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @return saves fishery specimen data as data/raw/fish_specimen_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
 #' @export q_fsh_specimen
 #'
 #' @examples
@@ -732,10 +732,10 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_specimen_data.txt"), 
+      vroom::vroom_write(here::here(year, "data", "raw", "fish_specimen_data.txt"), 
                          delim = ",")
     capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "fsh_specimen_sql.txt"))
+                   file = here::here(year, "data", "sql", "fish_specimen_sql.txt"))
     
     message("fishery specimen data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -759,7 +759,7 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
 #' @param add_fields add other columns to the database (must currently exist on server). "*" will return all table columns available
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
-#' @return saves fishery length data as data/raw/fsh_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @return saves fishery length data as data/raw/fish_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
 #' @export q_fsh_length
 #'
 #' @examples
@@ -821,10 +821,10 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "fsh_length_data.txt"), 
+      vroom::vroom_write(here::here(year, "data", "raw", "fish_length_data.txt"), 
                          delim = ",")
     utils::capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "fsh_length_sql.txt"))
+                   file = here::here(year, "data", "sql", "fish_length_sql.txt"))
     
     message("fishery length data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
