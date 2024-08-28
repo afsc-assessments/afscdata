@@ -21,9 +21,9 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   # globals
   yr = year
-  area = toupper(area)
-  if(isTRUE(area=="BSAI")){
-    area = c("BS", "AI")
+  ar = toupper(area)
+  if(isTRUE(ar=="BSAI")){
+    ar = c("BS", "AI")
   }
   # pull data sources
   dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
@@ -45,16 +45,16 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
     dplyr::select(-start_date) %>% 
     dplyr::filter(abundance_haul == "Y", 
                   year <= yr, 
-                  region %in% area, 
+                  region %in% ar, 
                   species_code %in% species) %>% 
     dplyr::arrange(year) -> table
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "bts_length_data.csv"), 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(area, "_bts_length_data.csv")), 
                          delim = ",")
     capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "bts_length_sql.txt"))
+                   file = here::here(year, "data", "sql", paste0(area, "_bts_length_sql.txt")))
     
     message("bottom trawl survey length data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -87,9 +87,9 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   # globals
   yr = year
-  area = toupper(area)
-  if(isTRUE(area=="BSAI")){
-    area = c("BS", "AI")
+  ar = toupper(area)
+  if(isTRUE(ar=="BSAI")){
+    ar = c("BS", "AI")
   }
   # pull data sources
   dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
@@ -112,16 +112,16 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
     dplyr::select(-start_date) %>% 
     dplyr::filter(abundance_haul == "Y",
                   year <= yr,
-                  region %in% area,
+                  region %in% ar,
                   species_code %in% species) %>% 
     dplyr::arrange(year) -> table
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", "bts_specimen_data.csv"), 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(area, "_bts_specimen_data.csv")), 
                          delim = ",")
     capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "bts_specimen_sql.txt"))
+                   file = here::here(year, "data", "sql", paste0(area, "_bts_specimen_sql.txt")))
     
     message("bottom trawl survey specimen data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -168,7 +168,7 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   
   # adjust filters
   yr = year
-  area = toupper(area)
+  ar = toupper(area)
   type = tolower(type)
   
   # message center
@@ -181,23 +181,23 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   
   # decide which tables to use 
   
-  if(area=="old_BS") {
+  if(ar=="OLD_BS") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_standard"))
-  } else if(area=="BS") {
+  } else if(ar=="BS") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsshelf_plusnw"))
-  } else if(area=="BSSLOPE") {
+  } else if(ar=="BSSLOPE") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_ebsslope"))
-  } else if(area=="NBS") {
+  } else if(ar=="NBS") {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomass_nbs"))
-  } else if(area %in% c("GOA", "AI") & type=="depth"){
+  } else if(ar %in% c("GOA", "AI") & type=="depth"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassdepthaigoa"))
   } else if(area %in% c("GOA", "AI") & type=="area"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassareaaigoa"))    
-  } else if(area %in% c("GOA", "AI") & type=="stratum"){
+  } else if(ar %in% c("GOA", "AI") & type=="stratum"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassstratumaigoa"))    
-  } else if(area %in% c("GOA", "AI") & type=="inpfc"){
+  } else if(ar %in% c("GOA", "AI") & type=="inpfc"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcaigoa")) 
-  } else if(area %in% c("GOA", "AI") & type=="inpfc_depth"){
+  } else if(ar %in% c("GOA", "AI") & type=="inpfc_depth"){
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomassinpfcdepthaigoa")) 
   } else {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomasstotalaigoa"))     
@@ -208,8 +208,8 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(year <= yr, species_code %in% species)
   
-  if(area %in% c("AI", "GOA")){
-    table <- dplyr::filter(table, survey == area)
+  if(ar %in% c("AI", "GOA")){
+    table <- dplyr::filter(table, survey == ar)
   } 
 
   # prefix area and type (for goa/ai) to file name
