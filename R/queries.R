@@ -1413,6 +1413,10 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
 #' @export q_specs
 #'
 #' @examples
+#' \dontrun{
+#' db = connect()
+#' q_specs(year=2024, species='PCOD', area='BSAI', db=db, save=F)
+#' }
 q_specs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
   
   area = toupper(area)

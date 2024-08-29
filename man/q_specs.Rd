@@ -22,3 +22,9 @@ q_specs(year, species, area, db, print_sql = FALSE, save = TRUE)
 \description{
 Query specs
 }
+\examples{
+\dontrun{
+db = connect()
+q_specs(year=2024, species='PCOD', area='BSAI', db=db, save=F)
+}
+}
