@@ -30,11 +30,11 @@ q_catch(
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
 \value{
-saves catch data as data/raw/fsh_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+saves catch data as data/raw/fish_catch_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
 Note that this function produces results that may be confidential.
-They can be hidden from git/GitHub by adding fsh_catch_data.csv to your .gitignore file
+They can be hidden from git/GitHub by adding fish_catch_data.csv to your .gitignore file
 }
 \examples{
 \dontrun{

@@ -30,7 +30,7 @@ q_fsh_specimen(
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)}
 }
 \value{
-saves fishery specimen data as data/raw/fsh_specimen_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+saves fishery specimen data as data/raw/fish_specimen_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
 query fishery specimen data from the AKFIN server

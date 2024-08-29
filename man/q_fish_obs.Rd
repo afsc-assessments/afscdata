@@ -20,7 +20,7 @@ q_fish_obs(year, species, area, db, print_sql = FALSE, save = TRUE)
 \item{save}{saves a file to the data/raw folder, otherwise sends output to global enviro (default: TRUE)}
 }
 \value{
-saves observer data as data/raw/fsh_obs_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
+saves observer data as data/raw/fish_obs_data.csv or outputs to the global environment, save also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
 currently setup for pulling haul level detail for age or length compositions

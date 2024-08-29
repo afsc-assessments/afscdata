@@ -1399,6 +1399,49 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
 }
 
 
+# specs ----
+#' Query specs
+#'
+#' @param year for specifying the correct folder
+#' @param species species group code e.g., "DUSK", "PCOD"
+#' @param area "GOA" or "BSAI"
+#' @param db data server to connect to (akfin)
+#' @param print_sql outputs the sql query instead of calling the data - save must be false
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default TRUE)
+#' 
+#'
+#' @export q_specs
+#'
+#' @examples
+q_specs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
+  
+  area = toupper(area)
+  dplyr::tbl(db, dplyr::sql('akr.v_cas_tac')) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(species_group_code %in% species,
+                  fmp_area_code %in% area) %>% 
+    dplyr::collect() -> table
+  
+  # output
+  if(isTRUE(save)) {
+    if(isFALSE(dir.exists(here::here(year, "data")))) {
+      stop("you must run afscdata::setup_folders() before you can save to the default location")
+    }
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "specs.csv"), 
+                         delim = ",")
+    
+    capture.output(dplyr::show_query(table), 
+                   file = here::here(year, "data", "sql", "specs_sql.txt"))
+    
+    message("specs data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+}
 
 
 
