@@ -22,6 +22,7 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   # globals
   yr = year
   ar = toupper(area)
+  area = tolower(area)
   if(isTRUE(ar=="BSAI")){
     ar = c("BS", "AI")
   }
@@ -88,6 +89,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   # globals
   yr = year
   ar = toupper(area)
+  area = tolower(area)
   if(isTRUE(ar=="BSAI")){
     ar = c("BS", "AI")
   }
@@ -169,6 +171,7 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   # adjust filters
   yr = year
   ar = toupper(area)
+  area = tolower(area)
   type = tolower(type)
   
   # message center
