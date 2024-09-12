@@ -278,7 +278,6 @@ q_gap_biomass <- function(year = 2024, species = 10110, area ='bs', type = 'regi
   yr = year
   area = tolower(area)
   ar = toupper(area)
-  type = toupper(type)
   tl = tolower(type)
   
   # message center
@@ -288,11 +287,6 @@ q_gap_biomass <- function(year = 2024, species = 10110, area ='bs', type = 'regi
              srv_id = c(52, 47, 98, 98, 78, 143),
              aid = c(99904, 99903, 99900, 99901, 99905, 99902)) -> dat
   
-  if(ar=='BS') {
-    an = "Standard Plus NW"
-  } else if(ar == 'OLD_BS') {
-    an = "Standard"
-  }
   dat %>% 
     dplyr::filter(id %in% ar) %>% 
     dplyr::pull(srv_id) -> srv_id # survey_definition_id
@@ -305,24 +299,20 @@ q_gap_biomass <- function(year = 2024, species = 10110, area ='bs', type = 'regi
     dplyr::tbl(db, dplyr::sql('gap_products.akfin_area')) %>% 
       dplyr::rename_all(tolower) %>% 
       dplyr::filter(survey_definition_id %in% srv_id,
-                    area_id==aid)   %>% 
-      dplyr::collect()  -> dat1
+                    area_id==aid) -> dat1
   } else {
     dplyr::tbl(db, dplyr::sql('gap_products.akfin_area')) %>% 
       dplyr::rename_all(tolower) %>% 
       dplyr::filter(survey_definition_id %in% srv_id,
-                    area_type==type)  %>% 
-      dplyr::collect() -> dat1
+                    area_type==type)  %>% distinct(area_name) -> dat1
   }
   
   dat1 %>% 
-    as.data.frame() %>% 
+    # as.data.frame() %>% 
     dplyr::left_join(dplyr::tbl(db, dplyr::sql('gap_products.akfin_biomass')) %>% 
                        dplyr::rename_all(tolower) %>% 
                        dplyr::filter(species_code %in% species,
-                                     year <= yr) %>% 
-                       as.data.frame()) %>% 
-    dplyr::collect() -> table
+                                     year <= yr), copy=TRUE, keep=NULL) -> table
   
   # prefix area and type to file name
   id = paste0(area, "_", tl, "_")
