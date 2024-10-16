@@ -93,7 +93,7 @@ q_nontarget <- function(year, target, area, db, save = TRUE) {
                   species = nontarget_group_name, 
                   count = nontarget_estimate_count, 
                   weight = nontarget_estimate_weight) %>% 
-    dplyr::filter(trip_target_code %in% trip_target,
+    dplyr::filter(trip_target_code %in% target,
                   year >= yr-4, year <= yr,
                   fmp_subarea %in% area) %>% 
     dplyr::group_by(year, species) %>% 
