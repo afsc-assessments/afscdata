@@ -87,7 +87,7 @@ q_nontarget <- function(year, target, area, db, save = TRUE) {
   yr = year
   
   # call table
-  dplyr::tbl(db2, dplyr::sql("council.comprehensive_nontarget")) %>% 
+  dplyr::tbl(db, dplyr::sql("council.comprehensive_nontarget")) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::select(year, fmp_subarea, trip_target_code, 
                   species = nontarget_group_name, 
