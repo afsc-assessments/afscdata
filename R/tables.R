@@ -106,7 +106,7 @@ q_nontarget <- function(year, target, area, db, save = TRUE) {
     tidytable::pivot_wider(names_from = year, values_from = weight) -> tbl
   
   if(isTRUE(save)){
-    vroom::vroom_write(psc, here::here(year, "data", "output", "nontarget_catch.csv"),
+    vroom::vroom_write(tbl, here::here(year, "data", "output", "nontarget_catch.csv"),
                        delim = ",")
     message("nontarget table written to data/output folder.")
   } else {
