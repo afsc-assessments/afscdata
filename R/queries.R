@@ -1521,7 +1521,6 @@ q_specs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(species_group_code %in% species,
                   fmp_area_code %in% area) %>% 
-    dplyr::collect() %>% 
     dplyr::arrange(area_label, year) -> table
   
   # output
