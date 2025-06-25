@@ -67,13 +67,13 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
-#' query bottom trawl survey specimen data from the AFSC server
-#' 
+#' query bottom trawl survey specimen data from the GAP/AKFIN server
+#' ***THIS VERSION ONLY FOR GOA***
 #'
 #' @param year  max year to retrieve data from 
 #' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
 #' @param area bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")
-#' @param db data server to connect to (afsc)
+#' @param db data server to connect to (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
 #' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
@@ -81,7 +81,7 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #'
 #' @examples
 #' \dontrun{
-#' db <- afscdata::connect("afsc")
+#' db <- afscdata::connect()
 #' q_bts_length(year=2022, species=21921, area = "goa", db = db)
 #' } 
 q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
@@ -94,29 +94,28 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
     ar = c("BS", "AI")
   }
   # pull data sources
-  dplyr::tbl(db, dplyr::sql("racebase.cruise")) %>% 
-    dplyr::rename_with(tolower) -> aa
-  
-  dplyr::tbl(db, dplyr::sql("racebase.haul")) %>% 
-    dplyr::rename_with(tolower) -> bb
-  
-  dplyr::tbl(db, dplyr::sql("racebase.specimen")) %>% 
-    dplyr::rename_with(tolower) -> cc
-  
-  # join, filter and query
-  dplyr::select(aa, cruisejoin, region, survey_name, start_date) %>% 
-    dplyr::left_join(dplyr::select(bb, cruisejoin, hauljoin, end_latitude, 
-                                   end_longitude, bottom_depth, abundance_haul, 
-                                   stratum, gear_temperature)) %>%
-    dplyr::left_join(dplyr::select(cc, hauljoin, specimenid, species_code, sex, 
-                                   length, weight, age, maturity)) %>% 
-    dplyr::mutate(year = lubridate::year(start_date)) %>%
-    dplyr::select(-start_date) %>% 
-    dplyr::filter(abundance_haul == "Y",
-                  year <= yr,
-                  region %in% ar,
-                  species_code %in% species) %>% 
-    dplyr::arrange(year) -> table
+  dplyr::tbl(conn, dplyr::sql('gap_products.akfin_haul')) %>% 
+    dplyr::inner_join(dplyr::tbl(conn, dplyr::sql('gap_products.akfin_cruise')),
+                      by = c('CRUISEJOIN')) %>% 
+    dplyr::inner_join(dplyr::tbl(conn, dplyr::sql('gap_products.akfin_specimen')),
+                      by = c('HAULJOIN')) %>% 
+    dplyr::rename_all(tolower) %>% 
+    dplyr::filter(survey_definition_id %in% 47,
+                  species_code %in% species,
+                  year <= yr) %>% 
+    dplyr::select(year,
+                  survey = survey_definition_id,
+                  species_code,
+                  stratum,
+                  hauljoin,
+                  latitude_dd_start,
+                  latitude_dd_end,
+                  longitude_dd_start,
+                  longitude_dd_end,
+                  sex,
+                  length = length_mm,
+                  age, 
+                  maturity) -> table
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
