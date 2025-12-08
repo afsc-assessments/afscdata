@@ -1,6 +1,6 @@
 # afscdata
 
-[![unstable](http://badges.github.io/stability-badges/dist/unstable.svg)](http://github.com/badges/stability-badges)
+[![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 [![R-CMD-check](https://github.com/afsc-assessments/afscdata/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/afsc-assessments/afscdata/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 An R package for data extraction of AFSC fishery data  
