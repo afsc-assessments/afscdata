@@ -2,7 +2,8 @@
 % Please edit documentation in R/queries.R
 \name{q_bts_specimen}
 \alias{q_bts_specimen}
-\title{query bottom trawl survey specimen data from the AFSC server}
+\title{query bottom trawl survey specimen data from the GAP/AKFIN server
+\emph{\strong{THIS VERSION ONLY FOR GOA}}}
 \usage{
 q_bts_specimen(year, species, area, db, print_sql = FALSE, save = TRUE)
 }
@@ -13,7 +14,7 @@ q_bts_specimen(year, species, area, db, print_sql = FALSE, save = TRUE)
 
 \item{area}{bs, ai, goa, or hwc, wc, hg, hbs - can do multiples c("bs","ai")}
 
-\item{db}{data server to connect to (afsc)}
+\item{db}{data server to connect to (akfin)}
 
 \item{print_sql}{outputs the sql query instead of calling the data (default: false)}
 
@@ -23,11 +24,12 @@ q_bts_specimen(year, species, area, db, print_sql = FALSE, save = TRUE)
 saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder.
 }
 \description{
-query bottom trawl survey specimen data from the AFSC server
+query bottom trawl survey specimen data from the GAP/AKFIN server
+\emph{\strong{THIS VERSION ONLY FOR GOA}}
 }
 \examples{
 \dontrun{
-db <- afscdata::connect("afsc")
+db <- afscdata::connect()
 q_bts_length(year=2022, species=21921, area = "goa", db = db)
 } 
 }

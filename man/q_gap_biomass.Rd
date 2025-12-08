@@ -45,6 +45,6 @@ old_bs = bering sea standard 1982-present (minus ~20 stations in nw) - not recom
 \examples{
 \dontrun{
 db <- afscdata::connect()
-q_bts_biomass(year=2024, species=10110, area="bs", type="region", db=db)
+q_gap_biomass(year=2024, species=10110, area="bs", type="region", db=db)
 } 
 }

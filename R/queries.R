@@ -387,6 +387,60 @@ q_bts_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
+
+#' query bottom trawl survey agecomps - from GAP data
+#' 
+#' 
+#' 
+#' @param year  max year to retrieve data from 
+#' @param area options are 'ai' or 'goa' - can only call a single area
+#' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
+#' @param db  the database to query (afsc)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+#' @return saves bts agecomp data as data/raw/area_bts_age_data.csv and area_bts_age_specimen_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export q_bts_agecomp
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect("afsc")
+#' q_bts_agecomp(year=2022, species=21921, area = "goa", db = db)
+#' } 
+q_bts_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
+  # adjust filters
+  yr = year
+  area = tolower(area)
+  
+  # message center
+  if(!(area %in% c("goa", "ai"))) {
+    stop("area != 'goa' or 'ai'")
+  }
+  
+  dplyr::tbl(db, dplyr::sql(paste0(area, ".agecomp_total"))) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(species_code %in% species) -> table
+  
+  
+  # # prefix area and type to file name
+  
+  if(isTRUE(save)){
+    dplyr::collect(table) %>%
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(area, "_bts_agecomp_data.csv")),
+                         delim = ",")
+    capture.output(dplyr::show_query(table),
+                   file = here::here(year, "data", "sql", paste0(area, "_bts_agecomp_sql.txt")))
+    
+    message("bottom trawl survey agecomp data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
 #' query bottom trawl survey sizecomps
 #' 
 #' 
