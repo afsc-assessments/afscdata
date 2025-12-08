@@ -263,7 +263,7 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
 #' @examples
 #' \dontrun{
 #' db <- afscdata::connect()
-#' q_bts_biomass(year=2024, species=10110, area="bs", type="region", db=db)
+#' q_gap_biomass(year=2024, species=10110, area="bs", type="region", db=db)
 #' } 
 q_gap_biomass <- function(year = 2024, species = 10110, area ='bs', type = 'region', db, print_sql=FALSE, save=TRUE) {
   
