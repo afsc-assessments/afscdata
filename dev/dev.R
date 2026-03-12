@@ -13,9 +13,11 @@ use_readme_md()
 use_mit_license()
 devtools::document()
 devtools::build()
+devtools::check()
 
 use_r("queries")
 use_r("tables")
+use_r("zzz")
 use_test("queries")
 pkgdown::build_site(examples = FALSE)
 
