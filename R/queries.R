@@ -189,7 +189,7 @@ q_bts_gap_specimen <- function(year, species, area, db, print_sql=FALSE, save=FA
   
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", paste0(ar, "_bts__gap_specimen_data.csv")), 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(ar, "_bts_gap_specimen_data.csv")), 
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0(area, "_bts_gap_specimen_sql.txt")))
@@ -491,7 +491,6 @@ q_bts_gap_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRU
   mapped <- area_map[[ar]]
   if (is.null(mapped)) stop("Invalid area specified. Please check your input.")
   
-  # 2. Build the database query lazily
   table <- dplyr::tbl(db, dplyr::sql('gap_products.akfin_agecomp')) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(
@@ -504,11 +503,11 @@ q_bts_gap_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRU
   
   if(isTRUE(save)){
     dplyr::collect(table) %>%
-      vroom::vroom_write(here::here(year, "data", "raw", paste0(ar, "_bts__gap_agecomp_data.csv")),
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(ar, "_bts_gap_agecomp_data.csv")),
                          delim = ",")
     
     capture.output(dplyr::show_query(table),
-                   file = here::here(year, "data", "sql", paste0(ar, "_bts__gap_agecomp_sql.txt")))
+                   file = here::here(year, "data", "sql", paste0(ar, "_bts_gap_agecomp_sql.txt")))
     
     message("bottom trawl survey agecomp data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -607,11 +606,9 @@ q_bts_gap_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TR
     ebs_nbs   = list(id = c(99900, 99902),    survey_def = c(98, 143))
   )
   
-  # Extract mapped values
   mapped <- area_map[[ar]]
   if (is.null(mapped)) stop("Invalid area specified. Please check your input.")
   
-  # 2. Build the database query lazily
   query_table <- dplyr::tbl(db, dplyr::sql('gap_products.akfin_sizecomp')) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(
@@ -620,7 +617,6 @@ q_bts_gap_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TR
       species_code %in% species
     )
   
-  # 3. Handle outputs
   if(isTRUE(save)){
     dplyr::collect(query_table) %>%
       vroom::vroom_write(
@@ -628,10 +624,9 @@ q_bts_gap_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TR
         delim = ","
       )
     
-    # extract and save SQL code
-    sql_string = dbplyr::sql_render(query_table)
-    writeLines(sql_string, here::here(year, "data", "sql", paste0(ar, "_bts_gap_sizecomp_sql.txt")))
-    
+    capture.output(dplyr::show_query(table),
+                   file = here::here(year, "data", "sql", paste0(ar, "_bts_gap_sizecomp_sql.txt")))
+
     message("Bottom trawl survey sizecomp data can be found in the data/raw folder.")
     
   } else if (isFALSE(save) && isFALSE(print_sql)) {
