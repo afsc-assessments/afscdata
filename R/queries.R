@@ -136,6 +136,74 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
+#' query GAP bottom trawl survey specimen data from the AFSC server
+#' 
+#'
+#' @param year  max year to retrieve data from 
+#' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
+#' @param area options: ebs, ai, goa, nbs, ebs_slope, ebs_nbs, default: goa
+#' @param db data server to connect to (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
+#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export 
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect()
+#' q_bts_gap_specimen(year=2022, species=21921, area = "goa", db = db)
+#' } 
+q_bts_gap_specimen <- function(year, species, area, db, print_sql=FALSE, save=FALSE){
+  
+  area = ar = tolower(area)
+  area = switch(area,
+                "ai" = 52,
+                "goa" = 47,
+                "ebs" = 98,
+                "nbs" = 143,
+                "ebs_slope" = 78,
+                "ebs_nbs"= c(98, 143),
+                stop("Invalid area specified. Please check your input."))
+  
+  dplyr::tbl(db, dplyr::sql('gap_products.akfin_haul')) %>% 
+    dplyr::inner_join(dplyr::tbl(db, dplyr::sql('gap_products.akfin_cruise')),
+                      by = c('CRUISEJOIN')) %>% 
+    dplyr::inner_join(dplyr::tbl(db, dplyr::sql('gap_products.akfin_specimen')),
+                      by = c('HAULJOIN')) %>% 
+    dplyr::rename_all(tolower) %>% 
+    dplyr::filter(survey_definition_id %in% area,
+                  species_code %in% species) %>% 
+    dplyr::mutate(lat_mid = (latitude_dd_start + latitude_dd_end) / 2,
+                  long_mid = (longitude_dd_start + longitude_dd_end) / 2) %>% 
+    dplyr::select(year, 
+                  survey = survey_definition_id,
+                  species_code,
+                  stratum,
+                  hauljoin,
+                  sex,
+                  length = length_mm,
+                  age,
+                  lat_mid,
+                  long_mid) %>% 
+    dplyr::arrange(year) -> table
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(ar, "_bts__gap_specimen_data.csv")), 
+                         delim = ",")
+    capture.output(dplyr::show_query(table), 
+                   file = here::here(year, "data", "sql", paste0(area, "_bts_gap_specimen_sql.txt")))
+    
+    message("bottom trawl survey specimen data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
+
 #' query bottom trawl survey biomass
 #' 
 #' probably need to beef up the documentation on the "by" switch
@@ -388,6 +456,70 @@ q_bts_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
+#' query GAP bottom trawl survey agecomps
+#' 
+#' @param year  max year to retrieve data from 
+#' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
+#' @param area options: ebs, ai, goa, nbs, ebs_slope, ebs_nbs, default: goa
+#' @param db data server to connect to (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
+#' @return saves bts length data as data/raw/bts_gap_agecomp_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export 
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect()
+#' q_bts_gap_agecomp(year=2022, species=21921, area = "goa", db = db)
+#' } 
+q_bts_gap_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
+  # adjust filters
+  yr <- year
+  ar <- tolower(area)
+  
+  # A combined list avoids evaluating two separate switch statements
+  area_map <- list(
+    ai        = list(id = 99904,              survey_def = 52),
+    goa       = list(id = 99903,              survey_def = 47),
+    ebs       = list(id = 99900,              survey_def = 98),
+    nbs       = list(id = 99902,              survey_def = 143),
+    ebs_slope = list(id = 99905,              survey_def = 78),
+    ebs_nbs   = list(id = c(99900, 99902),    survey_def = c(98, 143))
+  )
+  
+  # Extract mapped values
+  mapped <- area_map[[ar]]
+  if (is.null(mapped)) stop("Invalid area specified. Please check your input.")
+  
+  # 2. Build the database query lazily
+  table <- dplyr::tbl(db, dplyr::sql('gap_products.akfin_agecomp')) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(
+      survey_definition_id %in% mapped$survey_def, 
+      area_id %in% mapped$id, 
+      species_code %in% species
+    )
+  
+  # # prefix area and type to file name
+  
+  if(isTRUE(save)){
+    dplyr::collect(table) %>%
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(ar, "_bts__gap_agecomp_data.csv")),
+                         delim = ",")
+    
+    capture.output(dplyr::show_query(table),
+                   file = here::here(year, "data", "sql", paste0(ar, "_bts__gap_agecomp_sql.txt")))
+    
+    message("bottom trawl survey agecomp data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}  
+
 #' query bottom trawl survey sizecomps
 #' 
 #' 
@@ -439,6 +571,78 @@ q_bts_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   }
   
 }
+
+#' query GAP bottom trawl survey sizecomps
+#' 
+#' 
+#' 
+#' @param year  max year to retrieve data from 
+#' @param area options: ebs, ai, goa, nbs, ebs_slope, ebs_nbs, default: goa
+#' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
+#' @param db  the database to query (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false)
+#' @param save save the file in designated folder, if FALSE outputs to global environment
+#' 
+#' @return saves bts sizecomp data as data/raw/area_bts_gap_sizecomp_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export 
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect()
+#' q_bts_gap_sizecomp(year=2022, species=21921, area = "goa", db = db)
+#' } 
+q_bts_gap_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
+  
+  # 1. Adjust filters and set up a combined lookup map
+  yr <- year
+  ar <- tolower(area)
+  
+  # A combined list avoids evaluating two separate switch statements
+  area_map <- list(
+    ai        = list(id = 99904,              survey_def = 52),
+    goa       = list(id = 99903,              survey_def = 47),
+    ebs       = list(id = 99900,              survey_def = 98),
+    nbs       = list(id = 99902,              survey_def = 143),
+    ebs_slope = list(id = 99905,              survey_def = 78),
+    ebs_nbs   = list(id = c(99900, 99902),    survey_def = c(98, 143))
+  )
+  
+  # Extract mapped values
+  mapped <- area_map[[ar]]
+  if (is.null(mapped)) stop("Invalid area specified. Please check your input.")
+  
+  # 2. Build the database query lazily
+  query_table <- dplyr::tbl(db, dplyr::sql('gap_products.akfin_sizecomp')) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::filter(
+      survey_definition_id %in% mapped$survey_def, 
+      area_id %in% mapped$id, 
+      species_code %in% species
+    )
+  
+  # 3. Handle outputs
+  if(isTRUE(save)){
+    dplyr::collect(query_table) %>%
+      vroom::vroom_write(
+        here::here(year, "data", "raw", paste0(ar, "_bts_gap_sizecomp_data.csv")),
+        delim = ","
+      )
+    
+    # extract and save SQL code
+    sql_string = dbplyr::sql_render(query_table)
+    writeLines(sql_string, here::here(year, "data", "sql", paste0(ar, "_bts_gap_sizecomp_sql.txt")))
+    
+    message("Bottom trawl survey sizecomp data can be found in the data/raw folder.")
+    
+  } else if (isFALSE(save) && isFALSE(print_sql)) {
+    return(dplyr::collect(query_table))
+    
+  } else {
+    dplyr::show_query(query_table)
+    message("This SQL code is passed to the server.")
+  }
+}
+
 # fishery ----
 #' query fishery catch data from AKFIN server
 #'
