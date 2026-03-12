@@ -24,7 +24,8 @@ bsai_orox <- function(year, off_yr = FALSE, catch_report = FALSE){
   } else {
     q_catch(year, species=species, area=area, db=akfin)
     q_fish_obs(year, species=norpac_species, area=area, db=akfin)
-    q_bts_biomass(year, area=area, species=afsc_species, type='total', db=akfin) 
+    # q_bts_biomass(year, area=area, species=afsc_species, type='total', db=akfin) 
+    q_gap_biomass(year = year, area = area, species = afsc_species, type = 'region', db = akfin) 
   }
   
   if(isTRUE(off_yr) | isTRUE(catch_report)) {
