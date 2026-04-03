@@ -4,7 +4,7 @@
 \alias{q_bts_gap_specimen}
 \title{query GAP bottom trawl survey specimen data from the AKFIN server}
 \usage{
-q_bts_gap_specimen(year, species, area, db, print_sql = FALSE, save = FALSE)
+q_bts_gap_specimen(year, species, area, db, print_sql = FALSE, save = TRUE)
 }
 \arguments{
 \item{year}{max year to retrieve data from}
