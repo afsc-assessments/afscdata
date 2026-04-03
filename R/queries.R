@@ -253,7 +253,8 @@ q_bts_gap_specimen <- function(year, species, area, db, print_sql=FALSE, save=FA
                   length = length_mm,
                   age,
                   lat_mid,
-                  long_mid) %>% 
+                  long_mid,
+                  weight = weight_g) %>% 
     dplyr::arrange(year) -> table
   
   if(isTRUE(save)) {
