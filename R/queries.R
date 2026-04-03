@@ -343,8 +343,8 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   } else {
     table = dplyr::tbl(db, dplyr::sql("afsc.race_biomasstotalaigoa"))     
   }
-    
-    
+  
+  
   table <- table %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(year <= yr, species_code %in% species)
@@ -352,7 +352,7 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
   if(ar %in% c("AI", "GOA")){
     table <- dplyr::filter(table, survey == ar)
   } 
-
+  
   # prefix area and type (for goa/ai) to file name
   area = tolower(area)
   id = NULL
@@ -496,11 +496,11 @@ q_bts_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   # adjust filters
   yr = year
   area = tolower(area)
-
+  
   # message center
   if(!(area %in% c("goa", "ai"))) {
-      stop("area != 'goa' or 'ai'")
-    }
+    stop("area != 'goa' or 'ai'")
+  }
   
   dplyr::tbl(db, dplyr::sql(paste0(area, ".agecomp_total"))) %>% 
     dplyr::rename_with(tolower) %>% 
@@ -508,14 +508,14 @@ q_bts_agecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   
   # # prefix area and type to file name
-
+  
   if(isTRUE(save)){
     dplyr::collect(table) %>%
       vroom::vroom_write(here::here(year, "data", "raw", paste0(area, "_bts_agecomp_data.csv")),
                          delim = ",")
     capture.output(dplyr::show_query(table),
                    file = here::here(year, "data", "sql", paste0(area, "_bts_agecomp_sql.txt")))
-
+    
     message("bottom trawl survey agecomp data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
     dplyr::collect(table)
@@ -624,7 +624,7 @@ q_bts_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
     dplyr::filter(species_code %in% species) -> table
   
   # # prefix area and type to file name
-    if(isTRUE(save)){
+  if(isTRUE(save)){
     dplyr::collect(table) %>%
       vroom::vroom_write(here::here(year, "data", "raw", paste0(area, "_bts_sizecomp_data.csv")),
                          delim = ",")
@@ -694,7 +694,7 @@ q_bts_gap_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TR
     
     capture.output(dplyr::show_query(query_table),
                    file = here::here(year, "data", "sql", paste0(ar, "_bts_gap_sizecomp_sql.txt")))
-
+    
     message("Bottom trawl survey sizecomp data can be found in the data/raw folder.")
     
   } else if (isFALSE(save) && isFALSE(print_sql)) {
@@ -746,9 +746,9 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   
   # select columns to import
   if(any(grepl("\\*", add_fields))){
-      table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
-        dplyr::rename_with(tolower) %>% 
-        dplyr::filter(year <= yr, fmp_subarea %in% area)
+    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::filter(year <= yr, fmp_subarea %in% area)
   }  else {
     cols = c("year",                             
              "agency_species_code",              
@@ -797,7 +797,7 @@ q_catch <- function(year, species, area, db, add_fields=NULL, print_sql=FALSE, s
   if(isTRUE(save)) {
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
-      }
+    }
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", "fish_catch_data.csv"), 
                          delim = ",")
@@ -909,29 +909,29 @@ q_fish_obs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
   
   
   
-table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>% 
-          dplyr::rename_with(tolower) %>% 
-          dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
-          dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
-                             dplyr::rename_with(tolower) %>% 
-                             dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
-                             dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
-          dplyr::filter(year<=yr, 
-                        species %in% sp, 
-                        fmp_subarea %in% area) 
-
+  table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_spcomp_mv")) %>% 
+    dplyr::rename_with(tolower) %>% 
+    dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
+    dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                       dplyr::rename_with(tolower) %>% 
+                       dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
+                       dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
+    dplyr::filter(year<=yr, 
+                  species %in% sp, 
+                  fmp_subarea %in% area) 
+  
   # output
   if(isTRUE(save)) {
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
     }
     
-      dplyr::collect(table) %>% 
-        vroom::vroom_write(here::here(year, "data", "raw", "fish_obs_data.txt"), 
-                           delim = ",")
-      
-      capture.output(dplyr::show_query(table), 
-                     file = here::here(year, "data", "sql", "fish_obs_sql.txt"))
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", "fish_obs_data.txt"), 
+                         delim = ",")
+    
+    capture.output(dplyr::show_query(table), 
+                   file = here::here(year, "data", "sql", "fish_obs_sql.txt"))
     
     
     message("fishery observer data can be found in the data/raw folder")
@@ -978,9 +978,9 @@ q_fish_ticket <- function(year, species, area, db, add_fields=NULL, print_sql=FA
   
   # select columns to import
   if(any(grepl("\\*", add_fields))){
-      table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_ft")) %>% 
-        dplyr::rename_with(tolower) %>% 
-        dplyr::filter(year <= yr, fmp_subarea %in% area)
+    table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_ft")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::filter(year <= yr, fmp_subarea %in% area)
   }  else {
     cols = c("akfin_year",                             
              "cfec_pacfin_species_code",              
@@ -998,8 +998,8 @@ q_fish_ticket <- function(year, species, area, db, add_fields=NULL, print_sql=FA
       dplyr::filter(year <= yr, fmp_subarea %in% area)
   }
   
-
-    table <- dplyr::filter(table, cfec_pacfin_species_code %in% species) 
+  
+  table <- dplyr::filter(table, cfec_pacfin_species_code %in% species) 
   
   # output
   if(isTRUE(save)) {
@@ -1033,7 +1033,7 @@ q_fish_ticket <- function(year, species, area, db, add_fields=NULL, print_sql=FA
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
 #' @return saves fishery specimen data as data/raw/fish_specimen_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
-#' @export q_fsh_specimen
+#' @export 
 #'
 #' @examples
 #' \dontrun{
@@ -1060,18 +1060,18 @@ q_fsh_specimen <- function(year, species, area, db, add_fields=NULL, print_sql=F
   
   # select columns to import
   if(any(grepl("\\*", add_fields))){
-      table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
-        dplyr::rename_with(tolower) %>% 
-        dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
-        dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
-                           dplyr::rename_with(tolower) %>% 
-                           dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>% 
-                           dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
-        dplyr::filter(year <= yr & year>0, 
-                      fmp_subarea %in% area, 
-                      species %in% sp,
-                      !is.na(age)) %>% 
-        dplyr::arrange(year)
+    table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_age_mv")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
+      dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                         dplyr::rename_with(tolower) %>% 
+                         dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>% 
+                         dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) %>% 
+      dplyr::filter(year <= yr & year>0, 
+                    fmp_subarea %in% area, 
+                    species %in% sp,
+                    !is.na(age)) %>% 
+      dplyr::arrange(year)
   }  else {
     cols = c("year", "performance", "specimen_type", "join_key", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
@@ -1151,14 +1151,14 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
   
   # select columns to import
   if(any(grepl("\\*", add_fields))){
-      table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
-        dplyr::rename_with(tolower) %>% 
-        dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
-        dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
-                           dplyr::rename_with(tolower) %>% 
-                           dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
-                           dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) 
-
+    table <- dplyr::tbl(db, dplyr::sql("norpac.debriefed_length_mv")) %>% 
+      dplyr::rename_with(tolower) %>% 
+      dplyr::mutate(dplyr::across(c(join_key, haul_join, port_join), as.character)) %>%
+      dplyr::left_join(dplyr::tbl(db, dplyr::sql("norpac.debriefed_haul_mv")) %>% 
+                         dplyr::rename_with(tolower) %>% 
+                         dplyr::mutate(dplyr::across(c(join_key, haul_join), as.character)) %>%
+                         dplyr::select(fmp_subarea, gear_type, join_key, haul_seq)) 
+    
   }  else {
     cols = c("year", "performance", "haul_join", "port_join",
              "species", "fmp_gear", "fmp_area", "fmp_subarea", 
@@ -1176,11 +1176,11 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
       dplyr::select(!!!cols) 
   }
   
-    table <- table %>% 
-      dplyr::filter(year <= yr & year>0, 
-                    fmp_subarea %in% area, 
-                    species %in% sp) %>% 
-      dplyr::arrange(year)
+  table <- table %>% 
+    dplyr::filter(year <= yr & year>0, 
+                  fmp_subarea %in% area, 
+                  species %in% sp) %>% 
+    dplyr::arrange(year)
   
   
   if(isTRUE(save)) {
@@ -1188,7 +1188,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
       vroom::vroom_write(here::here(year, "data", "raw", "fish_length_data.txt"), 
                          delim = ",")
     utils::capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", "fish_length_sql.txt"))
+                          file = here::here(year, "data", "sql", "fish_length_sql.txt"))
     
     message("fishery length data can be found in the data/raw folder")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -1243,7 +1243,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
 #' 
 q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
                          db, print_sql=FALSE, save=TRUE) {
-
+  
   # adjust filters
   yr = year
   sp = species
@@ -1255,16 +1255,16 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
   }
   if(any(area %in% c('BS', 'BSAI'))) {
     a2 <- c('Bering Sea')
-    } else {
-      a2 <- NULL
-    }
+  } else {
+    a2 <- NULL
+  }
   if(any(area %in% c('AI', 'BSAI'))) {
     a3 <- c('Aleutians')
-    } else {
-      a3 <- NULL
-    }
+  } else {
+    a3 <- NULL
+  }
   area <- c(a1, a2, a3)
-
+  
   # message center
   if(any(!area %in% c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast', 'Bering Sea', 'Aleutians'))) {
     stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
@@ -1278,7 +1278,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
       srv <- c('United States', 'Japan')
     } 
   }
-
+  
   table = dplyr::tbl(db, dplyr::sql("afsc.lls_length_summary_view")) %>% 
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(year <= yr, 
@@ -1286,7 +1286,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
                   country %in% srv,
                   council_sablefish_mgmt_area %in% area) %>% 
     dplyr::arrange(year)
-
+  
   if(isTRUE(save)){
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
@@ -1296,7 +1296,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_length_sql.txt")))
-
+    
     message("longline survey length data can be found in the data/raw folder,\n
             and the associated query is saved in data/sql")
   } else if(isFALSE(save) & isFALSE(print_sql)) {
@@ -1305,7 +1305,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
     dplyr::show_query(table)
     message("this sql code is passed to the server")
   }
-
+  
 }
 
 #' query nfms longline survey relative population numbers or weights
@@ -1387,7 +1387,7 @@ q_lls_length <- function(year, species, area=c('goa', 'bs', 'ai'), use_historica
 q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea', 
                       use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
   
-   # adjust filters
+  # adjust filters
   yr = year
   sp = species
   if(by %in% c('akwide', 'AKWIDE')) {
@@ -1399,17 +1399,17 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
   }
   area = toupper(area)
   by = tolower(by)
-
+  
   # message center
   if(any(!area %in% c('GOA', 'BS', 'AI'))) {
     stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
   }
-
+  
   if(any(!by %in% c('depth', 'geoarea', 'councilarea', 'fmpsubarea', 'akwide')) | length(by) > 1){ 
     stop("appropriate args for by are: 'depth', 'geoarea', 'councilarea', 'fmpsubarea',  or 'akwide'.\n 
          only a single arg may be used.")
   }
-
+  
   if(is.logical(use_historical)==FALSE) {
     stop('appropriate args for use_historical are TRUE or FALSE')
   } else {
@@ -1437,7 +1437,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
     strata <- '_all_strata'
     depred <- ''
   }
-
+  
   # decide which tables to use 
   if(by == 'depth') {
     table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_area_stratum_rpn", depred))) %>%
@@ -1457,7 +1457,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
     }
     table = dplyr::tbl(db, dplyr::sql(paste0("afsc.lls_ak_wide", strata, depred)))
   }
-
+  
   # set up filters that are consistent across all tables
   table <- table %>% 
     dplyr::rename_with(tolower) %>% 
@@ -1465,7 +1465,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
                   species_code %in% sp,
                   country %in% srv) %>% 
     dplyr::arrange(year)
-
+  
   # set up table-specific area filters
   area_lkup = data.frame(fmparea = c('BS', 'AI', 'GOA', 'GOA', 'GOA', 'GOA'),
                          councilarea = c('Bering Sea', 'Aleutians', 
@@ -1479,7 +1479,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
                                         'Central Gulf of Alaska', 
                                         'Western Gulf of Alaska')) %>% 
     dplyr::filter(fmparea %in% area)
-
+  
   if(by %in% c('depth', 'geoarea', 'councilarea')) {
     tmparea <- base::unique(area_lkup$councilarea)
     table <- table %>% dplyr::filter(council_sablefish_management_area %in% tmparea) 
@@ -1488,13 +1488,13 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
     tmparea <- base::unique(area_lkup$fmpsubarea)
     table <- table %>% dplyr::filter(council_management_area %in% tmparea) 
   }
-
+  
   # id for saving data and sql files
   id = by
   if(by == 'depth') {
     id = "depthstratum"
   }
-
+  
   if(isTRUE(save)){
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
@@ -1504,7 +1504,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_rpn_", id, "_sql.txt")))
-
+    
     message("longline survey data can be found in the data/raw folder,\n
             and the associated query is saved in data/sql")
   } else if (isFALSE(save) & isFALSE(print_sql)) {
@@ -1513,7 +1513,7 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
     dplyr::show_query(table)
     message("this sql code is passed to the server")
   }
-
+  
 }
 
 #' query nfms longline survey rpn-weighted length frequencies 
@@ -1578,8 +1578,8 @@ q_lls_rpn <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea',
 #' }
 #' 
 q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsubarea', 
-                      use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
-
+                             use_historical=FALSE, db, print_sql=FALSE, save=TRUE) {
+  
   # adjust filters
   yr = year
   sp = species
@@ -1592,7 +1592,7 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
   if(any(area %in% c('AI', 'BSAI'))) {
     a3 <- c('Aleutians')} else {a3 <- NULL}
   area <- c(a1, a2, a3)
-
+  
   # message center
   if(any(!area %in% c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast', 'Bering Sea', 'Aleutians'))) {
     stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
@@ -1621,15 +1621,15 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
     strata <- '_all_strata'
     depred <- ''
   }
-
+  
   # length freq table 
   aa <- dplyr::tbl(db, dplyr::sql(paste0('afsc.lls_length_rpn_by_area', strata, depred))) %>%
     dplyr::rename_with(tolower) 
-
+  
   # area look up table
   bb <- dplyr::tbl(db, dplyr::sql('afsc.lls_area_view')) %>% 
     dplyr::rename_with(tolower) 
-
+  
   # join, filter and query
   table <- aa %>% 
     dplyr::left_join(dplyr::distinct(bb, fmp = fmp_management_area, council_sablefish_management_area, 
@@ -1646,7 +1646,7 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
                   # should not be included in the length compositions.
                   length < 999) %>%
     dplyr::arrange(year)
-
+  
   if(isTRUE(save)){
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
@@ -1656,7 +1656,7 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_rpn_length_sql.txt")))
-
+    
     message("longline survey rpn-weighted length frequencies can be found in the data/raw folder,\n
             and the associated query is saved in data/sql")
   } else if(isFALSE(save) & isFALSE(print_sql)) {
@@ -1665,9 +1665,9 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
     dplyr::show_query(table)
     message("this sql code is passed to the server")
   }
-
+  
 }
- 
+
 #' query nmfs longine survey specimen data (age, length, weight, sex, maturity).
 #' only available for sablefish!
 #' 
@@ -1698,8 +1698,8 @@ q_lls_rpn_length <- function(year, species, area=c('goa', 'bs', 'ai'), by='fmpsu
 #' q_lls_specimen(year=2000, area="goa", db=db)
 #' } 
 q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical=FALSE, 
-                         db=akfin, print_sql=FALSE, save=TRUE) {
-
+                                 db=akfin, print_sql=FALSE, save=TRUE) {
+  
   # adjust filters
   yr = year
   area = toupper(area)
@@ -1707,19 +1707,19 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
     a1 <- c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast')
   } else {
     a1 <- NULL
-    }
+  }
   if(any(area %in% c('BS', 'BSAI'))) {
     a2 <- c('Bering Sea')
-    } else {
-      a2 <- NULL
-      }
+  } else {
+    a2 <- NULL
+  }
   if(any(area %in% c('AI', 'BSAI'))) {
     a3 <- c('Aleutians')
-    } else {
-      a3 <- NULL
-      }
+  } else {
+    a3 <- NULL
+  }
   area <- c(a1, a2, a3)
-
+  
   # message center
   if(any(!area %in% c('Western Gulf of Alaska', 'Central Gulf of Alaska', 'West Yakutat', 'East Yakutat/Southeast', 'Bering Sea', 'Aleutians'))) {
     stop("the appropriate args for area are 'goa', 'bs', 'ai', or a combo. defaults to c('goa', 'bs', 'ai')")
@@ -1733,14 +1733,14 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
       srv <- c('United States', 'Japan')
     } 
   }
-
+  
   table = dplyr::tbl(db, dplyr::sql('afsc.lls_age_view')) %>%
     dplyr::rename_with(tolower) %>% 
     dplyr::filter(year <= yr, 
                   country %in% srv,
                   council_sablefish_management_area %in% area) %>% 
     dplyr::arrange(year)
-
+  
   if(isTRUE(save)){
     if(isFALSE(dir.exists(here::here(year, "data")))) {
       stop("you must run afscdata::setup_folders() before you can save to the default location")
@@ -1750,7 +1750,7 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
                          delim = ",")
     capture.output(dplyr::show_query(table), 
                    file = here::here(year, "data", "sql", paste0("lls_specimen_sql.txt")))
-
+    
     message("sablefish longline survey specimen data can be found in the data/raw folder,\n
             and the associated query is saved in data/sql")
   } else if(isFALSE(save) & isFALSE(print_sql)) {
@@ -1759,7 +1759,7 @@ q_lls_sable_specimen <- function(year, area=c('goa', 'bs', 'ai'), use_historical
     dplyr::show_query(table)
     message("this sql code is passed to the server")
   }
-
+  
 }
 
 
@@ -1810,6 +1810,4 @@ q_specs <- function(year, species, area, db, print_sql=FALSE, save=TRUE) {
     message("this sql code is passed to the server")
   }
 }
-
-
 
