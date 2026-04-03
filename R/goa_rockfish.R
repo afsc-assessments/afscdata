@@ -30,6 +30,9 @@ goa_nork <- function(year, off_yr = FALSE){
     q_bts_gap_length(year, species=afsc_species, area, db=akfin)  
     q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = akfin)
     q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_specimen(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_length(year = year, species = afsc_species, area = area, db = akfin)
+    
     disconnect(akfin)
   }
   
@@ -73,6 +76,8 @@ goa_dusk <- function(year, off_yr = FALSE){
     q_bts_gap_length(year=year, species=afsc_species, area=area, db=akfin)  
     q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = akfin)
     q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_specimen(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_length(year = year, species = afsc_species, area = area, db = akfin)
     disconnect(akfin)
   }
   
@@ -120,6 +125,8 @@ goa_pop <- function(year, off_yr = FALSE){
     q_bts_gap_length(year = year, species = afsc_species, area = area, db = akfin)  
     q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = akfin)
     q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_specimen(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_length(year = year, species = afsc_species, area = area, db = akfin)
     disconnect(akfin)
   }
   
@@ -173,6 +180,8 @@ goa_rebs <- function(year, off_yr = FALSE){
     q_bts_gap_length(year=year, species=afsc_species, area=area, db=akfin)  
     q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = akfin)
     q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_specimen(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_length(year = year, species = afsc_species, area = area, db = akfin)
     disconnect(akfin)
   }
   
@@ -222,6 +231,8 @@ goa_thornyhead <- function(year, off_yr = FALSE, catch_report = FALSE){
     q_bts_gap_length(year, species=afsc_species, area, db=akfin)  
     q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = akfin)
     q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_specimen(year = year, species = afsc_species, area = area, db = akfin)
+    q_fsh_length(year = year, species = afsc_species, area = area, db = akfin)
     disconnect(akfin) 
   }
   
