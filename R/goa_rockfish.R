@@ -22,7 +22,7 @@ goa_nork <- function(year, off_yr = FALSE){
   q_catch(year, species=species, area=area, db=akfin)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
   q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
-  
+  q_specs(year, species=species, area=area, db=akfin)
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
@@ -65,6 +65,7 @@ goa_dusk <- function(year, off_yr = FALSE){
   q_catch(year=year, species=species, area=area, db=akfin)
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
   q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
+  q_specs(year, species=species, area=area, db=akfin)
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
@@ -111,7 +112,7 @@ goa_pop <- function(year, off_yr = FALSE){
   # q_bts_biomass(year = year, area = area, species = afsc_species, type = 'area', db = akfin) 
   q_gap_biomass(year = year, area = area, species = afsc_species, type = 'region', db = akfin) 
   q_gap_biomass(year = year, area = area, species = afsc_species, type = 'regulatory_area', db = akfin) 
-  
+  q_specs(year, species=species, area=area, db=akfin)
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
@@ -163,7 +164,7 @@ goa_rebs <- function(year, off_yr = FALSE){
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
   q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
   q_lls_rpn(year=year, area=area, species=afsc_species, by='fmpsubarea', db=akfin)
-  
+  q_specs(year, species=species, area=area, db=akfin)
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
   } else {
@@ -206,10 +207,12 @@ goa_thornyhead <- function(year, off_yr = FALSE, catch_report = FALSE){
   
   if(isTRUE(catch_report)) {
     q_catch(year, species=species, area=area, db=akfin)
+    q_specs(year, species=species, area=area, db=akfin)
   } else {
     q_catch(year, species=species, area=area, db=akfin)
     q_fish_obs(year, species=norpac_species, area=area, db=akfin)
     q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
+    q_specs(year, species=species, area=area, db=akfin)
   }
   
   if(isTRUE(off_yr) | isTRUE(catch_report)) {
