@@ -684,17 +684,15 @@ q_bts_gap_sizecomp <- function(year, species, area, db, print_sql=FALSE, save=TR
     dplyr::filter(
       survey_definition_id %in% mapped$survey_def, 
       area_id %in% mapped$id, 
-      species_code %in% species
-    )
+      species_code %in% species)
   
   if(isTRUE(save)){
     dplyr::collect(query_table) %>%
       vroom::vroom_write(
         here::here(year, "data", "raw", paste0(ar, "_bts_gap_sizecomp_data.csv")),
-        delim = ","
-      )
+        delim = "," )
     
-    capture.output(dplyr::show_query(table),
+    capture.output(dplyr::show_query(query_table),
                    file = here::here(year, "data", "sql", paste0(ar, "_bts_gap_sizecomp_sql.txt")))
 
     message("Bottom trawl survey sizecomp data can be found in the data/raw folder.")
