@@ -222,7 +222,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
 #' db <- afscdata::connect()
 #' q_bts_gap_specimen(year=2022, species=21921, area = "goa", db = db)
 #' } 
-q_bts_gap_specimen <- function(year, species, area, db, print_sql=FALSE, save=FALSE){
+q_bts_gap_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
   area = ar = tolower(area)
   area = switch(area,
