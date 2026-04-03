@@ -20,5 +20,6 @@ utils::globalVariables(c(
   "nontarget_group_name", "performance", "port_join", "pscnq_estimate", "region",
   "select", "sex", "species", "species_group_code", "species_group_name", "species_name",
   "specimenid", "start_date", "stratum", "survey_name", "tons", "tot_g", "total_biomass",
-  "trip_target_code", "var_g", "vessel_class", "week_date", "weight", "EXPLOITABLE"
+  "trip_target_code", "var_g", "vessel_class", "week_date", "weight", "EXPLOITABLE",
+  "depth_m", "gear_temperature_c"
 ))

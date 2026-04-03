@@ -1,6 +1,6 @@
 Package: afscdata
 Title: An R Package for Extraction of AFSC Fishery Data  
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     c(person(given = "Benjamin", 
              family = "Williams", 
@@ -57,8 +57,10 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tibble
 Depends: 
     R (>= 3.5.0)
 LazyData: true
 Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -2,7 +2,7 @@ pandoc: 3.6.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  articles/development: development.html
-  articles/gap_check: gap_check.html
-  articles/getting-started: getting-started.html
-last_built: 2025-12-08T18:56Z
+  development: development.html
+  gap_check: gap_check.html
+  getting-started: getting-started.html
+last_built: 2026-04-03T17:37Z

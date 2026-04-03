@@ -1,5 +1,10 @@
 ---
 title: "gap_check"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gap_check}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -16,6 +21,7 @@ A couple of simple functions to evaluate differences between updated survey data
 ```{r setup, eval = F}
 # load ----
 library(afscdata)
+library(tibble)
 
 # globals ----
 year = 2024

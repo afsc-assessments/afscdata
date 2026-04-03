@@ -97,7 +97,7 @@ Using `here()`: **Do not use absolute paths!!**
 
 ```{r, eval = F}
 library(here)
-
+library(tibble)
 here::here()
 [1] "C:/Users/Ben.Williams/Work"
 

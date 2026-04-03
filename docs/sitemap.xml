@@ -49,6 +49,10 @@
 <url><loc>/reference/pipe.html</loc></url>
 <url><loc>/reference/q_bts_agecomp.html</loc></url>
 <url><loc>/reference/q_bts_biomass.html</loc></url>
+<url><loc>/reference/q_bts_gap_agecomp.html</loc></url>
+<url><loc>/reference/q_bts_gap_length.html</loc></url>
+<url><loc>/reference/q_bts_gap_sizecomp.html</loc></url>
+<url><loc>/reference/q_bts_gap_specimen.html</loc></url>
 <url><loc>/reference/q_bts_length.html</loc></url>
 <url><loc>/reference/q_bts_sizecomp.html</loc></url>
 <url><loc>/reference/q_bts_specimen.html</loc></url>
