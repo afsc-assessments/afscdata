@@ -1,4 +1,3 @@
-# bottom trawl survey ----
 #' query bottom trawl survey length data from the AFSC server
 #' 
 #'
@@ -10,7 +9,7 @@
 #' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
 #' 
 #' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
-#' @export q_bts_length
+#' @export 
 #'
 #' @examples
 #' \dontrun{
@@ -67,6 +66,76 @@ q_bts_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
+#' query bottom trawl survey length data from GAP on the AKFIN server
+#' 
+#'
+#' @param year max year to retrieve data from 
+#' @param species 5 digit species code (e.g., 10110) - can place multiple in a vector c(10110, 10130)
+#' @param area ebs, nbs, ebs_slope, ebs_nbs, ai, goa - can do multiples c("bs","ai")
+#' @param db data server to connect to (akfin)
+#' @param print_sql outputs the sql query instead of calling the data (default: false) - save must be false
+#' @param save saves a file to the data/raw folder, otherwise sends output to global enviro (default: true)
+#' 
+#' @return saves bts length data as data/raw/bts_length_data.csv or outputs to the global environment, also saves a copy of the SQL code used for the query and stores it in the data/sql folder. 
+#' @export 
+#'
+#' @examples
+#' \dontrun{
+#' db <- afscdata::connect()
+#' q_bts_gap_length(year=2022, species=10110, area = "goa", db = db)
+#' }
+q_bts_gap_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
+  
+  # globals
+  area = ar = tolower(area)
+  area = switch(area,
+                "ai" = 52,
+                "goa" = 47,
+                "ebs" = 98,
+                "nbs" = 143,
+                "ebs_slope" = 78,
+                "ebs_nbs"= c(98, 143),
+                stop("Invalid area specified. Please check your input."))
+  if(isTRUE(ar=="BSAI")){
+    ar = c("BS", "AI")
+  }
+  # pull data sources
+  dplyr::tbl(db, dplyr::sql('gap_products.akfin_cruise'))  %>% 
+    dplyr::rename_all(tolower) %>% 
+    dplyr::select(cruisejoin, year, survey_definition_id , survey_name) %>% 
+    dplyr::left_join(
+      dplyr::tbl(db, dplyr::sql('gap_products.akfin_haul')) %>% 
+        dplyr::rename_all(tolower) %>% 
+        dplyr::select(cruisejoin, hauljoin, end_latitude = longitude_dd_end, 
+                      end_longitude = latitude_dd_end, bottom_depth = depth_m,  
+                      stratum, gear_temperature = gear_temperature_c, performance)
+    ) %>% 
+    dplyr::left_join(
+      dplyr::tbl(db, dplyr::sql('gap_products.akfin_length'))  %>% 
+        dplyr::rename_all(tolower) %>% 
+        dplyr::select(hauljoin, species_code, sex, length = length_mm, 
+                      frequency) 
+    ) %>% 
+    dplyr::filter(species_code==species, 
+                  survey_definition_id==area) %>% 
+    dplyr::arrange(year) -> table
+  
+  if(isTRUE(save)) {
+    dplyr::collect(table) %>% 
+      vroom::vroom_write(here::here(year, "data", "raw", paste0(area, "_bts_gap_length_data.csv")), 
+                         delim = ",")
+    capture.output(dplyr::show_query(table), 
+                   file = here::here(year, "data", "sql", paste0(area, "_bts_gap_length_sql.txt")))
+    
+    message("bottom trawl survey length data can be found in the data/raw folder")
+  } else if (isFALSE(save) & isFALSE(print_sql)) {
+    dplyr::collect(table)
+  } else {
+    dplyr::show_query(table)
+    message("this sql code is passed to the server")
+  }
+  
+}
 #' query bottom trawl survey specimen data from the AFSC server
 #' 
 #'
@@ -136,7 +205,7 @@ q_bts_specimen <- function(year, species, area, db, print_sql=FALSE, save=TRUE){
   
 }
 
-#' query GAP bottom trawl survey specimen data from the AFSC server
+#' query GAP bottom trawl survey specimen data from the AKFIN server
 #' 
 #'
 #' @param year  max year to retrieve data from 

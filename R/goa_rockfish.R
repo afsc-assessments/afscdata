@@ -21,7 +21,6 @@ goa_nork <- function(year, off_yr = FALSE){
   
   q_catch(year, species=species, area=area, db=akfin)
   q_fish_obs(year, species=norpac_species, area=area, db=akfin)
-  # q_bts_biomass(year, area=area, species=afsc_species, type='total', db=akfin) 
   q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
   
   if(isTRUE(off_yr)) {
@@ -32,10 +31,10 @@ goa_nork <- function(year, off_yr = FALSE){
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year, species=afsc_species, area, db=afsc)
-    q_bts_length(year, species=afsc_species, area, db=afsc)  
-    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
-    q_bts_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_specimen(year, species=afsc_species, area, db=afsc)
+    q_bts_gap_length(year, species=afsc_species, area, db=afsc)  
+    q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -69,9 +68,7 @@ goa_dusk <- function(year, off_yr = FALSE){
   akfin = connect()
   
   q_catch(year=year, species=species, area=area, db=akfin)
-  # commented functions are currently in development
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
-  # q_bts_biomass(year=year, area=area, species=afsc_species, type='total', db=akfin) 
   q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
   if(isTRUE(off_yr)) {
     disconnect(akfin) 
@@ -81,10 +78,10 @@ goa_dusk <- function(year, off_yr = FALSE){
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
-    q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
-    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
-    q_bts_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_specimen(year=year, species=afsc_species, area=area, db=afsc)
+    q_bts_gap_length(year=year, species=afsc_species, area=area, db=afsc)  
+    q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -133,10 +130,10 @@ goa_pop <- function(year, off_yr = FALSE){
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year = year, species = afsc_species, area = area, db = afsc)
-    q_bts_length(year = year, species = afsc_species, area = area, db = afsc)  
-    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
-    q_bts_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_specimen(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_length(year = year, species = afsc_species, area = area, db = afsc)  
+    q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -179,7 +176,6 @@ goa_rebs <- function(year, off_yr = FALSE){
   
   q_catch(year=year, species=species, area=area, db=akfin)
   q_fish_obs(year=year, species=norpac_species, area=area, db=akfin)
-  # q_bts_biomass(year=year, area=area, species=afsc_species, type='area', db=akfin) 
   q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
   q_lls_rpn(year=year, area=area, species=afsc_species, by='fmpsubarea', db=akfin)
   
@@ -192,10 +188,10 @@ goa_rebs <- function(year, off_yr = FALSE){
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year=year, species=afsc_species, area=area, db=afsc)
-    q_bts_length(year=year, species=afsc_species, area=area, db=afsc)  
-    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
-    q_bts_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_specimen(year=year, species=afsc_species, area=area, db=afsc)
+    q_bts_gap_length(year=year, species=afsc_species, area=area, db=afsc)  
+    q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
@@ -233,7 +229,6 @@ goa_thornyhead <- function(year, off_yr = FALSE, catch_report = FALSE){
   } else {
     q_catch(year, species=species, area=area, db=akfin)
     q_fish_obs(year, species=norpac_species, area=area, db=akfin)
-    # q_bts_biomass(year, area=area, species=afsc_species, type='total', db=akfin) 
     q_gap_biomass(year, species = afsc_species, area=area, type='region', db=akfin) 
   }
   
@@ -245,10 +240,10 @@ goa_thornyhead <- function(year, off_yr = FALSE, catch_report = FALSE){
     disconnect(akfin)  
     
     afsc = connect("afsc")
-    q_bts_specimen(year, species=afsc_species, area, db=afsc)
-    q_bts_length(year, species=afsc_species, area, db=afsc)  
-    q_bts_agecomp(year = year, species = afsc_species, area = area, db = afsc)
-    q_bts_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_specimen(year, species=afsc_species, area, db=afsc)
+    q_bts_gap_length(year, species=afsc_species, area, db=afsc)  
+    q_bts_gap_agecomp(year = year, species = afsc_species, area = area, db = afsc)
+    q_bts_gap_sizecomp(year = year, species = afsc_species, area = area, db = afsc)
     disconnect(afsc)
   }
   
