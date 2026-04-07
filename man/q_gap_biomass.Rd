@@ -8,8 +8,9 @@ note: pay attention to the 'design_year' column, particularly for region or dept
 q_gap_biomass(
   year = 2024,
   species = 10110,
-  area = "bs",
+  area = "goa",
   type = "region",
+  design_yr = 2025,
   db,
   print_sql = FALSE,
   save = TRUE
@@ -22,7 +23,9 @@ q_gap_biomass(
 
 \item{area}{options are bs (the bs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard") - can only call a single area}
 
-\item{type}{the goa and ai have: region, regulatory_area, stat_area, stratum, inpfc, inpfc_depth, depth, (ai only: reg_area_depth); the bs has: region, subarea, stratum, depth; the bsslope has: region, subarea, stratum; the nbs hasregion, stratum  - can only use a single type (default: "region")}
+\item{type}{the goa and ai have: region, reg_area, nmfs_stat_area, stratum, inpfc, inpfc_depth, depth; the bs has: region, subarea, stratum, depth; the bsslope has: region, subarea, stratum; the nbs has region, stratum  - can only use a single type (default: "region")}
+
+\item{design_yr}{the survey design year, using multiple will double (or more your values): default 2025}
 
 \item{db}{the database to query (akfin)}
 

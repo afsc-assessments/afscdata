@@ -390,7 +390,8 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
 #' @param year  max year to retrieve data from, and default folder location 
 #' @param area options are bs (the bs+nw), bsslope, nbs, ai, goa, old_bs (was called "standard") - can only call a single area
 #' @param species 5 digit afsc species code(s) e.g., 79210 or c(79210, 90210)
-#' @param type the goa and ai have: region, regulatory_area, stat_area, stratum, inpfc, inpfc_depth, depth, (ai only: reg_area_depth); the bs has: region, subarea, stratum, depth; the bsslope has: region, subarea, stratum; the nbs hasregion, stratum  - can only use a single type (default: "region")
+#' @param type the goa and ai have: region, reg_area, nmfs_stat_area, stratum, inpfc, inpfc_depth, depth; the bs has: region, subarea, stratum, depth; the bsslope has: region, subarea, stratum; the nbs has region, stratum  - can only use a single type (default: "region")
+#' @param design_yr the survey design year, using multiple will double (or more your values): default 2025
 #' @param db  the database to query (akfin)
 #' @param print_sql outputs the sql query instead of calling the data (default: false)
 #' @param save save the file in designated folder, if FALSE outputs to global environment
@@ -403,71 +404,71 @@ q_bts_biomass <- function(year, species, area, type='total', db, print_sql=FALSE
 #' db <- afscdata::connect()
 #' q_gap_biomass(year=2024, species=10110, area="bs", type="region", db=db)
 #' } 
-q_gap_biomass <- function(year = 2024, species = 10110, area ='bs', type = 'region', db, print_sql=FALSE, save=TRUE) {
+q_gap_biomass <- function(year = 2024, species = 10110, area = 'goa', type = 'region', design_yr = 2025, db, print_sql = FALSE, save = TRUE) {
   
-  if(area=='bsslope' | area=='BSSLOPE') area = 'BSS'
-  type = dplyr::case_when(type=='regulatory_area' ~ 'REGULATORY AREA',
-                          type=='stat_area' ~ 'NMFS STATISTICAL AREA',
-                          type=='inpfc_depth' ~ 'INPFC BY DEPTH',
-                          type=='reg_area_depth' ~ 'REGULATORY AREA BY DEPTH',
-                          TRUE ~ toupper(type))
-  
-  # adjust filters
-  yr = year
   area = tolower(area)
-  ar = toupper(area)
-  tl = tolower(type)
+  if (!(area %in% c('goa', 'ai', 'ebs', 'bss', 'nbs', 'old_bs'))) stop("area must be 'goa', 'ai', 'ebs', 'bss', 'nbs', or 'old_bs'")
   
-  # message center
-  if(area=='ebs')  stop("area must be 'bs', 'bss', 'nbs', or 'old_bs'")
+  type = tolower(type)
+  if (!(type %in% c("region", "reg_area", "nmfs_stat_area", "stratum", "inpfc", "inpfc_depth", "depth", "subarea"))) stop("type must be 'region', 'reg_area', 'nmfs_stat_area', 'stratum', 'inpfc', 'inpfc_depth', 'depth', or 'subarea'")
   
-  data.frame(id = c('AI', 'GOA', 'BS', 'OLD_BS', 'BSS', 'NBS'),
-             srv_id = c(52, 47, 98, 98, 78, 143),
-             aid = c(99904, 99903, 99900, 99901, 99905, 99902)) -> dat
+  type = switch(type,
+                "reg_area"       = "REGULATORY AREA",
+                "nmfs_stat_area" = "NMFS STATISTICAL AREA",
+                "inpfc_depth"    = "INPFC BY DEPTH",
+                "reg_area_depth" = "REGULATORY AREA BY DEPTH",
+                toupper(type)
+  )
   
-  dat %>% 
-    dplyr::filter(id %in% ar) %>% 
-    dplyr::pull(srv_id) -> srv_id # survey_definition_id
+  survey_meta = list(
+    AI     = c(srv = 52,  aid = 99904),
+    GOA    = c(srv = 47,  aid = 99903),
+    BS     = c(srv = 98,  aid = 99900),
+    OLD_BS = c(srv = 98,  aid = 99901),
+    BSS    = c(srv = 78,  aid = 99905),
+    NBS    = c(srv = 143, aid = 99902)
+  )
   
-  dat %>% 
-    dplyr::filter(id %in% ar) %>% 
-    dplyr::pull(aid) -> aid # survey_definition_id
+  meta = survey_meta[[toupper(area)]]
+  if (is.null(meta)) stop("Invalid area provided.")
   
-  if(type=='REGION') {
-    dplyr::tbl(db, dplyr::sql('gap_products.akfin_area')) %>% 
-      dplyr::rename_all(tolower) %>% 
-      dplyr::filter(survey_definition_id %in% srv_id,
-                    area_id==aid) -> dat1
+  area_tbl = dplyr::tbl(db, dplyr::sql("gap_products.akfin_area")) %>% 
+    dplyr::rename_all(tolower) %>% 
+    dplyr::filter(survey_definition_id == !!meta[["srv"]],
+                  design_year == design_yr)
+  
+  dat1 = if (type == "REGION") {
+    dplyr::filter(area_tbl, area_id == !!meta[["aid"]])
   } else {
-    dplyr::tbl(db, dplyr::sql('gap_products.akfin_area')) %>% 
-      dplyr::rename_all(tolower) %>% 
-      dplyr::filter(survey_definition_id %in% srv_id,
-                    area_type==type)  %>% distinct(area_name) -> dat1
+    dplyr::filter(area_tbl, area_type == !!type) %>% 
+      dplyr::distinct(area_name)
   }
   
   dat1 %>% 
-    # as.data.frame() %>% 
-    dplyr::left_join(dplyr::tbl(db, dplyr::sql('gap_products.akfin_biomass')) %>% 
-                       dplyr::rename_all(tolower) %>% 
-                       dplyr::filter(species_code %in% species,
-                                     year <= yr), copy=TRUE, keep=NULL) -> table
+    dplyr::left_join(
+      dplyr::tbl(db, dplyr::sql("gap_products.akfin_biomass")) %>% 
+        dplyr::rename_all(tolower) %>% 
+        dplyr::filter(species_code %in% species, year <= !!year),
+      copy = TRUE) -> table_out
   
-  # prefix area and type to file name
-  id = paste0(area, "_", tl, "_")
-  if(isTRUE(save)){
-    dplyr::collect(table) %>% 
-      vroom::vroom_write(here::here(year, "data", "raw", paste0(id, "bts_biomass_data.csv")), 
-                         delim = ",")
-    capture.output(dplyr::show_query(table), 
-                   file = here::here(year, "data", "sql", paste0(id, "bts_biomass_sql.txt")))
+  file_prefix = paste0(tolower(area), "_", tolower(type), "_")
+  if (save) {
+    vroom::vroom_write(dplyr::collect(table_out), 
+                       here::here(year, "data", "raw", paste0(file_prefix, "bts_biomass_data.csv")), 
+                       delim = ",")
     
-    message("bottom trawl survey biomass data can be found in the data/raw folder")
-  } else if (isFALSE(save) & isFALSE(print_sql)) {
-    dplyr::collect(table)
+    writeLines(dplyr::show_query(table_out) %>% capture.output(), 
+               here::here(year, "data", "sql", paste0(file_prefix, "bts_biomass_sql.txt")))
+    
+    message("Data saved to data/raw and SQL to data/sql")
   } else {
-    dplyr::show_query(table)
-    message("this sql code is passed to the server")
+    if (print_sql) {
+      dplyr::show_query(table_out)
+      return(invisible(NULL))
+    }
+    
   }
+  return(dplyr::collect(table_out))
 }
 
 #' query bottom trawl survey agecomps
