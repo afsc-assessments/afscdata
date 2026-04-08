@@ -1187,7 +1187,7 @@ q_fsh_length <- function(year, species, area, db, add_fields=NULL, print_sql=FAL
   if(isTRUE(save)) {
     dplyr::collect(table) %>% 
       vroom::vroom_write(here::here(year, "data", "raw", "fish_length_data.txt"), 
-                         delim = ",")
+                         delim = "\t")
     utils::capture.output(dplyr::show_query(table), 
                           file = here::here(year, "data", "sql", "fish_length_sql.txt"))
     
