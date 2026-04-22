@@ -419,7 +419,7 @@ q_gap_biomass <- function(year = 2024, species = 10110, area = 'goa', type = 're
                 "reg_area_depth" = "REGULATORY AREA BY DEPTH",
                 toupper(type)
   )
-  
+  yr = year
   survey_meta = list(
     AI     = c(srv = 52,  aid = 99904),
     GOA    = c(srv = 47,  aid = 99903),
@@ -441,15 +441,16 @@ q_gap_biomass <- function(year = 2024, species = 10110, area = 'goa', type = 're
     dplyr::filter(area_tbl, area_id == !!meta[["aid"]])
   } else {
     dplyr::filter(area_tbl, area_type == !!type) %>% 
-      dplyr::distinct(area_name)
+      dplyr::distinct(area_id)
   }
   
-  dat1 %>% 
-    dplyr::left_join(
-      dplyr::tbl(db, dplyr::sql("gap_products.akfin_biomass")) %>% 
-        dplyr::rename_all(tolower) %>% 
-        dplyr::filter(species_code %in% species, year <= !!year),
-      copy = TRUE) -> table_out
+  areas = dplyr::pull(dat1, area_id)
+  
+  dplyr::tbl(db, dplyr::sql("gap_products.akfin_biomass")) %>% 
+      dplyr::rename_all(tolower) %>% 
+      dplyr::filter(species_code %in% species, 
+                    year <= yr,
+                    area_id %in% areas) -> table_out
   
   file_prefix = paste0(tolower(area), "_", tolower(type), "_")
   if (save) {
