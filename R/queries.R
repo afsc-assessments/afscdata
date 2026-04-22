@@ -88,7 +88,7 @@ q_bts_gap_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE
   
   # globals
   area = ar = tolower(area)
-  area = switch(area,
+  ar = switch(ar,
                 "ai" = 52,
                 "goa" = 47,
                 "ebs" = 98,
@@ -117,7 +117,7 @@ q_bts_gap_length <- function(year, species, area, db, print_sql=FALSE, save=TRUE
                       frequency) 
     ) %>% 
     dplyr::filter(species_code==species, 
-                  survey_definition_id==area) %>% 
+                  survey_definition_id==ar) %>% 
     dplyr::arrange(year) -> table
   
   if(isTRUE(save)) {
