@@ -36,13 +36,18 @@ q_psc <- function(year, target, area, db, save = TRUE) {
     dplyr::select(year, 
                   species = species_group_name, 
                   psc = pscnq_estimate, 
-                  fmp_subarea, trip_target_code) %>% 
+                  fmp_subarea, trip_target_code, vessel_id) %>% 
     dplyr::filter(year >= yr-4, year <= yr, 
                   fmp_subarea %in% area,
                   trip_target_code %in% target) %>% 
     dplyr::group_by(year, species) %>% 
-    dplyr::summarise(psc = round(sum(psc, na.rm = T),3)) %>% 
+    dplyr::summarise(psc = round(sum(psc, na.rm = T),3),
+                     n_vessels = dplyr::n_distinct(vessel_id),
+                     .groups = "drop" ) %>% 
     dplyr::collect() %>% 
+    dplyr::mutate(psc = dplyr::if_else(n_vessels <= 2, "conf.", as.character(psc))) %>%
+    dplyr::select(-n_vessels) %>%
+    dplyr::arrange(year) %>%
     tidytable::pivot_wider(names_from = year, values_from = psc) -> psc
   
   if(isTRUE(save)){
@@ -67,7 +72,7 @@ q_psc <- function(year, target, area, db, save = TRUE) {
 #' @description non-target catch estimates by weight (or numbers)
 #' @examples
 #' \dontrun{
-#' akfin = afscdaya::connect()
+#' akfin = afscdata::connect()
 #' q_nontarget(year=2022, target="k", area="goa", db=akfin, save=FALSE)
 #' disconnect(akfin)
 #' }
@@ -92,18 +97,21 @@ q_nontarget <- function(year, target, area, db, save = TRUE) {
     dplyr::select(year, fmp_subarea, trip_target_code, 
                   species = nontarget_group_name, 
                   count = nontarget_estimate_count, 
-                  weight = nontarget_estimate_weight) %>% 
+                  weight = nontarget_estimate_weight,
+                  vessel_id) %>% 
     dplyr::filter(trip_target_code %in% target,
                   year >= yr-4, year <= yr,
                   fmp_subarea %in% area) %>% 
+    dplyr::collect() %>% 
     dplyr::group_by(year, species) %>% 
     dplyr::summarise(weight = round(sum(weight, na.rm = T), 3),
-                     count = round(sum(count, na.rm = T), 3)) %>% 
-    dplyr::ungroup() %>% 
-    dplyr::mutate(weight = ifelse(is.na(weight), count, weight)) %>% 
-    dplyr::select(-count) %>% 
-    dplyr::collect() %>% 
-    tidytable::pivot_wider(names_from = year, values_from = weight) -> tbl
+                     count = round(sum(count, na.rm = T), 3),
+                     n_vessels = dplyr::n_distinct(vessel_id),
+                     .groups = "drop" ) %>% 
+    dplyr::mutate(weight = ifelse(is.na(weight), count, weight),
+                  weight = dplyr::if_else(n_vessels <= 2, "conf.", as.character(weight))) %>% 
+    dplyr::select(-c(count, n_vessels)) %>% 
+    tidytable::pivot_wider(names_from = year, values_from = weight, values_fill = "0") -> tbl
   
   if(isTRUE(save)){
     vroom::vroom_write(tbl, here::here(year, "data", "output", "nontarget_catch.csv"),
