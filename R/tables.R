@@ -33,22 +33,22 @@ q_psc <- function(year, target, area, db, save = TRUE) {
   # call table
   dplyr::tbl(db, dplyr::sql("council.comprehensive_psc")) %>% 
     dplyr::rename_with(tolower) %>% 
-    dplyr::select(year, 
+      dplyr::filter(trip_target_code %in% target,
+                  year >= yr-4, year <= yr,
+                  fmp_subarea %in% area) %>% 
+    dplyr::select(year, fmp_subarea, trip_target_code, 
                   species = species_group_name, 
-                  psc = pscnq_estimate, 
-                  fmp_subarea, trip_target_code, vessel_id) %>% 
-    dplyr::filter(year >= yr-4, year <= yr, 
-                  fmp_subarea %in% area,
-                  trip_target_code %in% target) %>% 
+                  psc = pscnq_estimate,
+                  vessel_id, processor = processor_permit_id) %>% 
+    dplyr::collect() %>% 
     dplyr::group_by(year, species) %>% 
     dplyr::summarise(psc = round(sum(psc, na.rm = T),3),
                      n_vessels = dplyr::n_distinct(vessel_id),
+                     n_processor= dplyr::n_distinct(processor),
                      .groups = "drop" ) %>% 
-    dplyr::collect() %>% 
-    dplyr::mutate(psc = dplyr::if_else(n_vessels <= 2, "conf.", as.character(psc))) %>%
-    dplyr::select(-n_vessels) %>%
-    dplyr::arrange(year) %>%
-    tidytable::pivot_wider(names_from = year, values_from = psc) -> psc
+    dplyr::mutate(psc = dplyr::if_else(n_vessels <= 2 | n_distinct(n_processor)<=2, "conf.", as.character(psc))) %>% 
+    dplyr::select(-c(n_vessels, n_processor)) %>% 
+    tidytable::pivot_wider(names_from = year, values_from = psc, values_fill = "0") -> psc
   
   if(isTRUE(save)){
     vroom::vroom_write(psc, here::here(year, "data", "output", "psc_catch.csv"),
@@ -94,23 +94,24 @@ q_nontarget <- function(year, target, area, db, save = TRUE) {
   # call table
   dplyr::tbl(db, dplyr::sql("council.comprehensive_nontarget")) %>% 
     dplyr::rename_with(tolower) %>% 
+      dplyr::filter(trip_target_code %in% target,
+                  year >= yr-4, year <= yr,
+                  fmp_subarea %in% area) %>% 
     dplyr::select(year, fmp_subarea, trip_target_code, 
                   species = nontarget_group_name, 
                   count = nontarget_estimate_count, 
                   weight = nontarget_estimate_weight,
-                  vessel_id) %>% 
-    dplyr::filter(trip_target_code %in% target,
-                  year >= yr-4, year <= yr,
-                  fmp_subarea %in% area) %>% 
+                  vessel_id, processor = processor_permit_id) %>% 
     dplyr::collect() %>% 
     dplyr::group_by(year, species) %>% 
     dplyr::summarise(weight = round(sum(weight, na.rm = T), 3),
-                     count = round(sum(count, na.rm = T), 3),
+                    count = round(sum(count, na.rm = T), 3),
+                     n_processor= dplyr::n_distinct(processor),
                      n_vessels = dplyr::n_distinct(vessel_id),
                      .groups = "drop" ) %>% 
     dplyr::mutate(weight = ifelse(is.na(weight), count, weight),
-                  weight = dplyr::if_else(n_vessels <= 2, "conf.", as.character(weight))) %>% 
-    dplyr::select(-c(count, n_vessels)) %>% 
+                  weight = dplyr::if_else(n_vessels <= 2 | n_distinct(n_processor)<=2, "conf.", as.character(weight))) %>% 
+    dplyr::select(-c(count, n_vessels, n_processor)) %>% 
     tidytable::pivot_wider(names_from = year, values_from = weight, values_fill = "0") -> tbl
   
   if(isTRUE(save)){
@@ -157,23 +158,23 @@ q_incidental <- function(year, target, area, db, save = TRUE) {
   
   # call table
   dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
-    dplyr::rename_with(tolower) %>% 
-      dplyr::filter(trip_target_code %in% "K",
+    plyr::rename_with(tolower) %>% 
+      dplyr::filter(trip_target_code %in% target,
                   year >= yr-4, year <= yr,
                   fmp_subarea %in% area) %>% 
     dplyr::select(year, fmp_subarea, trip_target_code, 
                   species = species_group_name, 
-                  # count = nontarget_estimate_count, 
+                  processor = processor_permit_id,
                   weight = weight_posted,
                   vessel_id) %>% 
     dplyr::collect() %>% 
     dplyr::group_by(year, species) %>% 
     dplyr::summarise(weight = round(sum(weight, na.rm = T), 3),
-                    #  count = round(sum(count, na.rm = T), 3),
+                     n_processor= dplyr::n_distinct(processor),
                      n_vessels = dplyr::n_distinct(vessel_id),
                      .groups = "drop" ) %>% 
-    dplyr::mutate(weight = dplyr::if_else(n_vessels <= 2, "conf.", as.character(weight))) %>% 
-    dplyr::select(- n_vessels) %>% 
+    dplyr::mutate(weight = dplyr::if_else(n_vessels <= 2 | n_distinct(n_processor)<=2, "conf.", as.character(weight))) %>% 
+    dplyr::select(-c(n_vessels, n_processor)) %>% 
     tidytable::pivot_wider(names_from = year, values_from = weight, values_fill = "0") -> tbl
   
   if(isTRUE(save)){
