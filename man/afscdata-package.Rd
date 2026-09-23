@@ -18,6 +18,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Benjamin Williams \email{ben.williams@noaa.gov}
 
+Authors:
+\itemize{
+  \item Benjamin Williams \email{ben.williams@noaa.gov}
+}
+
 Other contributors:
 \itemize{
   \item Jane Sullivan \email{jane.sullivan@noaa.gov} [contributor]
