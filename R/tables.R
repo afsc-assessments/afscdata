@@ -46,7 +46,7 @@ q_psc <- function(year, target, area, db, save = TRUE) {
                      n_vessels = dplyr::n_distinct(vessel_id),
                      n_processor= dplyr::n_distinct(processor),
                      .groups = "drop" ) %>% 
-    dplyr::mutate(psc = dplyr::if_else(n_vessels <= 2 | n_distinct(n_processor)<=2, "conf.", as.character(psc))) %>% 
+    dplyr::mutate(psc = dplyr::if_else(n_vessels <= 2 | dplyr::n_distinct(n_processor)<=2, "conf.", as.character(psc))) %>% 
     dplyr::select(-c(n_vessels, n_processor)) %>% 
     tidytable::pivot_wider(names_from = year, values_from = psc, values_fill = "0") -> psc
   
@@ -110,7 +110,7 @@ q_nontarget <- function(year, target, area, db, save = TRUE) {
                      n_vessels = dplyr::n_distinct(vessel_id),
                      .groups = "drop" ) %>% 
     dplyr::mutate(weight = ifelse(is.na(weight), count, weight),
-                  weight = dplyr::if_else(n_vessels <= 2 | n_distinct(n_processor)<=2, "conf.", as.character(weight))) %>% 
+                  weight = dplyr::if_else(n_vessels <= 2 | dplyr::n_distinct(n_processor)<=2, "conf.", as.character(weight))) %>% 
     dplyr::select(-c(count, n_vessels, n_processor)) %>% 
     tidytable::pivot_wider(names_from = year, values_from = weight, values_fill = "0") -> tbl
   
@@ -173,7 +173,7 @@ q_incidental <- function(year, target, area, db, save = TRUE) {
                      n_processor= dplyr::n_distinct(processor),
                      n_vessels = dplyr::n_distinct(vessel_id),
                      .groups = "drop" ) %>% 
-    dplyr::mutate(weight = dplyr::if_else(n_vessels <= 2 | n_distinct(n_processor)<=2, "conf.", as.character(weight))) %>% 
+    dplyr::mutate(weight = dplyr::if_else(n_vessels <= 2 | dplyr::n_distinct(n_processor)<=2, "conf.", as.character(weight))) %>% 
     dplyr::select(-c(n_vessels, n_processor)) %>% 
     tidytable::pivot_wider(names_from = year, values_from = weight, values_fill = "0") -> tbl
   
@@ -201,7 +201,7 @@ q_incidental <- function(year, target, area, db, save = TRUE) {
 #' @examples 
 #' \dontrun{
 #' db <- afscdata::connect()
-#' q_discards(year=2022, species="NORK", area="goa", db=db)
+#' q_discards(year=2026, species="NORK", area="goa", db=db)
 #' afscdata::disconnect(db)
 #' }
 #'  
@@ -218,12 +218,13 @@ q_discards <- function(year, species, area, db, save=TRUE) {
   } else {
     area
   }
-  
+  yr = year
   
   # select columns to import
     table <- dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
       dplyr::rename_with(tolower) %>% 
-      dplyr::select(fmp_subarea, agency_species_code, agency_group_code, retained_or_discarded) %>% 
+      dplyr::select(year, fmp_subarea, agency_species_code, species_group_code, 
+        retained_or_discarded, wt = weight_posted) %>% 
       dplyr::filter(fmp_subarea %in% area)
 
   # filter species
@@ -234,10 +235,14 @@ q_discards <- function(year, species, area, db, save=TRUE) {
   }
   
 
-  dplyr::collect(table) %>% 
-  dplyr::arrange(year) %>% 
-  tidytable::pivot_wider(names_from = retained_or_discarded, values_from = wt) %>% 
-  dplyr::summarise(discard_percent = D / (D+R), .by = year) -> tbl
+  dplyr::collect(table) -> tbl
+  
+  tbl %>% 
+    dplyr::arrange(year) %>% 
+    dplyr::summarise(wt = sum(wt, na.rm = TRUE), 
+                          .by = c(year, retained_or_discarded)) %>% 
+    tidytable::pivot_wider(names_from = retained_or_discarded, values_from = wt) %>% 
+    dplyr::summarise(discard_percent = D / (D+R), .by = year) -> tbl
   
   # output
   if(isTRUE(save)){
