@@ -27,6 +27,7 @@ query fishery discard data from AKFIN server
 \dontrun{
 db <- afscdata::connect()
 q_discards(year=2022, species="NORK", area="goa", db=db)
+afscdata::disconnect(db)
 }
  
 }

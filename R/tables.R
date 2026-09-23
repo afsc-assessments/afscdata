@@ -158,7 +158,7 @@ q_incidental <- function(year, target, area, db, save = TRUE) {
   
   # call table
   dplyr::tbl(db, dplyr::sql("council.comprehensive_blend_ca")) %>% 
-    plyr::rename_with(tolower) %>% 
+    dplyr::rename_with(tolower) %>% 
       dplyr::filter(trip_target_code %in% target,
                   year >= yr-4, year <= yr,
                   fmp_subarea %in% area) %>% 
@@ -202,6 +202,7 @@ q_incidental <- function(year, target, area, db, save = TRUE) {
 #' \dontrun{
 #' db <- afscdata::connect()
 #' q_discards(year=2022, species="NORK", area="goa", db=db)
+#' afscdata::disconnect(db)
 #' }
 #'  
 q_discards <- function(year, species, area, db, save=TRUE) {
@@ -235,7 +236,7 @@ q_discards <- function(year, species, area, db, save=TRUE) {
 
   dplyr::collect(table) %>% 
   dplyr::arrange(year) %>% 
-  tidyr::pivot_wider(names_from = retained_or_discarded, values_from = wt) %>% 
+  tidytable::pivot_wider(names_from = retained_or_discarded, values_from = wt) %>% 
   dplyr::summarise(discard_percent = D / (D+R), .by = year) -> tbl
   
   # output

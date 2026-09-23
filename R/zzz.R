@@ -21,5 +21,7 @@ utils::globalVariables(c(
   "select", "sex", "species", "species_group_code", "species_group_name", "species_name",
   "specimenid", "start_date", "stratum", "survey_name", "tons", "tot_g", "total_biomass",
   "trip_target_code", "var_g", "vessel_class", "week_date", "weight", "EXPLOITABLE",
-  "depth_m", "gear_temperature_c"
+  "depth_m", "gear_temperature_c", "weight_posted", "vessel_id", "n_vessels", "agency_group_code", 
+  "retained_or_discarded", "weight_g", "wt", "n_processor", "D", "R", "n_distinct", "processor_permit_id",
+  "processor"
 ))
