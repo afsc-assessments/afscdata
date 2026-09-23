@@ -1,0 +1,109 @@
+# query nfms longline survey rpn-weighted length frequencies
+
+longline database documentation available on
+[akfin](https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf)
+
+## Usage
+
+``` r
+q_lls_rpn_length(
+  year,
+  species,
+  area = c("goa", "bs", "ai"),
+  by = "fmpsubarea",
+  use_historical = FALSE,
+  db,
+  print_sql = FALSE,
+  save = TRUE
+)
+```
+
+## Arguments
+
+- year:
+
+  max year to retrieve data from
+
+- species:
+
+  5 digit afsc/race species code(s) e.g., 20510 for sablefish or
+  c(30576, 30050) for both shortraker and rougheye/blackspotted
+
+- area:
+
+  options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs',
+  'ai')
+
+- by:
+
+  'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak slope),
+  'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
+  'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
+  sablefish). default: 'fmpsubarea' - can only call a single area. note
+  that variances are not available at the depth stratum level (by =
+  'depth')
+
+- use_historical:
+
+  T/F include historical Japanese survey data in the results (default:
+  false)
+
+- db:
+
+  the database to query (akfin)
+
+- print_sql:
+
+  outputs the sql query instead of calling the data (default: false) -
+  save must be false
+
+- save:
+
+  save the file in designated folder, if FALSE outputs to global
+  environment
+
+## Value
+
+saves lls rpn-weighted length frequency data as
+data/raw/lls_rpn_length_data.csv or outputs to the global environment.
+also saves a copy of the SQL code used for the query and stores it in
+the data/sql folder.
+
+## Details
+
+sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns
+are adjusted for sperm whale depredation
+
+all other species: includes data from all strata (depths 151-1000 m)
+
+sex-specific lengths are collected for sablefish, giant grenadier, spiny
+dogfish, pacific cod, and greenland turbot (starting in 2021!). sex
+codes: 1=male, 2=female, 3=unknown
+
+results only include geographic/stratum areas that are used for rpns
+calc (i.e., exploitable == 1). also ' records with length = 999 have
+been removed. these records are present in the database to account for
+instances when there ' was catch in a stratum/station but no lengths
+collected. the ' 999 lengths ensure rpns sum properly to the area-level
+but should not be included in the length compositions.
+
+available source tables on akfin: lls_length_area_3_to_7_depred
+lls_length_area_all_strata
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+db <- afscdata::connect("akfin")
+# sablefish domestic longline survey rpn-weighted length frequencies (1990-2022) for
+# goa and bsai. note that sablefish rpns are corrected for sperm whale 
+# depredation and only include data from strata 3-7
+
+q_lls_rpn_length(year=2022, species=20510, area=c('bsai','goa'), db=db, save=FALSE)
+
+# pcod domestic longline survey rpn-weighted length frequencies (1997-2022,
+# odd years only) for the bering sea
+
+q_lls_rpn_length(year=2022, species=21720, area='bs', db=db, save=FALSE) 
+} # }
+```

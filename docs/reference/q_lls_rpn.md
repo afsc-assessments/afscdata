@@ -1,0 +1,122 @@
+# query nfms longline survey relative population numbers or weights
+
+longline database documentation available on
+[akfin](https://akfinbi.psmfc.org/analyticsRes/Documentation/Database_Background_Instructions_AKFIN_20210915.pdf)
+
+## Usage
+
+``` r
+q_lls_rpn(
+  year,
+  species,
+  area = c("goa", "bs", "ai"),
+  by = "fmpsubarea",
+  use_historical = FALSE,
+  db,
+  print_sql = FALSE,
+  save = TRUE
+)
+```
+
+## Arguments
+
+- year:
+
+  max year to retrieve data from
+
+- species:
+
+  5 digit afsc/race species code(s) e.g., 20510 for sablefish or
+  c(30576, 30050) for both shortraker and rougheye/blackspotted
+
+- area:
+
+  options are 'goa', 'bs', 'ai', or a combo. default=c('goa', 'bs',
+  'ai')
+
+- by:
+
+  'depth' (stratum-level), 'geoarea' (e.g. Spencer Gully, Kodiak slope),
+  'councilarea' (e.g., West Yakutat, East Yakutat/Southeast),
+  'fmpsubarea' (e.g., Eastern Gulf of Alaska), or 'akwide' (only for
+  sablefish). default: 'fmpsubarea' - can only call a single area. note
+  that variances are not available at the depth stratum level (by =
+  'depth')
+
+- use_historical:
+
+  T/F include historical Japanese survey data in the results (default:
+  false)
+
+- db:
+
+  the database to query (akfin)
+
+- print_sql:
+
+  outputs the sql query instead of calling the data (default: false) -
+  save must be false
+
+- save:
+
+  save the file in designated folder, if FALSE outputs to global
+  environment
+
+## Value
+
+saves lls rpn/rpw data as data/raw/lls_rpn\_(by)\_data.csv or outputs to
+the global environment. also saves a copy of the SQL code used for the
+query and stores it in the data/sql folder.
+
+## Details
+
+variables of interest: cpue = numbers per skate (1 skate = 45 hooks);
+relative population numbers (rpns) = area-weighted cpue (area estimates
+are defined by depth strata and geographic area), relative population
+weights (rpw) = rpn multiplied by mean fish weight, which is calculated
+using an allometric relationship and the mean length of fish collected
+in a given strata and geographic area.
+
+methods for variance estimation of these indices are documented on [p 26
+the 2016 sablefish safe
+pdf](https://apps-afsc.fisheries.noaa.gov/REFM/Docs/2016/GOAsablefish.pdf)
+(p 350 of the goa safe).
+
+the time series starts for the domestic longline survey in the bs and ai
+starts in 1996, and there are historical data available in the bs/ai
+from the cooperative Japanese/U.S. survey. in the modern/domestic
+survey, the eastern ai are surveyed in even years, and the bs is
+surveyed in odd years. the longline survey does not sample the western
+ai. estimates in nw and sw ai are based on fixed ratios in the ne and se
+ai, respectively, from historical cooperative Japanese/U.S. surveys in
+1979-1994.
+
+sablefish: includes data from strata 3-7 (depths 201-1000 m) and rpns
+are adjusted for sperm whale depredation
+
+all other species: includes data from all strata (depths 151-1000 m)
+
+source tables on akfin: lls_area_stratum_rpn lls_area_stratum_rpn_depred
+lls_area_rpn_all_strata lls_area_rpn_3_to_7 lls_area_rpn_3_to_7_depred
+lls_council_sablefish_area_all_strata
+lls_council_sablefish_area_3_to_7_depred lls_fmp_subarea_all_strata
+lls_fmp_subarea_3_to_7_depred lls_ak_wide_3_to_7_depred
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+db <- connect("akfin")
+# sablefish domestic survey rpn/rpw time series (1990-2022) by goa fmp subarea (wgoa,
+# cgoa, egoa). note that sablefish rpns are corrected for sperm whale
+# depredation and only include data from strata 3-7
+
+q_lls_rpn(year=2022, species=20510, area='goa', by='fmpsubarea', db=db, save = FALSE)
+
+# pcod domestic survey rpn/rpw time series by bering sea geographic area and
+# depth stratum. note that the domestic bs time series is odd years starting in
+# 1997 (ai starts in 1996).
+
+q_lls_rpn(year=2022, species=21720, area='bs', by='depth', db=db, save=FALSE) 
+} # }
+```
